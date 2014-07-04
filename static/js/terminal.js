@@ -1,9 +1,13 @@
 var Terminal = function(system) {
 
     /* Helper functions */
-    var parseArgs = function(command) {
+    var parseCommand = function(command) {
         // Parse input string into array, stripping whitespace and quotes.
         var args = $.trim(command).split(/\s+/);
+        if (args.length == 0) {
+            return null;
+        }
+
         $.each(args, function(index, value) {
             var match = value.match(/(["'])(\\?.)*?\1/);
             if (match) {
@@ -12,91 +16,125 @@ var Terminal = function(system) {
                 args[index] = value.substring(1, value.length - 1);
             }
         });
-        return args;
-    }
 
-    /* Main terminal */
-    var main = function() {
+        var name = args[0];
+        args = args.splice(1, args.length - 1);
+
+        // TODO: find all options preceded by - or --
+        var options = [];
+
+        // TODO: pipe command |
+        // TODO: redirect commands <, >
+
         return {
-            options: {
-                greetings: 'You awaken in a dark directory...',
-                name: 'main',
-                prompt: '$> ',
-                onStart: function(term) {
-                    term.clear();
-                    term.echo(this.greetings);
-                }
-            },
-
-            interpreter: function(command, term) {
-                var args = parseArgs(command);
-                if (args.length === 0) {
-                    return;
-                }
-
-                switch (args[0]) {
-                    case 'echo':
-                        term.echo(args[1]);
-                        break;
-
-                    case 'help':
-                        term.echo('no help for you');
-                        break;
-
-                    case 'pwd':
-                        term.echo(system.directory);
-                        break;
-
-                    case 'whoami':
-                        term.echo(system.user);
-                        break;
-
-                    default:
-                        term.echo(args[0] + ': command not found');
-                }
-            }
+            name: name,
+            args: args,
+            options: options,
+            rest: args.join(' ')
         };
     };
 
-    /* Login terminal */
-    var login = function(success) {
-        return {
-            options: {
-                greetings: 'What is your name?',
-                name: 'login',
-                prompt: '$> '
-            },
+    /* Terminal options */
+    var options = {
+        login: {
+            greetings: 'What is your name?',
+            name: 'login',
+            prompt: '$> '
+        },
 
-            interpreter: function(command, term) {
-                if (command !== '') {
-                    // TODO: If username already exists, prompt for password.
-                    success(command, term);
-                }
-            }
-        };
+        main: {
+            greetings: 'You awaken in a dark directory...',
+            name: 'main',
+            onStart: function(term) {
+                term.clear();
+                term.echo(this.greetings);
+            },
+            prompt: '$> '
+        },
+
+        confirm: function(prompt) {
+            prompt: prompt || 'Are you sure? [y/n] '
+        }
     };
 
-    /* Confirmation terminal: awaits y/n input */
-    var confirm = function(term, success, prompt) {
-        return {
-            options: {
-                "prompt": prompt || "Are you sure? [y/n] "
+    var self = {
+
+        /* Called on page load */
+        init: function(term) {
+            term.terminal(self.login, options.login);
+        },
+
+        /* Login interpreter */
+        login: function(command, term) {
+            var user = $.trim(command);
+            if (user !== '') {
+                // TODO: If username already exists, prompt for password.
+                console.log('logged in as:', user);
+                system.user.name = user;
+                term.push(self.interpreter, options.main);
+            }
+        },
+
+        /* Accepted commands */
+        commands: {
+            cd: function(cmd, term) {
+                // TODO: change directory
             },
 
-            interpreter: function(command) {
+            echo: function(cmd, term) {
+                term.echo(cmd.rest);
+                console.log(cmd);
+            },
+
+            help: function(cmd, term) {
+                // TODO: don't be mean.
+                term.echo('no help for you');
+            },
+
+            pwd: function(cmd, term) {
+                term.echo(system.dir.name);
+            },
+
+            ps: function(cmd, term) {
+                // TODO: list processes
+            },
+
+            kill: function(cmd, term) {
+                // TODO: kill process
+            },
+
+            whoami: function(cmd, term) {
+                term.echo(system.user.name);
+            }
+        },
+
+        /* Main interpreter for shell */
+        interpreter: function(command, term) {
+            var cmd = parseCommand(command);
+            if (!cmd) {
+                return;
+            }
+
+            if (self.commands.hasOwnProperty(cmd.name)) {
+                self.commands[cmd.name](cmd, term);
+            } else {
+                term.echo(cmd.name + ': command not found');
+            }
+        },
+
+        /* Confirmation terminal: awaits y/n input */
+        confirm: function(prompt, success, term) {
+            term.push(function(command) {
                 if (command.match(/y|yes/i)) {
                     term.pop();
                     success();
                 } else if (command.match(/n|no/i)) {
                     term.pop();
                 }
-            }
-        };
-    };
+            }, options.confirm(prompt));
+        }
 
-    return {
-        main: main,
-        login: login,
-        confirm: confirm
     };
+    return self;
+
 }
