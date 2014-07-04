@@ -1,9 +1,11 @@
 var Terminal = function(system) {
 
     /* Helper functions */
+    var trim = $.trim;
+
     var parseCommand = function(command) {
         // Parse input string into array, stripping whitespace and quotes.
-        var args = $.trim(command).split(/\s+/);
+        var args = trim(command).split(/\s+/);
         if (args.length == 0) {
             return null;
         }
@@ -17,8 +19,8 @@ var Terminal = function(system) {
             }
         });
 
-        var name = args[0];
-        args = args.splice(1, args.length - 1);
+        var name = _.first(args);
+        args = _.rest(args);
 
         // TODO: find all options preceded by - or --
         var options = [];
@@ -34,44 +36,34 @@ var Terminal = function(system) {
         };
     };
 
-    /* Terminal options */
-    var options = {
-        login: {
-            greetings: 'What is your name?',
-            name: 'login',
-            prompt: '$> '
-        },
-
-        main: {
-            greetings: 'You awaken in a dark directory...',
-            name: 'main',
-            onStart: function(term) {
-                term.clear();
-                term.echo(this.greetings);
-            },
-            prompt: '$> '
-        },
-
-        confirm: function(prompt) {
-            prompt: prompt || 'Are you sure? [y/n] '
+    var tabComplete = function(str, commands) {
+        str = trim(str);
+        // TODO: Add support for tab-completing files and directories.
+        if (str === '' || str === './') {
+            return []; // directories and files
+        } else if (str === 'cd' || str === 'ls') {
+            return []; // directories
         }
+
+        // TODO: Only complete commands user has permissions for.
+        return commands;
     };
 
     var self = {
 
         /* Called on page load */
         init: function(term) {
-            term.terminal(self.login, options.login);
+            term.terminal(self.login, self.options.login);
         },
 
         /* Login interpreter */
         login: function(command, term) {
-            var user = $.trim(command);
+            var user = trim(command);
             if (user !== '') {
                 // TODO: If username already exists, prompt for password.
                 console.log('logged in as:', user);
                 system.user.name = user;
-                term.push(self.interpreter, options.main);
+                term.push(self.interpreter, self.options.main);
             }
         },
 
@@ -115,7 +107,7 @@ var Terminal = function(system) {
                 return;
             }
 
-            if (self.commands.hasOwnProperty(cmd.name)) {
+            if (_.has(self.commands, cmd.name)) {
                 self.commands[cmd.name](cmd, term);
             } else {
                 term.echo(cmd.name + ': command not found');
@@ -131,9 +123,39 @@ var Terminal = function(system) {
                 } else if (command.match(/n|no/i)) {
                     term.pop();
                 }
-            }, options.confirm(prompt));
-        }
+            }, self.options.confirm(prompt));
+        },
 
+        /* Terminal options */
+        options: {
+            login: {
+                completion: [],
+                greetings: 'What is your name?',
+                name: 'login',
+                prompt: '$> '
+            },
+
+            main: {
+                completion: function(term, str, callback) {
+                    var results = tabComplete(str, _.keys(self.commands));
+                    callback(results);
+                },
+                greetings: 'You awaken in a dark directory...',
+                name: 'main',
+                onStart: function(term) {
+                    term.clear();
+                    term.echo(this.greetings);
+                },
+                prompt: '$> '
+            },
+
+            confirm: function(prompt) {
+                return {
+                    completion: ['yes', 'no'],
+                    prompt: prompt || 'Are you sure? [y/n] '
+                };
+            }
+        }
     };
     return self;
 
