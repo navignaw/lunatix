@@ -42,14 +42,44 @@ var Terminal = function(system) {
         return commands;
     };
 
-    var echoTemplate = function(type, template, term) {
+    /* Echo message to terminal with custom styling.
+     * options: {raw: bool, flush: bool}.
+     * style: {color: '#hexcol', class: 'class1 class2', css: {}}.
+     * output: where to print (default is 'stdout').
+     */
+    var prettyPrint = function(term, message, options, style, output) {
+        options = options || {};
+        output = output || 'stdout';
+
+        if (output === 'stdout') {
+            var echoOptions = {};
+            if (style) {
+                style.css = style.css || {};
+                if (_.has(style, 'color')) {
+                    style.css.color = style.color;
+                }
+
+                options.finalize = function(div) {
+                    div.css(style.css);
+                    if (_.has(style, 'class')) {
+                        div.addClass(style.class);
+                    }
+                };
+            }
+            term.echo(message, options);
+        } else {
+            // TODO: If output is file, save new file with output.
+        }
+    };
+
+    /* Echo HTML from template */
+    var echoTemplate = function(term, type, template) {
         term.pause();
 
-        // Load HTML from template.
         $.get($app.SCRIPT_ROOT + '/' + type + '/' + template, function(html) {
             term.echo(html, {raw: true});
         }).fail(function(jqXHR, textStatus, error) {
-            term.error('Error: ' + error);
+            term.exception(error);
             term.echo(jqXHR.responseText, {raw: true});
         }).always(function() {
             term.resume();
@@ -82,21 +112,21 @@ var Terminal = function(system) {
             },
 
             credits: function(cmd, term) {
-                echoTemplate('commands', 'credits', term);
+                echoTemplate(term, 'commands', 'credits');
             },
 
             echo: function(cmd, term) {
-                term.echo(cmd.rest);
+                prettyPrint(term, cmd.rest);
                 console.log(cmd);
             },
 
             help: function(cmd, term) {
                 // TODO: don't be mean.
-                term.echo('no help for you');
+                prettyPrint(term, 'no help for you');
             },
 
             pwd: function(cmd, term) {
-                term.echo(system.dir.name);
+                prettyPrint(term, system.dir.name);
             },
 
             ps: function(cmd, term) {
@@ -108,7 +138,8 @@ var Terminal = function(system) {
             },
 
             logout: function(cmd, term) {
-                term.echo('Are you sure you wish to exit? Any unsaved data will be lost.');
+                prettyPrint(term, 'Are you sure you wish to exit? ' +
+                                  'Any unsaved data will be lost.');
                 self.confirm(term, null, function() {
                     term.pop();
                 });
@@ -122,25 +153,37 @@ var Terminal = function(system) {
                 if (!system.user.superuser) {
                     // Only available to debuggers or console hackers!
                     // Lying is bad, but we don't want to get their hopes up.
-                    term.echo('test: command not found');
+                    prettyPrint(term, 'test: command not found');
                 }
                 switch (cmd.args[0]) {
                     case 'confirm':
                         self.confirm(term, 'hello? [y/n] ', function() {
-                            term.echo('whee');
+                            prettyPrint(term, 'whee');
                         });
                         break;
 
                     case 'animateText':
                         var text = 'i am typing`2000`\nwatch me ``escape``';
                         self.animateText(term, text, '%> ', function() {
-                            term.echo('all done');
+                            prettyPrint(term, 'all done');
                         });
                         break;
 
+                    case 'echoTemplate':
+                        echoTemplate(term, 'commands', 'doesNotExist');
+                        break;
+
+                    case 'prettyPrint':
+                        prettyPrint(term, 'this is red text', null, {color: 'red'});
+                        prettyPrint(term, 'this is slick', null, {css: {'font-style': 'italic'}});
+                        prettyPrint(term, 'i am class death', null, {class: 'death'});
+                        prettyPrint(term, '<em>italicized html</em>', {raw: true});
+                        break;
+
                     default:
-                        term.echo('Invalid command. Options are: ' + [
-                            'confirm', 'animateText'].join(', '));
+                        prettyPrint(term, 'Invalid command. Options are: ' + [
+                            'confirm', 'animateText', 'echoTemplate', 'prettyPrint']
+                            .join(', '));
                 }
             },
 
@@ -149,7 +192,7 @@ var Terminal = function(system) {
             },
 
             whoami: function(cmd, term) {
-                term.echo(system.user.name);
+                prettyPrint(term, system.user.name);
             }
         },
 
@@ -165,10 +208,10 @@ var Terminal = function(system) {
                 if (system.user.superuser || _.has(system.user.permissions, cmd.name)) {
                     self.commands[cmd.name](cmd, term);
                 } else {
-                    term.echo(cmd.name + ': permission denied');
+                    prettyPrint(term, cmd.name + ': permission denied');
                 }
             } else {
-                term.echo(cmd.name + ': command not found');
+                prettyPrint(term, cmd.name + ': command not found');
             }
         },
 
@@ -181,7 +224,7 @@ var Terminal = function(system) {
                 } else if (/^(n|no|nay)$/i.test(command)) {
                     term.pop();
                 } else {
-                    term.echo("Please enter 'yes' or 'no'.");
+                    prettyPrint(term, "Please enter 'yes' or 'no'.");
                 }
             }, self.options.confirm(prompt));
         },
@@ -204,7 +247,7 @@ var Terminal = function(system) {
             term.set_prompt(prompt);
             var readCharacter = function() {
                 if (c === message.length) {
-                    term.echo(prompt + term.get_command());
+                    prettyPrint(term, prompt + term.get_command());
                     term.set_command('');
                     term.set_prompt(old_prompt);
                     self.animating = false;
