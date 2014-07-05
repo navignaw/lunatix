@@ -8,7 +8,7 @@
         user: {
             name: '',
             permissions: {},
-            superuser: $DEBUG
+            superuser: $app.DEBUG
         }
     };
 

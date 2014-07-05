@@ -46,7 +46,7 @@ var Terminal = function(system) {
         term.pause();
 
         // Load HTML from template.
-        $.get($SCRIPT_ROOT + '/' + type + '/' + template, function(html) {
+        $.get($app.SCRIPT_ROOT + '/' + type + '/' + template, function(html) {
             term.echo(html, {raw: true});
         }).fail(function(jqXHR, textStatus, error) {
             term.error('Error: ' + error);

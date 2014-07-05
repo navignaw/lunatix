@@ -19,8 +19,9 @@
     </div>
 
     <script type="text/javascript">
-      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-      $DEBUG = {{ debug|tojson }};
+      $app = {};
+      $app.SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      $app.DEBUG = {{ debug|tojson }};
     </script>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
