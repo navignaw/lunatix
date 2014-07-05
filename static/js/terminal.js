@@ -5,8 +5,6 @@ var Terminal = function(system) {
 
     var init = function(term) {
         term.push(self.login, self.options.login);
-        term.clear();
-        term.greetings();
     };
 
     var parseCommand = function(command) {
@@ -116,6 +114,13 @@ var Terminal = function(system) {
                 // TODO: kill process
             },
 
+            logout: function(cmd, term) {
+                term.echo('Are you sure you wish to exit? Any unsaved data will be lost.');
+                self.confirm(term, null, function() {
+                    term.pop();
+                });
+            },
+
             // TODO: Remove in final version.
             test: function(cmd, term) {
                 switch (cmd.args[0]) {
@@ -164,11 +169,13 @@ var Terminal = function(system) {
         /* Confirmation terminal: awaits y/n input */
         confirm: function(term, prompt, success) {
             term.push(function(command) {
-                if (command.match(/y|yes/i)) {
+                if (command.match(/^(y|yes|yea)$/i)) {
                     term.pop();
                     success();
-                } else if (command.match(/n|no/i)) {
+                } else if (command.match(/^(n|no|nay)$/i)) {
                     term.pop();
+                } else {
+                    term.echo("Please enter 'yes' or 'no'.");
                 }
             }, self.options.confirm(prompt));
         },
@@ -219,14 +226,28 @@ var Terminal = function(system) {
                 },
                 prompt: '$> ',
                 completion: [],
-                onInit: init
+                onInit: init,
+                keydown: function(e) {
+                    // Disable keypresses while animating text.
+                    if (self.animating) {
+                        return false;
+                    }
+                    // CTRL+D: cannot exit past login screen
+                    if (e.which === 68 && e.ctrlKey) {
+                        return false;
+                    }
+                }
             },
 
             login: {
                 name: 'login',
                 greetings: 'What is your name?',
                 prompt: '$> ',
-                completion: []
+                completion: [],
+                onStart: function(term) {
+                    term.clear();
+                    term.greetings();
+                }
             },
 
             main: {
@@ -237,10 +258,12 @@ var Terminal = function(system) {
                     var results = tabComplete(str, _.keys(self.commands));
                     callback(results);
                 },
-                keydown: function(e) {
-                    // Disable keypresses while animating text.
+                keydown: function(e, term) {
                     if (self.animating) {
                         return false;
+                    }
+                    if (e.which === 68 && e.ctrlKey) {
+                        term.exec('logout');
                     }
                 }
             },
@@ -248,7 +271,7 @@ var Terminal = function(system) {
             confirm: function(prompt) {
                 return {
                     completion: ['yes', 'no'],
-                    prompt: prompt || 'Are you sure? [y/n] '
+                    prompt: prompt || '[y/n] '
                 };
             }
         }
