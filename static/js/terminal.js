@@ -49,6 +49,20 @@ var Terminal = function(system) {
         return commands;
     };
 
+    var echoTemplate = function(type, template, term) {
+        term.pause();
+
+        // Load HTML from template.
+        $.get($SCRIPT_ROOT + '/' + type + '/' + template, function(html) {
+            term.echo(html, {raw: true});
+        }).fail(function(jqXHR, textStatus, error) {
+            term.error('Error: ' + error);
+            term.echo(jqXHR.responseText, {raw: true});
+        }).always(function() {
+            term.resume();
+        });
+    };
+
     var self = {
 
         /* Called on page load */
@@ -71,6 +85,10 @@ var Terminal = function(system) {
         commands: {
             cd: function(cmd, term) {
                 // TODO: change directory
+            },
+
+            credits: function(cmd, term) {
+                echoTemplate('commands', 'credits', term);
             },
 
             echo: function(cmd, term) {
