@@ -3,6 +3,12 @@ var Terminal = function(system) {
     /* Helper functions */
     var trim = $.trim;
 
+    var init = function(term) {
+        term.push(self.login, self.options.login);
+        term.clear();
+        term.greetings();
+    };
+
     var parseCommand = function(command) {
         // Parse input string into array, stripping whitespace and quotes.
         var args = trim(command).split(/\s+/);
@@ -65,11 +71,6 @@ var Terminal = function(system) {
 
     var self = {
 
-        /* Called on page load */
-        init: function(term) {
-            term.terminal(self.login, self.options.login);
-        },
-
         /* Login interpreter */
         login: function(command, term) {
             var user = trim(command);
@@ -78,6 +79,8 @@ var Terminal = function(system) {
                 console.log('logged in as:', user);
                 system.user.name = user;
                 term.push(self.interpreter, self.options.main);
+                term.clear();
+                term.greetings();
             }
         },
 
@@ -113,6 +116,27 @@ var Terminal = function(system) {
                 // TODO: kill process
             },
 
+            // TODO: Remove in final version.
+            test: function(cmd, term) {
+                switch (cmd.args[0]) {
+                    case 'confirm':
+                        self.confirm(term, 'hello? [y/n] ', function() {
+                            term.echo('whee');
+                        });
+                        break;
+
+                    case 'animateText':
+                        self.animateText(term, 'i am typing', '$> ', function() {
+                            term.echo('all done');
+                        });
+                        break;
+
+                    default:
+                        term.echo('Invalid command. Options are: ' + [
+                            'confirm', 'animateText'].join(', '));
+                }
+            },
+
             whoami: function(cmd, term) {
                 term.echo(system.user.name);
             }
@@ -133,7 +157,7 @@ var Terminal = function(system) {
         },
 
         /* Confirmation terminal: awaits y/n input */
-        confirm: function(prompt, success, term) {
+        confirm: function(term, prompt, success) {
             term.push(function(command) {
                 if (command.match(/y|yes/i)) {
                     term.pop();
@@ -144,27 +168,76 @@ var Terminal = function(system) {
             }, self.options.confirm(prompt));
         },
 
+        /* Animated typing terminal */
+        animating: false,
+        animateText: function(term, message, prompt, callback, delay) {
+            if (message.length === 0) {
+                return;
+            }
+            prompt = prompt || '';
+            callback = callback || _.noop;
+            delay = delay || 100;
+            self.animating = true;
+
+            var old_prompt = term.get_prompt();
+            var c = 0;
+            term.set_prompt(prompt);
+            var interval = setInterval(function() {
+                term.insert(message[c++]);
+                if (c == message.length) {
+                    clearInterval(interval);
+                    // execute in next interval
+                    setTimeout(function() {
+                        // swap command with prompt
+                        term.set_command('');
+                        term.echo(prompt + message);
+                        term.set_prompt(old_prompt);
+                        self.animating = false;
+                        callback();
+                    }, delay);
+                }
+            }, delay);
+        },
+
         /* Terminal options */
         options: {
-            login: {
+            base: {
+                name: 'lunatix',
+                // Hack since greetings are not updated in new terminals.
+                greetings: function(callback) {
+                    var name = $.terminal.active().name();
+                    if (name === 'lunatix') {
+                        callback('');
+                    } else {
+                        callback(self.options[name].greetings || '');
+                    }
+                },
+                prompt: '$> ',
                 completion: [],
-                greetings: 'What is your name?',
+                onInit: init
+            },
+
+            login: {
                 name: 'login',
-                prompt: '$> '
+                greetings: 'What is your name?',
+                prompt: '$> ',
+                completion: []
             },
 
             main: {
+                name: 'main',
+                greetings: 'You awaken in a dark directory...',
+                prompt: '$> ',
                 completion: function(term, str, callback) {
                     var results = tabComplete(str, _.keys(self.commands));
                     callback(results);
                 },
-                greetings: 'You awaken in a dark directory...',
-                name: 'main',
-                onStart: function(term) {
-                    term.clear();
-                    term.echo(this.greetings);
-                },
-                prompt: '$> '
+                keydown: function(e) {
+                    // Disable keypresses while animating text.
+                    if (self.animating) {
+                        return false;
+                    }
+                }
             },
 
             confirm: function(prompt) {

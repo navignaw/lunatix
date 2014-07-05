@@ -12,7 +12,7 @@
     var terminal = new Terminal(system);
 
     $(document).ready(function() {
-        terminal.init($('#terminal'));
+        $('#terminal').terminal({}, terminal.options.base);
     });
 
 })();
