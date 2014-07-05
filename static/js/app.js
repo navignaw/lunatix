@@ -2,14 +2,11 @@
 
     /* System variables */
     var system = {
+        debug: $app.DEBUG,
         dir: {name: '~'},
         env: {},
         proc: [],
-        user: {
-            name: '',
-            permissions: {},
-            superuser: $app.DEBUG
-        }
+        user: null
     };
 
     /* Terminals */

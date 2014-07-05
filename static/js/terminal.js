@@ -90,11 +90,12 @@ var Terminal = function(system) {
 
         /* Login interpreter */
         login: function(command, term) {
-            var user = $.trim(command);
-            if (user !== '') {
+            var username = $.trim(command);
+            if (username !== '') {
                 // TODO: If username already exists, prompt for password.
-                console.log('logged in as:', user);
-                system.user.name = user;
+                system.user = new User(username, system.debug);
+                console.log('logged in as:', username);
+                console.log(system.user);
                 term.push(self.interpreter, self.options.main);
                 term.clear();
                 term.greetings();
@@ -205,7 +206,7 @@ var Terminal = function(system) {
 
             if (_.has(self.commands, cmd.name)) {
                 // Check for permissions.
-                if (system.user.superuser || _.has(system.user.permissions, cmd.name)) {
+                if (system.user.superuser || _.has(system.user.commands, cmd.name)) {
                     self.commands[cmd.name](cmd, term);
                 } else {
                     prettyPrint(term, cmd.name + ': permission denied');
