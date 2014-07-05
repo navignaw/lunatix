@@ -150,7 +150,12 @@ var Terminal = function(system) {
             }
 
             if (_.has(self.commands, cmd.name)) {
-                self.commands[cmd.name](cmd, term);
+                // Check for permissions.
+                if (system.user.superuser || _.has(system.user.permissions, cmd.name)) {
+                    self.commands[cmd.name](cmd, term);
+                } else {
+                    term.echo(cmd.name + ': permission denied');
+                }
             } else {
                 term.echo(cmd.name + ': command not found');
             }

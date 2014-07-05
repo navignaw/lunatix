@@ -4,7 +4,7 @@ import os
 
 
 app = Flask(__name__)
-if 'HEROKU' in os.environ: # Production mode
+if 'HEROKU' in os.environ: # Production mode hack
     pass
 else:
     app.debug = True
@@ -12,7 +12,7 @@ else:
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', debug=app.debug)
 
 @app.route('/commands/<template>')
 def get_command_template(template):

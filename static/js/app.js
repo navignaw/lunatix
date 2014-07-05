@@ -5,7 +5,11 @@
         dir: {name: '~'},
         env: {},
         proc: [],
-        user: {}
+        user: {
+            name: '',
+            permissions: {},
+            superuser: $DEBUG
+        }
     };
 
     /* Terminals */
