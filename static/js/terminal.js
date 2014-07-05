@@ -1,27 +1,16 @@
 var Terminal = function(system) {
 
     /* Helper functions */
-    var trim = $.trim;
-
     var init = function(term) {
         term.push(self.login, self.options.login);
     };
 
     var parseCommand = function(command) {
         // Parse input string into array, stripping whitespace and quotes.
-        var args = trim(command).split(/\s+/);
+        var args = $.terminal.parseArguments($.trim(command));
         if (args.length == 0) {
             return null;
         }
-
-        $.each(args, function(index, value) {
-            var match = value.match(/(["'])(\\?.)*?\1/);
-            if (match) {
-                // For now, just remove outer quotation marks.
-                // We may need to be smarter about escape characters.
-                args[index] = value.substring(1, value.length - 1);
-            }
-        });
 
         var name = _.first(args);
         args = _.rest(args);
@@ -41,7 +30,7 @@ var Terminal = function(system) {
     };
 
     var tabComplete = function(str, commands) {
-        str = trim(str);
+        str = $.trim(str);
         // TODO: Add support for tab-completing files and directories.
         if (str === '' || str === './') {
             return []; // directories and files
@@ -71,7 +60,7 @@ var Terminal = function(system) {
 
         /* Login interpreter */
         login: function(command, term) {
-            var user = trim(command);
+            var user = $.trim(command);
             if (user !== '') {
                 // TODO: If username already exists, prompt for password.
                 console.log('logged in as:', user);
@@ -86,6 +75,10 @@ var Terminal = function(system) {
         commands: {
             cd: function(cmd, term) {
                 // TODO: change directory
+            },
+
+            chmod: function(cmd, term) {
+                // TODO: change mode/permissions
             },
 
             credits: function(cmd, term) {
@@ -121,8 +114,16 @@ var Terminal = function(system) {
                 });
             },
 
-            // TODO: Remove in final version.
+            ls: function(cmd, term) {
+                // TODO: list files
+            },
+
             test: function(cmd, term) {
+                if (!system.user.superuser) {
+                    // Only available to debuggers or console hackers!
+                    // Lying is bad, but we don't want to get their hopes up.
+                    term.echo('test: command not found');
+                }
                 switch (cmd.args[0]) {
                     case 'confirm':
                         self.confirm(term, 'hello? [y/n] ', function() {
@@ -131,7 +132,8 @@ var Terminal = function(system) {
                         break;
 
                     case 'animateText':
-                        self.animateText(term, 'i am typing', '$> ', function() {
+                        var text = 'i am typing`2000`\nwatch me ``escape``';
+                        self.animateText(term, text, '%> ', function() {
                             term.echo('all done');
                         });
                         break;
@@ -140,6 +142,10 @@ var Terminal = function(system) {
                         term.echo('Invalid command. Options are: ' + [
                             'confirm', 'animateText'].join(', '));
                 }
+            },
+
+            quit: function(cmd, term) {
+                self.commands.logout(cmd, term);
             },
 
             whoami: function(cmd, term) {
@@ -169,10 +175,10 @@ var Terminal = function(system) {
         /* Confirmation terminal: awaits y/n input */
         confirm: function(term, prompt, success) {
             term.push(function(command) {
-                if (command.match(/^(y|yes|yea)$/i)) {
+                if (/^(y|yes|yea)$/i.test(command)) {
                     term.pop();
                     success();
-                } else if (command.match(/^(n|no|nay)$/i)) {
+                } else if (/^(n|no|nay)$/i.test(command)) {
                     term.pop();
                 } else {
                     term.echo("Please enter 'yes' or 'no'.");
@@ -180,7 +186,9 @@ var Terminal = function(system) {
             }, self.options.confirm(prompt));
         },
 
-        /* Animated typing terminal */
+        /* Animated typing terminal.
+         * Use `x` in message to indicate x ms pause,
+         * and `` to escape (write ` character). */
         animating: false,
         animateText: function(term, message, prompt, callback, delay) {
             if (message.length === 0) {
@@ -194,21 +202,41 @@ var Terminal = function(system) {
             var old_prompt = term.get_prompt();
             var c = 0;
             term.set_prompt(prompt);
-            var interval = setInterval(function() {
-                term.insert(message[c++]);
-                if (c == message.length) {
-                    clearInterval(interval);
-                    // execute in next interval
-                    setTimeout(function() {
-                        // swap command with prompt
-                        term.set_command('');
-                        term.echo(prompt + message);
-                        term.set_prompt(old_prompt);
-                        self.animating = false;
-                        callback();
-                    }, delay);
+            var readCharacter = function() {
+                if (c === message.length) {
+                    term.echo(prompt + term.get_command());
+                    term.set_command('');
+                    term.set_prompt(old_prompt);
+                    self.animating = false;
+                    callback();
+                    return;
                 }
-            }, delay);
+
+                var character = message[c++];
+                // Check for special character.
+                if (character !== '`') {
+                    term.insert(character);
+                } else if (c !== message.length) {
+                    var nextCharacter = message[c++];
+                    switch (nextCharacter) {
+                        case '`':
+                            term.insert('`');
+                            break;
+                        default:
+                            // Extract number of milliseconds to pause.
+                            var digits = message.substring(c-1).match(/^\d*/);
+                            var waitCount = 0;
+                            if (digits) {
+                                waitCount = parseInt(digits[0]);
+                                c += digits[0].length;
+                            }
+                            _.delay(readCharacter, waitCount + delay);
+                            return;
+                    }
+                }
+                _.delay(readCharacter, delay);
+            };
+            _.delay(readCharacter, delay);
         },
 
         /* Terminal options */
@@ -262,6 +290,7 @@ var Terminal = function(system) {
                     if (self.animating) {
                         return false;
                     }
+                    // Custom logout on CTRL+D
                     if (e.which === 68 && e.ctrlKey) {
                         term.exec('logout');
                     }
