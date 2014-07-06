@@ -317,6 +317,7 @@ var Terminal = function(system) {
                 },
                 prompt: '$> ',
                 completion: [],
+                onBlur: false,
                 onInit: init,
                 keydown: function(e) {
                     // Disable keypresses while animating text.
