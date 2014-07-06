@@ -5,8 +5,8 @@ var User = function(name, superuser) {
 
     var self = {
         name: name,
-        commands: baseCommands,
-        superuser: superuser
+        commands: baseCommands, // List of unlocked commands
+        superuser: superuser    // Special mode for debugging
     }
 
     return self;

@@ -38,7 +38,6 @@ var Terminal = function(system) {
             return []; // directories
         }
 
-        // TODO: Only complete commands user has permissions for.
         return commands;
     };
 
@@ -94,8 +93,8 @@ var Terminal = function(system) {
             if (username !== '') {
                 // TODO: If username already exists, prompt for password.
                 system.user = new User(username, system.debug);
-                console.log('logged in as:', username);
-                console.log(system.user);
+                system.log('logged in as:', username);
+                system.log(system.user);
                 term.push(self.interpreter, self.options.main);
                 term.clear();
                 term.greetings();
@@ -118,7 +117,24 @@ var Terminal = function(system) {
 
             echo: function(cmd, term) {
                 prettyPrint(term, cmd.rest);
-                console.log(cmd);
+            },
+
+            eval: function(cmd, term) {
+                // Only available to debuggers or console hackers!
+                // Lying is bad, but we don't want to get their hopes up.
+                if (!system.user.superuser) {
+                    prettyPrint(term, 'eval: command not found');
+                } else if (cmd.rest === '') {
+                    prettyPrint(term, 'please enter script to eval.');
+                }
+                try {
+                    var result = window.eval(cmd.rest);
+                    if (!_.isUndefined(result)) {
+                        system.log(result);
+                    }
+                } catch(e) {
+                    system.log(e.toString());
+                }
             },
 
             help: function(cmd, term) {
@@ -128,10 +144,12 @@ var Terminal = function(system) {
 
             pwd: function(cmd, term) {
                 prettyPrint(term, system.dir.name);
+                system.log(system.dir);
             },
 
             ps: function(cmd, term) {
                 // TODO: list processes
+                system.log(system.proc);
             },
 
             kill: function(cmd, term) {
@@ -151,9 +169,9 @@ var Terminal = function(system) {
             },
 
             test: function(cmd, term) {
+                // Only available to debuggers or console hackers!
+                // Lying is bad, but we don't want to get their hopes up.
                 if (!system.user.superuser) {
-                    // Only available to debuggers or console hackers!
-                    // Lying is bad, but we don't want to get their hopes up.
                     prettyPrint(term, 'test: command not found');
                 }
                 switch (cmd.args[0]) {
@@ -194,6 +212,7 @@ var Terminal = function(system) {
 
             whoami: function(cmd, term) {
                 prettyPrint(term, system.user.name);
+                system.log(system.user);
             }
         },
 
@@ -206,7 +225,7 @@ var Terminal = function(system) {
 
             if (_.has(self.commands, cmd.name)) {
                 // Check for permissions.
-                if (system.user.superuser || _.has(system.user.commands, cmd.name)) {
+                if (system.user.superuser || _.contains(system.user.commands, cmd.name)) {
                     self.commands[cmd.name](cmd, term);
                 } else {
                     prettyPrint(term, cmd.name + ': permission denied');
@@ -327,7 +346,7 @@ var Terminal = function(system) {
                 greetings: 'You awaken in a dark directory...',
                 prompt: '$> ',
                 completion: function(term, str, callback) {
-                    var results = tabComplete(str, _.keys(self.commands));
+                    var results = tabComplete(str, system.user.commands);
                     callback(results);
                 },
                 keydown: function(e, term) {
