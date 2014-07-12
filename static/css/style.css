@@ -1,3 +1,20 @@
+@font-face {
+    font-family: Prime;
+    src: url('../fonts/prime.otf');
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Prime;
+}
+
+body {
+    background-color: #202024;
+    color: white;
+}
+
 #terminal {
-    /* TODO: custom styles here! */
+    background-color: #080808;
+    border: 2px solid #6496ff;
+    border-radius: 15px;
+    color: #ccc;
 }
