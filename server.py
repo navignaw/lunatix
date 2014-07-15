@@ -1,9 +1,10 @@
-from flask import Flask, render_template, abort
+from flask import Flask, abort, jsonify, render_template, request, session
 from jinja2 import TemplateNotFound
 import os
 
 
 app = Flask(__name__)
+app.secret_key = 'huehuehuehuehuehuehue' # very secure
 if 'HEROKU' in os.environ: # Production mode hack
     pass
 else:
@@ -13,6 +14,19 @@ else:
 @app.route('/')
 def index():
     return render_template('index.html', debug=app.debug)
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    session['username'] = request.form['username']
+    return jsonify(success=True)
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('username', None)
+    return jsonify(success=True)
+
 
 @app.route('/commands/<template>')
 def get_command_template(template):

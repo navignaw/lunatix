@@ -75,8 +75,12 @@ var Terminal = function(system) {
     var echoTemplate = function(term, type, template) {
         term.pause();
 
-        $.get($app.SCRIPT_ROOT + '/' + type + '/' + template, function(html) {
-            term.echo(html, {raw: true});
+        $.ajax({
+            type: 'GET',
+            url: $app.SCRIPT_ROOT + '/' + type + '/' + template,
+            success: function(html) {
+                term.echo(html, {raw: true});
+            }
         }).fail(function(jqXHR, textStatus, error) {
             term.exception(error);
             term.echo(jqXHR.responseText, {raw: true});
@@ -91,13 +95,27 @@ var Terminal = function(system) {
         login: function(command, term) {
             var username = $.trim(command);
             if (username !== '') {
-                // TODO: If username already exists, prompt for password.
-                system.user = new User(username, system.debug);
-                system.log('logged in as:', username);
-                system.log(system.user);
-                term.push(self.interpreter, self.options.main);
-                term.clear();
-                term.greetings();
+                term.pause();
+
+                $.ajax({
+                    type: 'POST',
+                    url: $app.SCRIPT_ROOT + '/login',
+                    data: {username: username},
+                    success: function(data) {
+                        // TODO: If username already exists, prompt for password.
+                        system.user = new User(username, system.debug);
+                        system.log('logged in as:', username);
+                        system.log(system.user);
+                        term.push(self.interpreter, self.options.main);
+                        term.clear();
+                        term.greetings();
+                    }
+                }).fail(function() {
+                    term.error("Login failed. Please try again.");
+                    term.greetings();
+                }).always(function() {
+                    term.resume();
+                });
             }
         },
 
@@ -160,7 +178,15 @@ var Terminal = function(system) {
                 prettyPrint(term, 'Are you sure you wish to exit? ' +
                                   'Any unsaved data will be lost.');
                 self.confirm(term, null, function() {
-                    term.pop();
+                    term.pause();
+
+                    $.ajax({
+                        type: 'POST',
+                        url: $app.SCRIPT_ROOT + '/logout'
+                    }).always(function() {
+                        term.pop();
+                        term.resume();
+                    })
                 });
             },
 
