@@ -15,10 +15,11 @@ var Terminal = function(system) {
         var name = _.first(args);
         args = _.rest(args);
 
-        // TODO: find all options preceded by - or --
-        var options = [];
+        // Find all options preceded by - or --
+        var options = _.filter(args, function(arg) {
+            return /^-{1,2}\w+$/.test(arg);
+        });
 
-        // TODO: pipe command |
         // TODO: redirect commands <, >
 
         return {
@@ -119,7 +120,10 @@ var Terminal = function(system) {
             }
         },
 
-        /* Accepted commands */
+        /* Accepted commands. 
+         * Return a string to allow piping or redirecting result.
+         * End result will be printed in terminal.
+         */
         commands: {
             cd: function(cmd, term) {
                 // TODO: change directory
@@ -134,7 +138,7 @@ var Terminal = function(system) {
             },
 
             echo: function(cmd, term) {
-                prettyPrint(term, cmd.rest);
+                return cmd.rest;
             },
 
             eval: function(cmd, term) {
@@ -157,17 +161,18 @@ var Terminal = function(system) {
 
             help: function(cmd, term) {
                 // TODO: don't be mean.
-                prettyPrint(term, 'no help for you');
+                return 'no help for you';
             },
 
             pwd: function(cmd, term) {
-                prettyPrint(term, system.dir.name);
                 system.log(system.dir);
+                return system.dir.name;
             },
 
             ps: function(cmd, term) {
-                // TODO: list processes
                 system.log(system.proc);
+                // TODO: list processes
+                return 'Processes: ';
             },
 
             kill: function(cmd, term) {
@@ -192,6 +197,7 @@ var Terminal = function(system) {
 
             ls: function(cmd, term) {
                 // TODO: list files
+                return 'Files: ';
             },
 
             test: function(cmd, term) {
@@ -214,6 +220,10 @@ var Terminal = function(system) {
                         });
                         break;
 
+                    case 'command':
+                        system.log(cmd);
+                        break;
+
                     case 'echoTemplate':
                         echoTemplate(term, 'commands', 'doesNotExist');
                         break;
@@ -227,7 +237,7 @@ var Terminal = function(system) {
 
                     default:
                         prettyPrint(term, 'Invalid command. Options are: ' + [
-                            'confirm', 'animateText', 'echoTemplate', 'prettyPrint']
+                            'confirm', 'animateText', 'echoTemplate', 'prettyPrint', 'command']
                             .join(', '));
                 }
             },
@@ -237,27 +247,43 @@ var Terminal = function(system) {
             },
 
             whoami: function(cmd, term) {
-                prettyPrint(term, system.user.name);
                 system.log(system.user);
+                return system.user.name;
             }
         },
 
         /* Main interpreter for shell */
         interpreter: function(command, term) {
-            var cmd = parseCommand(command);
-            if (!cmd) {
-                return;
+            var result = '';
+            var commands = command.split('|');
+
+            // Loop through piped commands, appending each result onto next command.
+            for (var i = 0; i < commands.length; i++) {
+                var cmd = parseCommand([commands[i], result].join(' '));
+                if (!cmd) {
+                    return;
+                }
+
+                if (_.has(self.commands, cmd.name)) {
+                    // Check for permissions.
+                    if (system.user.superuser || _.contains(system.user.commands, cmd.name)) {
+                        result = self.commands[cmd.name](cmd, term);
+                        if (!result || !_.isString(result)) {
+                            break;
+                        }
+                    } else {
+                        prettyPrint(term, cmd.name + ': permission denied');
+                        return;
+                    }
+                } else {
+                    prettyPrint(term, cmd.name + ': command not found');
+                    return;
+                }
             }
 
-            if (_.has(self.commands, cmd.name)) {
-                // Check for permissions.
-                if (system.user.superuser || _.contains(system.user.commands, cmd.name)) {
-                    self.commands[cmd.name](cmd, term);
-                } else {
-                    prettyPrint(term, cmd.name + ': permission denied');
-                }
-            } else {
-                prettyPrint(term, cmd.name + ': command not found');
+            // Print final result to terminal.
+            if (result) {
+                prettyPrint(term, result);
             }
         },
 
@@ -334,7 +360,7 @@ var Terminal = function(system) {
                 name: 'lunatix',
                 // Hack since greetings are not updated in new terminals.
                 greetings: function(callback) {
-                    var name = $.terminal.active().name();
+                    var name = self.terminal.name();
                     if (name === 'lunatix') {
                         callback('');
                     } else {
@@ -393,7 +419,8 @@ var Terminal = function(system) {
                     prompt: prompt || '[y/n] '
                 };
             }
-        }
+        },
+        terminal: null
     };
     return self;
 

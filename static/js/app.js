@@ -34,6 +34,7 @@
     /* Terminal objects */
     var terminal = new Terminal(system);
     var $term = $('#terminal');
+    terminal.terminal = $term;
 
     $(document).ready(function() {
         $term.terminal({}, terminal.options.base);
