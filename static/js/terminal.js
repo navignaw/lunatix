@@ -30,6 +30,11 @@ var Terminal = function(system) {
         };
     };
 
+    var isExecutable = function(path) {
+        // TODO: Check if file at path exists and is executable.
+        return false;
+    }
+
     var tabComplete = function(str, commands) {
         str = $.trim(str);
         // TODO: Add support for tab-completing files and directories.
@@ -133,6 +138,10 @@ var Terminal = function(system) {
                 // TODO: change mode/permissions
             },
 
+            cp: function(cmd, term) {
+                // TODO: copy files
+            },
+
             credits: function(cmd, term) {
                 echoTemplate(term, 'commands', 'credits');
             },
@@ -159,20 +168,12 @@ var Terminal = function(system) {
                 }
             },
 
+            grep: function(cmd, term) {
+                // TODO: grep
+            },
+
             help: function(cmd, term) {
-                // TODO: don't be mean.
-                return 'no help for you';
-            },
-
-            pwd: function(cmd, term) {
-                system.log(system.dir);
-                return system.dir.name;
-            },
-
-            ps: function(cmd, term) {
-                system.log(system.proc);
-                // TODO: list processes
-                return 'Processes: ';
+                return self.commands.man(cmd, term);
             },
 
             kill: function(cmd, term) {
@@ -198,6 +199,61 @@ var Terminal = function(system) {
             ls: function(cmd, term) {
                 // TODO: list files
                 return 'Files: ';
+            },
+
+            man: function(cmd, term) {
+                if (cmd.args.length > 0) {
+                    var command = cmd.args[0];
+                    if (_.contains(system.user.commands, command)) {
+                        // Load manual for command.
+                        echoTemplate(term, 'man', cmd.args[0]);
+                        return;
+                    } else {
+                        return 'No manual entry found for `[[i;#fff;]' + command + ']`.\n' +
+                               'Type `[[i;#fff;]' + cmd.name + ']` to see a list of commands.';
+                    }
+                }
+                // TODO: be more helpful.
+                var text = 'To learn more about invidual commands, type ' +
+                           '`[[i;#fff;]' + cmd.name + ' <cmd>]`.\n\n' +
+                           'Available commands:\n' + system.user.commands.join('\t');
+                if (system.user.superuser) {
+                    text += '\nSuperuser commands:\n' +
+                            _.difference(_.keys(self.commands), system.user.commands).join('\t');
+                }
+                return text;
+            },
+
+            mkdir: function(cmd, term) {
+                // TODO: make directory
+            },
+
+            mute: function(cmd, term) {
+                // TODO: mute sound
+                if (self.muted) {
+                    return 'Sound unmuted.'
+                } else {
+                    return 'Sound muted.'
+                }
+            },
+
+            mv: function(cmd, term) {
+                // TODO: move files
+            },
+
+            pwd: function(cmd, term) {
+                system.log(system.dir);
+                return system.dir.name;
+            },
+
+            ps: function(cmd, term) {
+                system.log(system.proc);
+                // TODO: list processes
+                return 'Processes: ';
+            },
+
+            quit: function(cmd, term) {
+                self.commands.logout(cmd, term);
             },
 
             test: function(cmd, term) {
@@ -242,10 +298,6 @@ var Terminal = function(system) {
                 }
             },
 
-            quit: function(cmd, term) {
-                self.commands.logout(cmd, term);
-            },
-
             whoami: function(cmd, term) {
                 system.log(system.user);
                 return system.user.name;
@@ -275,6 +327,8 @@ var Terminal = function(system) {
                         prettyPrint(term, cmd.name + ': permission denied');
                         return;
                     }
+                } else if (isExecutable(cmd.name)) {
+                    // TODO: execute file if permissions are okay.
                 } else {
                     prettyPrint(term, cmd.name + ': command not found');
                     return;
@@ -420,6 +474,9 @@ var Terminal = function(system) {
                 };
             }
         },
+
+        /* Additional settings */
+        muted: false,
         terminal: null
     };
     return self;

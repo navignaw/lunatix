@@ -1,7 +1,7 @@
 var User = function(name, superuser) {
     name = name || '';
     superuser = superuser || false;
-    var baseCommands = ['help', 'logout', 'quit', 'pwd', 'whoami'];
+    var baseCommands = ['help', 'logout', 'man', 'mute', 'pwd', 'quit', 'whoami'];
 
     var self = {
         name: name,
