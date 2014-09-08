@@ -8,7 +8,7 @@ var Terminal = function(system) {
     var parseCommand = function(command) {
         // Parse input string into array, stripping whitespace and quotes.
         var args = $.terminal.parseArguments($.trim(command));
-        if (args.length == 0) {
+        if (args.length === 0) {
             return null;
         }
 
@@ -17,7 +17,7 @@ var Terminal = function(system) {
 
         // Find all options preceded by - or --
         var options = _.filter(args, function(arg) {
-            return /^-{1,2}\w+$/.test(arg);
+            return (/^-{1,2}\w+$/).test(arg);
         });
 
         // TODO: redirect commands <, >
@@ -33,7 +33,7 @@ var Terminal = function(system) {
     var isExecutable = function(path) {
         // TODO: Check if file at path exists and is executable.
         return false;
-    }
+    };
 
     var tabComplete = function(str, commands) {
         str = $.trim(str);
@@ -125,7 +125,7 @@ var Terminal = function(system) {
             }
         },
 
-        /* Accepted commands. 
+        /* Accepted commands.
          * Return a string to allow piping or redirecting result.
          * End result will be printed in terminal.
          */
@@ -192,7 +192,7 @@ var Terminal = function(system) {
                     }).always(function() {
                         term.pop();
                         term.resume();
-                    })
+                    });
                 });
             },
 
@@ -231,9 +231,9 @@ var Terminal = function(system) {
             mute: function(cmd, term) {
                 // TODO: mute sound
                 if (self.muted) {
-                    return 'Sound unmuted.'
+                    return 'Sound unmuted.';
                 } else {
-                    return 'Sound muted.'
+                    return 'Sound muted.';
                 }
             },
 
@@ -481,4 +481,4 @@ var Terminal = function(system) {
     };
     return self;
 
-}
+};
