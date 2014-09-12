@@ -112,7 +112,12 @@ var Terminal = function(system) {
                         system.user = new User(username, system.debug);
                         system.log('logged in as:', username);
                         system.log(system.user);
-                        term.push(self.interpreter, self.options.main);
+                        system.log('DEMO:', self.isDemo);
+                        if (self.isDemo) {
+                            term.push(self.demo, self.options.demo);
+                        } else {
+                            term.push(self.interpreter, self.options.main);
+                        }
                         term.clear();
                         term.greetings();
                     }
@@ -396,7 +401,7 @@ var Terminal = function(system) {
                             var digits = message.substring(c-1).match(/^\d*/);
                             var waitCount = 0;
                             if (digits) {
-                                waitCount = parseInt(digits[0]);
+                                waitCount = parseInt(digits[0], 10);
                                 c += digits[0].length;
                             }
                             _.delay(readCharacter, waitCount + delay);
@@ -472,6 +477,32 @@ var Terminal = function(system) {
                     completion: ['yes', 'no'],
                     prompt: prompt || '[y/n] '
                 };
+            },
+
+            demo: {
+                name: 'demo',
+                greetings: 'You are at GCS pitch fair, and a fancy looking terminal appears on screen. You wonder...\n',
+                prompt: '$> ',
+                completion: ['what is lunatrix?', 'unix commands?', 'who can help?'],
+                keydown: function(e, term) {
+                    // Disable keypresses while animating text.
+                    if (self.animating) {
+                        return false;
+                    }
+                }
+            },
+        },
+
+        isDemo: false,
+        demo: function(command, term) {
+            if (command.substr(0, 4) === 'what') {
+                self.animateText(term, 'lunatix: a unix-inspired, text-based adventure game\n', '', _.noop, 50);
+            } else if (command.substr(0, 4) === 'unix') {
+                self.animateText(term, 'explore your computer\'s directory structure through text commands\n', '', _.noop, 50);
+            } else if (command.substr(0, 3) === 'who') {
+                self.animateText(term, 'coders, designers, storywriters, composers\n', '', _.noop, 50);
+            } else {
+                prettyPrint(term, 'command not found: [[i;#fff;]' + command);
             }
         },
 

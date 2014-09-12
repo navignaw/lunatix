@@ -15,6 +15,10 @@ else:
 def index():
     return render_template('index.html', debug=app.debug)
 
+# TODO: Remove after pitch fair!
+@app.route('/pitch')
+def pitch():
+    return render_template('index.html', debug=app.debug)
 
 @app.route('/login', methods=['POST'])
 def login():

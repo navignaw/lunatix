@@ -1,5 +1,9 @@
 (function() {
 
+    /* Demo Pitch
+     * TODO: Remove after pitch fair! */
+    var DEMO_PITCH = window.location.pathname === '/pitch';
+
     /* System variables */
     var system = {
         debug: $app.DEBUG,
@@ -22,12 +26,13 @@
             printConsole.apply(console, arguments);
         }
 
-        if (terminal = $.terminal.active()) {
-            arguments = _.map(arguments, function(arg) {
+        var terminal = $.terminal.active();
+        if (terminal) {
+            var newArguments = _.map(arguments, function(arg) {
                 return _.isString(arg) ? arg : arg.toString();
             });
             var printTerminal = error ? terminal.error : terminal.echo;
-            printTerminal(arguments.join(' '));
+            printTerminal(newArguments.join(' '));
         }
     };
 
@@ -38,6 +43,9 @@
 
     $(document).ready(function() {
         $term.terminal({}, terminal.options.base);
+        if (DEMO_PITCH) {
+            terminal.isDemo = true;
+        }
 
         var resizeTerminal = function() {
             var newHeight = Math.round($(window).height()) - 120;
