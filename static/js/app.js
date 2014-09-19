@@ -3,7 +3,7 @@
     /* System variables */
     var system = {
         debug: $app.DEBUG,
-        dir: {name: '~'},
+        dir: File.LUNATIX_DIRECTORY,
         env: {},
         proc: [],
         user: null

@@ -1,13 +1,7 @@
-var User = function(name, superuser) {
-    name = name || '';
-    superuser = superuser || false;
-    var baseCommands = ['help', 'logout', 'man', 'mute', 'pwd', 'quit', 'whoami'];
+function User(name, superuser) {
+    this.name = name || '';
+    this.superuser = superuser || false;  // Enable special mode for debugging
 
-    var self = {
-        name: name,
-        commands: baseCommands, // List of unlocked commands
-        superuser: superuser    // Special mode for debugging
-    }
-
-    return self;
+    // List of unlocked commands
+    this.commands = ['help', 'logout', 'man', 'mute', 'pwd', 'quit', 'whoami'];
 }
