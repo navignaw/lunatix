@@ -1,9 +1,5 @@
 (function() {
 
-    /* Demo Pitch
-     * TODO: Remove after pitch fair! */
-    var DEMO_PITCH = window.location.pathname === '/pitch';
-
     /* System variables */
     var system = {
         debug: $app.DEBUG,
@@ -43,9 +39,6 @@
 
     $(document).ready(function() {
         $term.terminal({}, terminal.options.base);
-        if (DEMO_PITCH) {
-            terminal.isDemo = true;
-        }
 
         var resizeTerminal = function() {
             var newHeight = Math.round($(window).height()) - 120;
