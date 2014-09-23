@@ -8,13 +8,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 body {
-    background-color: #202024;
+    /*background-color: #202024;*/
+    background-color: #080808;
     color: white;
 }
 
-#terminal {
+.terminal {
+    margin-top: 40px;
     background-color: #080808;
-    border: 2px solid #6496ff;
-    border-radius: 15px;
+    /*border: 2px solid #6496ff;*/
+    /*border-radius: 15px;*/
     color: #ccc;
 }

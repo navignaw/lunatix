@@ -38,10 +38,16 @@
     terminal.terminal = $term;
 
     $(document).ready(function() {
+        // TODO: fullscreen requires user interaction (e.g. clicking a button).
+        // Smarter way to get around this?
+        $('body').click(function() {
+            $(this).fullscreen();
+        });
+
         $term.terminal({}, terminal.options.base);
 
         var resizeTerminal = function() {
-            var newHeight = Math.round($(window).height()) - 120;
+            var newHeight = Math.round($(window).height()) - 100;
             $term.height(_.max([100, newHeight]));
             $term.resize();
         };
