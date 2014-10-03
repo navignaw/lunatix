@@ -1,4 +1,4 @@
-from flask import Flask, abort, jsonify, render_template, request, session
+from flask import Flask, abort, jsonify, render_template, request, session, url_for
 from jinja2 import TemplateNotFound
 import os
 
@@ -40,7 +40,6 @@ def get_man_template(template):
         return render_template('man/%s.html' % template)
     except TemplateNotFound:
         abort(404)
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

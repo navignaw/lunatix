@@ -1,0 +1,23 @@
+{
+	"maze": {
+		name='maze',
+		type='dir',
+		permissions=1,
+		parent='',
+		children=['wall', 'hall']
+	},
+	"wall": {
+		name='wall',
+		type='dir',
+		permissions=1,
+		parent='maze',
+		children=[]
+	},
+	"hall": {
+		name='hall',
+		type='dir',
+		permissions=1,
+		parent='maze',
+		children=[]
+	},
+}
