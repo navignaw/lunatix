@@ -112,6 +112,7 @@ var Terminal = function(system) {
                         system.user = new User(username, system.debug);
                         system.log('logged in as:', username);
                         system.log(system.user);
+                        system.dirTree = File.getDirectory('home.json');
                         term.push(self.interpreter, self.options.main);
                         term.clear();
                         term.greetings();
@@ -197,8 +198,10 @@ var Terminal = function(system) {
             },
 
             ls: function(cmd, term) {
-                // TODO: list files
-                return 'Files: ';
+                var currentDir = system.dirTree[system.directory];
+                return _.map(currentDir.children, function(child) {
+                    return system.dirTree[child].name;
+                }).join('\t');
             },
 
             man: function(cmd, term) {
@@ -242,8 +245,8 @@ var Terminal = function(system) {
             },
 
             pwd: function(cmd, term) {
-                system.log(system.dir);
-                return system.dir.name;
+                system.log(system.directory);
+                return system.dirTree[system.directory].name;
             },
 
             ps: function(cmd, term) {

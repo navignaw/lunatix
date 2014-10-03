@@ -1,9 +1,16 @@
-function File(name, type, permissions, parent) {
-    this.name = name || '';
+/*function File(name, type, permissions, parent, children) {
+    this.name = name;
     this.type = type || '';                    // filetype, one of dir, txt, exe, png, jpg
     this.permissions = permissions || (1 + 2); // read and writeable by default
     this.parent = parent || null;              // parent directory File (..)
-    this.children = [];                        // list of Files (if type === "dir")
+    this.children = children || [];            // list of Files (if type === "dir")
+
+    // TODO: store parent ID and children ID instead of actual File object
+    // save all files in an object {ID -> File}
+
+    this.storyProgress = function(progress) {
+
+    };
 }
 
 File.PERMISSIONS = Object.freeze({
@@ -20,9 +27,17 @@ File.prototype.isWriteable = function() {
 };
 File.prototype.isExecutable = function() {
     return (this.permissions >> 2) % 2 === 1;
-};
+};*/
 
-/* TODO: Define overall directory structure of entire game!
- * It may be prudent to define it as JSON, and write a function
- * to map the JSON into a nested File object. */
-File.LUNATIX_DIRECTORY = new File('~', 'dir');
+var File = {};
+File.getDirectory = function(name) {
+    $.ajax({
+        type: 'GET',
+        url: $app.SCRIPT_ROOT + '/static/dirtrees/' + name,
+        success: function(json) {
+            return json;
+        }
+    }).fail(function(jqXHR, textStatus, error) {
+        console.error(error);
+    });
+};
