@@ -134,7 +134,30 @@ var Terminal = function(system) {
          */
         commands: {
             cd: function(cmd, term) {
-                // TODO: change directory
+                // TODO: split dir by / and navigate tree and improve error messages
+                var dir = _.first(cmd.args);
+                var currentDir = system.dirTree[system.directory];
+                if (dir === '..') {
+                    // Go up a level
+                    if (currentDir.parent) {
+                        system.directory = currentDir.parent;
+                    } else {
+                        prettyPrint(term, 'Cannot cd up a level');
+                    }
+                } else if (dir) {
+                    var index = _.findIndex(currentDir.children, function(child) {
+                        var fileOrDirectory = system.dirTree[child];
+                        return fileOrDirectory.type === 'dir' && fileOrDirectory.name === dir;
+                    });
+                    if (index >= 0) {
+                        // TODO: error message if name exists, but is not directory
+                        system.directory = currentDir.children[index];
+                    } else {
+                        prettyPrint(term, 'cd: ' + cmd.rest + ': No such file or directory');
+                    }
+                } else {
+                    // Handle case with no arguments
+                }
             },
 
             chmod: function(cmd, term) {
@@ -200,6 +223,7 @@ var Terminal = function(system) {
             },
 
             ls: function(cmd, term) {
+                // TODO: ls a different directory
                 var currentDir = system.dirTree[system.directory];
                 return _.map(currentDir.children, function(child) {
                     return system.dirTree[child].name;
@@ -247,7 +271,7 @@ var Terminal = function(system) {
             },
 
             pwd: function(cmd, term) {
-                system.log(system.directory);
+                system.log(system.dirTree);
                 return system.dirTree[system.directory].name;
             },
 
