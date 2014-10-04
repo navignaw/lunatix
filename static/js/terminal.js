@@ -112,10 +112,12 @@ var Terminal = function(system) {
                         system.user = new User(username, system.debug);
                         system.log('logged in as:', username);
                         system.log(system.user);
-                        system.dirTree = File.getDirectory('home.json');
-                        term.push(self.interpreter, self.options.main);
-                        term.clear();
-                        term.greetings();
+                        File.getDirectory('maze.json', function(json) {
+                            system.dirTree = json;
+                            term.push(self.interpreter, self.options.main);
+                            term.clear();
+                            term.greetings();
+                        });
                     }
                 }).fail(function() {
                     term.error("Login failed. Please try again.");

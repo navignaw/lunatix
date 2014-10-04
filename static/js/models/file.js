@@ -30,13 +30,13 @@ File.prototype.isExecutable = function() {
 };*/
 
 var File = {};
-File.getDirectory = function(name) {
+File.getDirectory = function(name, callback) {
     $.ajax({
         type: 'GET',
         url: $app.SCRIPT_ROOT + '/static/dirtrees/' + name,
         success: function(json) {
-            return json;
-        }
+            callback($.parseJSON(json));
+        },
     }).fail(function(jqXHR, textStatus, error) {
         console.error(error);
     });

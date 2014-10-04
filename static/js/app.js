@@ -4,7 +4,7 @@
     var system = {
         debug: $app.DEBUG,
         dirTree: {},
-        directory: 0,
+        directory: "maze",
         env: {},
         proc: [],
         user: null
