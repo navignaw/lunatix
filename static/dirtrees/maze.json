@@ -25,6 +25,7 @@
 		"type": "txt",
 		"permissions": 1,
 		"parent": "hall",
-		"children": []
+		"children": [],
+		"text": "DERPDERPDERP"
 	}
 }

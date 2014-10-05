@@ -37,9 +37,13 @@ var Terminal = function(system) {
 
     var tabComplete = function(str, commands) {
         str = $.trim(str);
-        // TODO: Add support for tab-completing files and directories.
+        var currentDir = system.dirTree[system.directory];
+        var dirs = _.map(currentDir.children, function(child) {
+            return system.dirTree[child].name;
+        });
+
         if (str === '' || str === './') {
-            return []; // directories and files
+            return dirs; // directories and files
         } else if (str === 'cd' || str === 'ls') {
             return []; // directories
         }
@@ -133,6 +137,22 @@ var Terminal = function(system) {
          * End result will be printed in terminal.
          */
         commands: {
+            cat: function(cmd, term) {
+                // TODO: split dir by / and navigate tree and improve error messages
+                var file = _.first(cmd.args);
+                var currentDir = system.dirTree[system.directory];
+                var index = _.findIndex(currentDir.children, function(child) {
+                    var fileOrDirectory = system.dirTree[child];
+                    return fileOrDirectory.type !== 'dir' && fileOrDirectory.name === file;
+                });
+                if (index >= 0) {
+                    // TODO: error message if name exists, but is a directory
+                    return system.dirTree[currentDir.children[index]].text;
+                } else {
+                    prettyPrint(term, 'cat: ' + cmd.rest + ': No such file');
+                }
+            },
+
             cd: function(cmd, term) {
                 // TODO: split dir by / and navigate tree and improve error messages
                 var dir = _.first(cmd.args);
