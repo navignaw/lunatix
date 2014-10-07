@@ -1,7 +1,6 @@
-var Terminal = function(system) {
+var Terminal = (function() {
 
     /* Helper functions */
-    var Util = Utility(system);
     var parseCommand = Util.parseCommand;
     var parseDirectory = Util.parseDirectory;
     var prettyPrint = Util.prettyPrint;
@@ -21,12 +20,12 @@ var Terminal = function(system) {
                     data: {username: username},
                     success: function(data) {
                         // TODO: If username already exists, prompt for password.
-                        system.user = new User(username, system.debug);
+                        System.user = new User(username, System.debug);
                         Util.log('logged in as:', username);
-                        Util.log(system.user);
+                        Util.log(System.user);
                         File.getDirectory('maze.json', function(json) {
-                            system.dirTree = json;
-                            system.directory = json["home"];
+                            System.dirTree = json;
+                            System.directory = json["home"];
                             term.push(self.interpreter, self.options.main);
                             term.clear();
                             term.greetings();
@@ -48,7 +47,7 @@ var Terminal = function(system) {
         commands: {
             cat: function(cmd, term) {
                 var dir = _.first(cmd.args);
-                var newFile = dir ? parseDirectory(dir) : system.directory;
+                var newFile = dir ? parseDirectory(dir) : System.directory;
                 if (newFile) {
                     if (newFile.type !== 'dir') {
                         return newFile.text;
@@ -68,7 +67,7 @@ var Terminal = function(system) {
                     if (newDir) {
                         // TODO: what if they don't have permission to access directory?
                         if (newDir.type === 'dir') {
-                            system.directory = newDir;
+                            System.directory = newDir;
                         } else {
                             prettyPrint(term, 'cd: ' + cmd.rest + ' is not a directory');
                         }
@@ -100,7 +99,7 @@ var Terminal = function(system) {
             eval: function(cmd, term) {
                 // Only available to debuggers or console hackers!
                 // Lying is bad, but we don't want to get their hopes up.
-                if (!system.user.superuser) {
+                if (!System.user.superuser) {
                     prettyPrint(term, 'eval: command not found');
                 } else if (cmd.rest === '') {
                     prettyPrint(term, 'please enter script to eval.');
@@ -145,11 +144,11 @@ var Terminal = function(system) {
 
             ls: function(cmd, term) {
                 var dir = _.first(cmd.args);
-                var newDir = dir ? parseDirectory(dir) : system.directory;
+                var newDir = dir ? parseDirectory(dir) : System.directory;
                 if (newDir) {
                     if (newDir.type === 'dir') {
                         return _.map(newDir.children, function(child) {
-                            return system.dirTree[child].name;
+                            return System.dirTree[child].name;
                         }).join('\t');
                     } else {
                         return newDir.name;
@@ -162,7 +161,7 @@ var Terminal = function(system) {
             man: function(cmd, term) {
                 if (cmd.args.length > 0) {
                     var command = cmd.args[0];
-                    if (_.contains(system.user.commands, command)) {
+                    if (_.contains(System.user.commands, command)) {
                         // Load manual for command.
                         echoTemplate(term, 'man', cmd.args[0]);
                         return;
@@ -174,10 +173,10 @@ var Terminal = function(system) {
                 // TODO: be more helpful.
                 var text = 'To learn more about individual commands, type ' +
                            '`[[i;#fff;]' + cmd.name + ' <cmd>]`.\n\n' +
-                           'Available commands:\n' + system.user.commands.join('\t');
-                if (system.user.superuser) {
+                           'Available commands:\n' + System.user.commands.join('\t');
+                if (System.user.superuser) {
                     text += '\nSuperuser commands:\n' +
-                            _.difference(_.keys(self.commands), system.user.commands).join('\t');
+                            _.difference(_.keys(self.commands), System.user.commands).join('\t');
                 }
                 return text;
             },
@@ -200,11 +199,11 @@ var Terminal = function(system) {
             },
 
             pwd: function(cmd, term) {
-                return system.directory.name;
+                return System.directory.name;
             },
 
             ps: function(cmd, term) {
-                Util.log(system.proc);
+                Util.log(System.proc);
                 // TODO: list processes
                 return 'Processes: ';
             },
@@ -216,7 +215,7 @@ var Terminal = function(system) {
             test: function(cmd, term) {
                 // Only available to debuggers or console hackers!
                 // Lying is bad, but we don't want to get their hopes up.
-                if (!system.user.superuser) {
+                if (!System.user.superuser) {
                     prettyPrint(term, 'test: command not found');
                 }
                 switch (cmd.args[0]) {
@@ -256,7 +255,7 @@ var Terminal = function(system) {
             },
 
             whoami: function(cmd, term) {
-                return system.user.name;
+                return System.user.name;
             }
         },
 
@@ -276,7 +275,7 @@ var Terminal = function(system) {
 
                 if (_.has(self.commands, cmd.name)) {
                     // Check for permissions.
-                    if (system.user.superuser || _.contains(system.user.commands, cmd.name)) {
+                    if (System.user.superuser || _.contains(System.user.commands, cmd.name)) {
                         result = self.commands[cmd.name](cmd, term);
                         if (!result || !_.isString(result)) {
                             break;
@@ -297,7 +296,7 @@ var Terminal = function(system) {
             if (result) {
                 prettyPrint(term, result);
             }
-            Story.checkStory(term, system, name);
+            Story.checkStory(term, name);
         },
 
         /* Confirmation terminal: awaits y/n input */
@@ -335,7 +334,7 @@ var Terminal = function(system) {
                 },
                 keydown: function(e) {
                     // Disable keypresses while animating text.
-                    if (self.animating) {
+                    if (Util.animating) {
                         return false;
                     }
                     // CTRL+D: cannot exit past login screen
@@ -361,7 +360,7 @@ var Terminal = function(system) {
                 greetings: 'You awaken in a dark directory...',
                 prompt: '$> ',
                 completion: function(term, str, callback) {
-                    var results = Util.tabComplete(term, system.user.commands);
+                    var results = Util.tabComplete(term, System.user.commands);
                     callback(results);
                 },
                 keydown: function(e, term) {
@@ -389,4 +388,4 @@ var Terminal = function(system) {
     };
     return self;
 
-};
+})();

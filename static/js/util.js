@@ -1,11 +1,11 @@
 /* Utility and helper functions */
-var Utility = function(system) {
+var Util = (function() {
 
     var self = {};
 
     /* Debug-specific logging utility function. Also echoes in terminal. */
     self.log = function(args) {
-        if (!system.debug) {
+        if (!System.debug) {
             return;
         }
         // If first argument contains 'error', print message in red.
@@ -56,20 +56,20 @@ var Utility = function(system) {
         // If partial, returns last valid directory in string.
         // TODO: check for absolute directories (for now, assume all are relative)
         var dirs = _.compact(path.split('/')); // TODO: what if they escape a slash?
-        var currentDir = system.directory;
+        var currentDir = System.directory;
         for (var i = 0; i < dirs.length; i++) {
             if (dirs[i] === '.') {
                 continue;
             } else if (dirs[i] === '..') {
                 // Go up a level
                 if (currentDir.parent) {
-                    currentDir = system.dirTree[currentDir.parent];
+                    currentDir = System.dirTree[currentDir.parent];
                 } else {
                     self.log('At root directory, cannot go up!');
                     return null;
                 }
             } else if (_.contains(currentDir.children, dirs[i])) {
-                currentDir = system.dirTree[dirs[i]];
+                currentDir = System.dirTree[dirs[i]];
             } else if (partial) {
                 break;
             } else {
@@ -89,12 +89,12 @@ var Utility = function(system) {
         // Return array of suggested commands on tab-complete.
         var allChildren = function(dir) {
             return _.map(dir.children, function(child) {
-                return system.dirTree[child].name;
+                return System.dirTree[child].name;
             });
         };
         var allDirectories = function(dir) {
             var dirs = _.filter(allChildren(dir), function(dirOrFile) {
-                return system.dirTree[dirOrFile].type === 'dir';
+                return System.dirTree[dirOrFile].type === 'dir';
             });
             return _.map(dirs, function(dirName) {
                 return dirName + '/';
@@ -102,7 +102,7 @@ var Utility = function(system) {
         };
         var allFiles = function(dir) {
             return _.filter(allChildren(dir), function(dirOrFile) {
-                return system.dirTree[dirOrFile].type !== 'dir';
+                return System.dirTree[dirOrFile].type !== 'dir';
             });
         };
 
@@ -223,4 +223,4 @@ var Utility = function(system) {
     };
 
     return self;
-};
+})();

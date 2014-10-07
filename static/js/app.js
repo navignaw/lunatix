@@ -1,18 +1,17 @@
+/* Global system variables */
+// TODO: save into local storage
+var System = {
+    debug: $app.DEBUG,
+    dirTree: {},
+    directory: {},
+    progress: 0,
+    user: null
+};
+
 (function() {
-
-    /* System variables */
-    var system = {
-        debug: $app.DEBUG,
-        dirTree: {},
-        directory: {},
-        progress: 0,
-        user: null
-    };
-
     /* Terminal objects */
-    var terminal = new Terminal(system);
     var $term = $('#terminal');
-    terminal.terminal = $term;
+    Terminal.terminal = $term;
 
     $(document).ready(function() {
         // TODO: fullscreen requires user interaction (e.g. clicking a button).
@@ -21,7 +20,7 @@
             $(this).fullscreen();
         });*/
 
-        $term.terminal({}, terminal.options.base);
+        $term.terminal({}, Terminal.options.base);
 
         var resizeTerminal = function() {
             var newHeight = Math.round($(window).height()) - 100;
