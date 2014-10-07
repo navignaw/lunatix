@@ -4,7 +4,7 @@
     var system = {
         debug: $app.DEBUG,
         dirTree: {},
-        directory: "maze",
+        directory: {},
         env: {},
         proc: [],
         user: null
@@ -29,7 +29,7 @@
                 return _.isString(arg) ? arg : arg.toString();
             });
             var printTerminal = error ? terminal.error : terminal.echo;
-            printTerminal(newArguments.join(' '));
+            printTerminal('LOG: ' + newArguments.join(' '));
         }
     };
 

@@ -30,24 +30,51 @@ var Terminal = function(system) {
         };
     };
 
+    var parseDirectory = function(path) {
+        // TODO: check for absolute directories (for now, assume all are relative)
+        var dirs = path.split('/'); // TODO: what if they escape a slash?
+        var currentDir = system.directory;
+        for (var i = 0; i < dirs.length; i++) {
+            if (dirs[i] === '' || dirs[i] === '.') {
+                continue;
+            } else if (dirs[i] === '..') {
+                // Go up a level
+                if (currentDir.parent) {
+                    currentDir = system.dirTree[currentDir.parent];
+                } else {
+                    system.log('At root directory, cannot go up!');
+                    return null;
+                }
+            } else if (_.contains(currentDir.children, dirs[i])) {
+                currentDir = system.dirTree[dirs[i]];
+            } else {
+                system.log('Directory not found: ', path);
+                return null;
+            }
+        }
+        return currentDir;
+    };
+
     var isExecutable = function(path) {
         // TODO: Check if file at path exists and is executable.
         return false;
     };
 
-    var tabComplete = function(str, commands) {
-        str = $.trim(str);
-        var currentDir = system.dirTree[system.directory];
-        var dirs = _.map(currentDir.children, function(child) {
+    var tabComplete = function(term, commands) {
+        var str = $.trim(term.get_command());
+        var dirs = _.map(system.directory.children, function(child) {
             return system.dirTree[child].name;
         });
 
-        if (str === '' || str === './') {
+        // TODO: implement tab complete for various commands
+        if (str === './') {
             return dirs; // directories and files
-        } else if (str === 'cd' || str === 'ls') {
-            return []; // directories
+        } else if ((/^(cd)|(ls)|(cat)/).test(str)) {
+            // TODO: follow directories and tabcomplete with children of target
+            return _.filter(dirs, function(dirOrFile) {
+                return system.dirTree[dirOrFile].type === 'dir';
+            }); // only directories
         }
-
         return commands;
     };
 
@@ -118,6 +145,7 @@ var Terminal = function(system) {
                         system.log(system.user);
                         File.getDirectory('maze.json', function(json) {
                             system.dirTree = json;
+                            system.directory = json["home"];
                             term.push(self.interpreter, self.options.main);
                             term.clear();
                             term.greetings();
@@ -138,45 +166,37 @@ var Terminal = function(system) {
          */
         commands: {
             cat: function(cmd, term) {
-                // TODO: split dir by / and navigate tree and improve error messages
-                var file = _.first(cmd.args);
-                var currentDir = system.dirTree[system.directory];
-                var index = _.findIndex(currentDir.children, function(child) {
-                    var fileOrDirectory = system.dirTree[child];
-                    return fileOrDirectory.type !== 'dir' && fileOrDirectory.name === file;
-                });
-                if (index >= 0) {
-                    // TODO: error message if name exists, but is a directory
-                    return system.dirTree[currentDir.children[index]].text;
+                var dir = _.first(cmd.args);
+                var newFile = dir ? parseDirectory(dir) : system.directory;
+                if (newFile) {
+                    if (newFile.type !== 'dir') {
+                        return newFile.text;
+                    } else {
+                        prettyPrint(term, 'cat: ' + cmd.rest + ': is a directory');
+                    }
                 } else {
                     prettyPrint(term, 'cat: ' + cmd.rest + ': No such file');
                 }
             },
 
             cd: function(cmd, term) {
-                // TODO: split dir by / and navigate tree and improve error messages
+                // TODO: Improve error messages
                 var dir = _.first(cmd.args);
-                var currentDir = system.dirTree[system.directory];
-                if (dir === '..') {
-                    // Go up a level
-                    if (currentDir.parent) {
-                        system.directory = currentDir.parent;
-                    } else {
-                        prettyPrint(term, 'Cannot cd up a level');
-                    }
-                } else if (dir) {
-                    var index = _.findIndex(currentDir.children, function(child) {
-                        var fileOrDirectory = system.dirTree[child];
-                        return fileOrDirectory.type === 'dir' && fileOrDirectory.name === dir;
-                    });
-                    if (index >= 0) {
-                        // TODO: error message if name exists, but is not directory
-                        system.directory = currentDir.children[index];
+                if (dir) {
+                    var newDir = parseDirectory(dir);
+                    if (newDir) {
+                        // TODO: what if they don't have permission to access directory?
+                        if (newDir.type === 'dir') {
+                            system.directory = newDir;
+                        } else {
+                            prettyPrint(term, 'cd: ' + cmd.rest + ' is not a directory');
+                        }
                     } else {
                         prettyPrint(term, 'cd: ' + cmd.rest + ': No such file or directory');
                     }
                 } else {
                     // Handle case with no arguments
+                    prettyPrint(term, 'cannot cd without arguments');
                 }
             },
 
@@ -243,11 +263,19 @@ var Terminal = function(system) {
             },
 
             ls: function(cmd, term) {
-                // TODO: ls a different directory
-                var currentDir = system.dirTree[system.directory];
-                return _.map(currentDir.children, function(child) {
-                    return system.dirTree[child].name;
-                }).join('\t');
+                var dir = _.first(cmd.args);
+                var newDir = dir ? parseDirectory(dir) : system.directory;
+                if (newDir) {
+                    if (newDir.type === 'dir') {
+                        return _.map(newDir.children, function(child) {
+                            return system.dirTree[child].name;
+                        }).join('\t');
+                    } else {
+                        return newDir.name;
+                    }
+                } else {
+                    prettyPrint(term, 'ls: ' + cmd.rest + ': directory not found');
+                }
             },
 
             man: function(cmd, term) {
@@ -291,8 +319,7 @@ var Terminal = function(system) {
             },
 
             pwd: function(cmd, term) {
-                system.log(system.dirTree);
-                return system.dirTree[system.directory].name;
+                return system.directory.name;
             },
 
             ps: function(cmd, term) {
@@ -348,7 +375,6 @@ var Terminal = function(system) {
             },
 
             whoami: function(cmd, term) {
-                system.log(system.user);
                 return system.user.name;
             }
         },
@@ -502,7 +528,7 @@ var Terminal = function(system) {
                 greetings: 'You awaken in a dark directory...',
                 prompt: '$> ',
                 completion: function(term, str, callback) {
-                    var results = tabComplete(str, system.user.commands);
+                    var results = tabComplete(term, system.user.commands);
                     callback(results);
                 },
                 keydown: function(e, term) {

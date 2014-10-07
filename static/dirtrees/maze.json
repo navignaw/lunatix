@@ -1,9 +1,37 @@
 {
+	"home": {
+		"name": "home",
+		"type": "dir",
+		"permissions": 1,
+		"parent": "",
+		"children": ["test"]
+	},
+	"test": {
+		"name": "test",
+		"type": "dir",
+		"permissions": 1,
+		"parent": "home",
+		"children": ["one", "two"]
+	},
+	"one": {
+		"name": "one",
+		"type": "dir",
+		"permissions": 1,
+		"parent": "test",
+		"children": ["maze"]
+	},
+	"two": {
+		"name": "two",
+		"type": "dir",
+		"permissions": 1,
+		"parent": "test",
+		"children": ["maze"]
+	},
 	"maze": {
 		"name": "maze",
 		"type": "dir",
 		"permissions": 1,
-		"parent": "",
+		"parent": "one",
 		"children": ["wall", "hall"]
 	},
 	"wall": {
@@ -18,9 +46,9 @@
 		"type": "dir",
 		"permissions": 1,
 		"parent": "maze",
-		"children": ["blah"]
+		"children": ["blah.txt"]
 	},
-	"blah": {
+	"blah.txt": {
 		"name": "blah.txt",
 		"type": "txt",
 		"permissions": 1,
