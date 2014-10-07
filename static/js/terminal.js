@@ -30,12 +30,14 @@ var Terminal = function(system) {
         };
     };
 
-    var parseDirectory = function(path) {
+    var parseDirectory = function(path, partial) {
+        // Process path and return file object or null if path is invalid.
+        // If partial, returns last valid directory in string.
         // TODO: check for absolute directories (for now, assume all are relative)
-        var dirs = path.split('/'); // TODO: what if they escape a slash?
+        var dirs = _.compact(path.split('/')); // TODO: what if they escape a slash?
         var currentDir = system.directory;
         for (var i = 0; i < dirs.length; i++) {
-            if (dirs[i] === '' || dirs[i] === '.') {
+            if (dirs[i] === '.') {
                 continue;
             } else if (dirs[i] === '..') {
                 // Go up a level
@@ -47,6 +49,8 @@ var Terminal = function(system) {
                 }
             } else if (_.contains(currentDir.children, dirs[i])) {
                 currentDir = system.dirTree[dirs[i]];
+            } else if (partial) {
+                break;
             } else {
                 system.log('Directory not found: ', path);
                 return null;
@@ -61,19 +65,35 @@ var Terminal = function(system) {
     };
 
     var tabComplete = function(term, commands) {
-        var str = $.trim(term.get_command());
-        var dirs = _.map(system.directory.children, function(child) {
-            return system.dirTree[child].name;
-        });
-
-        // TODO: implement tab complete for various commands
-        if (str === './') {
-            return dirs; // directories and files
-        } else if ((/^(cd)|(ls)|(cat)/).test(str)) {
-            // TODO: follow directories and tabcomplete with children of target
-            return _.filter(dirs, function(dirOrFile) {
+        // Return array of suggested commands on tab-complete.
+        var allChildren = function(dir) {
+            return _.map(dir.children, function(child) {
+                return system.dirTree[child].name;
+            });
+        };
+        var allDirectories = function(dir) {
+            var dirs = _.filter(allChildren(dir), function(dirOrFile) {
                 return system.dirTree[dirOrFile].type === 'dir';
-            }); // only directories
+            });
+            return _.map(dirs, function(dirName) {
+                return dirName + '/';
+            });
+        };
+        var allFiles = function(dir) {
+            return _.filter(allChildren(dir), function(dirOrFile) {
+                return system.dirTree[dirOrFile].type !== 'dir';
+            });
+        };
+
+        var str = term.get_command();
+        var input = _.last(_.compact(str.split(' '))) || '';
+
+        // TODO: Return relative path to object and prepend to all children
+        // in tabcomplete array.
+        if ((/^\s*(cd|ls|cat)\s(.*)/).test(str)) {
+            return allDirectories(parseDirectory(input, true)); // directories
+        } else if ((/^\.\/(.*)/).test(str)) {
+            return allFiles(parseDirectory(input, true)); // files
         }
         return commands;
     };
