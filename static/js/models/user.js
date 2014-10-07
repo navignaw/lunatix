@@ -3,5 +3,5 @@ function User(name, superuser) {
     this.superuser = superuser || false;  // Enable special mode for debugging
 
     // List of unlocked commands
-    this.commands = ['cd', 'help', 'logout', 'ls', 'man', 'mute', 'pwd', 'quit', 'whoami'];
+    this.commands = ['cat', 'cd', 'help', 'logout', 'ls', 'man', 'mute', 'pwd', 'quit', 'whoami'];
 }
