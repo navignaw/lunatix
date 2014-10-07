@@ -5,8 +5,7 @@
         debug: $app.DEBUG,
         dirTree: {},
         directory: {},
-        env: {},
-        proc: [],
+        progress: 0,
         user: null
     };
 
@@ -41,9 +40,9 @@
     $(document).ready(function() {
         // TODO: fullscreen requires user interaction (e.g. clicking a button).
         // Smarter way to get around this?
-        $('body').click(function() {
+        /*$('body').click(function() {
             $(this).fullscreen();
-        });
+        });*/
 
         $term.terminal({}, terminal.options.base);
 

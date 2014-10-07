@@ -403,6 +403,7 @@ var Terminal = function(system) {
         interpreter: function(command, term) {
             var result = '';
             var commands = command.split('|');
+            var name;
 
             // Loop through piped commands, appending each result onto next command.
             for (var i = 0; i < commands.length; i++) {
@@ -410,6 +411,7 @@ var Terminal = function(system) {
                 if (!cmd) {
                     return;
                 }
+                name = cmd.name;
 
                 if (_.has(self.commands, cmd.name)) {
                     // Check for permissions.
@@ -430,10 +432,11 @@ var Terminal = function(system) {
                 }
             }
 
-            // Print final result to terminal.
+            // Print final result to terminal and check to advance story.
             if (result) {
                 prettyPrint(term, result);
             }
+            Story.checkStory(term, system, name);
         },
 
         /* Confirmation terminal: awaits y/n input */
