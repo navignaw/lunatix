@@ -33,7 +33,7 @@ var File = {};
 File.getDirectory = function(name, callback) {
     $.ajax({
         type: 'GET',
-        url: $app.SCRIPT_ROOT + '/static/dirtrees/' + name,
+        url: $app.SCRIPT_ROOT + '/static/dirs/' + name,
         success: function(json) {
             callback($.parseJSON(json));
         },

@@ -51,10 +51,12 @@ var Util = (function() {
         };
     };
 
+    /* Process path and return file object or null if path is invalid.
+     * If partial, returns last valid directory in string.
+     */
     self.parseDirectory = function(path, partial) {
-        // Process path and return file object or null if path is invalid.
-        // If partial, returns last valid directory in string.
         // TODO: check for absolute directories (for now, assume all are relative)
+        // TODO: check permissions?
         var dirs = _.compact(path.split('/')); // TODO: what if they escape a slash?
         var currentDir = System.directory;
         for (var i = 0; i < dirs.length; i++) {

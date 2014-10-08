@@ -23,7 +23,7 @@ var Terminal = (function() {
                         System.user = new User(username, System.debug);
                         Util.log('logged in as:', username);
                         Util.log(System.user);
-                        File.getDirectory('maze.json', function(json) {
+                        File.getDirectory('home.json', function(json) {
                             System.dirTree = json;
                             System.directory = json["home"];
                             term.push(self.interpreter, self.options.main);
