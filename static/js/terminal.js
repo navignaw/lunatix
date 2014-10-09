@@ -29,6 +29,7 @@ var Terminal = (function() {
                             term.push(self.interpreter, self.options.main);
                             term.clear();
                             term.greetings();
+                            Story.checkStory(term, null);
                         });
                     }
                 }).fail(function() {
@@ -313,6 +314,14 @@ var Terminal = (function() {
             }, self.options.confirm(prompt));
         },
 
+        /* Input terminal: prints prompt and calls callback with input */
+        input: function(term, prompt, callback) {
+            term.push(function(command) {
+                term.pop();
+                callback(command);
+            }, self.options.input(prompt));
+        },
+
         /* Terminal options */
         options: {
             base: {
@@ -323,7 +332,8 @@ var Terminal = (function() {
                     if (name === 'lunatix') {
                         callback('');
                     } else {
-                        callback(self.options[name].greetings || '');
+                        var greetings = self.options[name].greetings;
+                        callback(_.isFunction(greetings) ? greetings() : greetings || '');
                     }
                 },
                 prompt: '$> ',
@@ -346,7 +356,13 @@ var Terminal = (function() {
 
             login: {
                 name: 'login',
-                greetings: 'What is your name?',
+                greetings: function() {
+                    var randomId = (Math.floor(Math.random() * 10000) + 10000).toString();
+                    return 'LX2084 Training Program\n' +
+                           'v' + System.version + '\n\n' +
+                           'Welcome, USER #' + randomId + '\n' +
+                           'Please enter your official government identifier.';
+                },
                 prompt: '$> ',
                 completion: [],
                 onStart: function(term) {
@@ -357,7 +373,11 @@ var Terminal = (function() {
 
             main: {
                 name: 'main',
-                greetings: 'You awaken in a dark directory...',
+                greetings: function() {
+                    return 'LX2084 Training Program\n' +
+                           'v' + System.version + '\n\n' +
+                           'User: ' + System.user.name + (System.user.ip ? ' on ' + System.user.ip : '') + '\n';
+                },
                 prompt: '$> ',
                 completion: function(term, str, callback) {
                     var results = Util.tabComplete(term, System.user.commands);
@@ -378,6 +398,12 @@ var Terminal = (function() {
                 return {
                     completion: ['yes', 'no'],
                     prompt: prompt || '[y/n] '
+                };
+            },
+
+            input: function(prompt) {
+                return {
+                    prompt: prompt
                 };
             }
         },

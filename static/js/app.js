@@ -2,9 +2,13 @@
 // TODO: save into local storage
 var System = {
     debug: $app.DEBUG,
+    version: '0.0.1',
     dirTree: {},
     directory: {},
-    progress: 0,
+    progress: {
+        arc: "intro",
+        value: 0
+    },
     user: null
 };
 

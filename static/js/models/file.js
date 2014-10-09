@@ -5,12 +5,6 @@
     this.parent = parent || null;              // parent directory File (..)
     this.children = children || [];            // list of Files (if type === "dir")
 
-    // TODO: store parent ID and children ID instead of actual File object
-    // save all files in an object {ID -> File}
-
-    this.storyProgress = function(progress) {
-
-    };
 }
 
 File.PERMISSIONS = Object.freeze({

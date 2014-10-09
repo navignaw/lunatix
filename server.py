@@ -41,5 +41,11 @@ def get_man_template(template):
     except TemplateNotFound:
         abort(404)
 
+# Creepy government stuff
+@app.route('/user/ip')
+def get_ip():
+    return jsonify(ip=request.remote_addr)
+
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

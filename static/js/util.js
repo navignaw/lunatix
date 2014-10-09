@@ -181,7 +181,7 @@ var Util = (function() {
         }
         prompt = prompt || '';
         callback = callback || _.noop;
-        delay = delay || 100;
+        delay = delay || 40;
         self.animating = true;
 
         var old_prompt = term.get_prompt();
