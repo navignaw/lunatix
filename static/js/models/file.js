@@ -29,7 +29,8 @@ File.getDirectory = function(name, callback) {
         type: 'GET',
         url: $app.SCRIPT_ROOT + '/static/dirs/' + name,
         success: function(json) {
-            callback(json);
+            // TODO: Deal with weird bug when retrieving json from server
+            callback(_.isString(json) ? $.parseJSON(json) : json);
         },
     }).fail(function(jqXHR, textStatus, error) {
         console.error(error);
