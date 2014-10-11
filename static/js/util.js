@@ -3,6 +3,33 @@ var Util = (function() {
 
     var self = {};
 
+    /* Overwrite argument parser to ignore ints, floats, and regex */
+    var command_re = /('[^']*'|"(\\"|[^"])*"|\/(\\\/|[^\/])+\/[gimy]*|(\\ |[^ ])+|[\w-]+)/g;
+    $.terminal.parseArguments = function(string) {
+        return $.map(string.match(command_re) || [], function(arg) {
+            if (arg[0] === "'" && arg[arg.length-1] === "'") {
+                return arg.replace(/^'|'$/g, '');
+            } else if (arg[0] === '"' && arg[arg.length-1] === '"') {
+                arg = arg.replace(/^"|"$/g, '').replace(/\\([" ])/g, '$1');
+                return arg.replace(/\\\\|\\t|\\n/g, function(string) {
+                    if (string[1] === 't') {
+                        return '\t';
+                    } else if (string[1] === 'n') {
+                        return '\n';
+                    } else {
+                        return '\\';
+                    }
+                }).replace(/\\x([0-9a-f]+)/gi, function(_, hex) {
+                    return String.fromCharCode(parseInt(hex, 16));
+                }).replace(/\\0([0-7]+)/g, function(_, oct) {
+                    return String.fromCharCode(parseInt(oct, 8));
+                });
+            } else {
+                return arg.replace(/\\ /g, ' ');
+            }
+        });
+    };
+
     /* Debug-specific logging utility function. Also echoes in terminal. */
     self.log = function(args) {
         if (!System.debug) {
@@ -55,9 +82,8 @@ var Util = (function() {
      * If partial, returns last valid directory in string.
      */
     self.parseDirectory = function(path, partial) {
-        // TODO: check for absolute directories (for now, assume all are relative)
         // TODO: check permissions?
-        var dirs = _.compact(path.split('/')); // TODO: what if they escape a slash?
+        var dirs = _.compact(path.split('/'));
         var currentDir = System.directory;
         for (var i = 0; i < dirs.length; i++) {
             if (dirs[i] === '.') {
@@ -70,6 +96,8 @@ var Util = (function() {
                     self.log('At root directory, cannot go up!');
                     return null;
                 }
+            } else if (i === 0 && (dirs[i] === 'home' || dirs[i] === '~')) {
+                currentDir = System.dirTree['home'];
             } else if (_.contains(currentDir.children, dirs[i])) {
                 currentDir = System.dirTree[dirs[i]];
             } else if (partial) {
@@ -80,6 +108,17 @@ var Util = (function() {
             }
         }
         return currentDir;
+    };
+
+    /* Return full path of file or directory */
+    self.getFullPath = function(dir, fullHome) {
+        var currentDir = dir || System.directory;
+        if (!currentDir.path) {
+            currentDir.path = currentDir.parent ?
+                              self.getFullPath(System.dirTree[currentDir.parent]) + '/' + currentDir.name :
+                              '~';
+        }
+        return fullHome ? '/home' + currentDir.path.substring(1) : currentDir.path;
     };
 
     self.isExecutable = function(path) {
@@ -188,7 +227,7 @@ var Util = (function() {
         var c = 0;
         term.set_prompt(prompt);
         var readCharacter = function() {
-            if (c === message.length) {
+            if (!self.animating || c === message.length) {
                 self.prettyPrint(term, prompt + term.get_command());
                 term.set_command('');
                 term.set_prompt(old_prompt);

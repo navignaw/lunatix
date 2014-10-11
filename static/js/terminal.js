@@ -1,7 +1,6 @@
 var Terminal = (function() {
 
     /* Helper functions */
-    var parseCommand = Util.parseCommand;
     var parseDirectory = Util.parseDirectory;
     var prettyPrint = Util.prettyPrint;
     var echoTemplate = Util.echoTemplate;
@@ -20,7 +19,7 @@ var Terminal = (function() {
                     data: {username: username},
                     success: function(data) {
                         // TODO: If username already exists, prompt for password.
-                        System.user = new User(username, System.debug);
+                        System.user = new User(username);
                         Util.log('logged in as:', username);
                         Util.log(System.user);
                         File.getDirectory('home.json', function(json) {
@@ -100,7 +99,7 @@ var Terminal = (function() {
             eval: function(cmd, term) {
                 // Only available to debuggers or console hackers!
                 // Lying is bad, but we don't want to get their hopes up.
-                if (!System.user.superuser) {
+                if (!System.debug) {
                     prettyPrint(term, 'eval: command not found');
                 } else if (cmd.rest === '') {
                     prettyPrint(term, 'please enter script to eval.');
@@ -175,7 +174,7 @@ var Terminal = (function() {
                 var text = 'To learn more about individual commands, type ' +
                            '`[[i;#fff;]' + cmd.name + ' <cmd>]`.\n\n' +
                            'Available commands:\n' + System.user.commands.join('\t');
-                if (System.user.superuser) {
+                if (System.debug) {
                     text += '\nSuperuser commands:\n' +
                             _.difference(_.keys(self.commands), System.user.commands).join('\t');
                 }
@@ -200,7 +199,7 @@ var Terminal = (function() {
             },
 
             pwd: function(cmd, term) {
-                return System.directory.name;
+                return Util.getFullPath(null, true);
             },
 
             ps: function(cmd, term) {
@@ -216,7 +215,7 @@ var Terminal = (function() {
             test: function(cmd, term) {
                 // Only available to debuggers or console hackers!
                 // Lying is bad, but we don't want to get their hopes up.
-                if (!System.user.superuser) {
+                if (!System.debug) {
                     prettyPrint(term, 'test: command not found');
                 }
                 switch (cmd.args[0]) {
@@ -268,7 +267,7 @@ var Terminal = (function() {
 
             // Loop through piped commands, appending each result onto next command.
             for (var i = 0; i < commands.length; i++) {
-                var cmd = parseCommand([commands[i], result].join(' '));
+                var cmd = Util.parseCommand([commands[i], result].join(' '));
                 if (!cmd) {
                     return;
                 }
@@ -276,7 +275,7 @@ var Terminal = (function() {
 
                 if (_.has(self.commands, cmd.name)) {
                     // Check for permissions.
-                    if (System.user.superuser || _.contains(System.user.commands, cmd.name)) {
+                    if (System.debug || _.contains(System.user.commands, cmd.name)) {
                         result = self.commands[cmd.name](cmd, term);
                         if (!result || !_.isString(result)) {
                             break;
@@ -345,9 +344,13 @@ var Terminal = (function() {
                 keydown: function(e) {
                     // Disable keypresses while animating text.
                     if (Util.animating) {
+                        // Ctrl+C: skip animating text (in debug mode only)
+                        if (System.debug && e.which === 67 && e.ctrlKey) {
+                            Util.animating = false;
+                        }
                         return false;
                     }
-                    // CTRL+D: cannot exit past login screen
+                    // Ctrl+D: cannot exit past login screen
                     if (e.which === 68 && e.ctrlKey) {
                         return false;
                     }
@@ -360,7 +363,7 @@ var Terminal = (function() {
                     var randomId = (Math.floor(Math.random() * 10000) + 10000).toString();
                     return 'LX2084 Training Program\n' +
                            'v' + System.version + '\n\n' +
-                           'Welcome, USER #' + randomId + '\n' +
+                           'Greetings, USER #' + randomId + '\n' +
                            'Please enter your official government identifier.';
                 },
                 prompt: '$> ',
@@ -378,7 +381,9 @@ var Terminal = (function() {
                            'v' + System.version + '\n\n' +
                            'User: ' + System.user.name + (System.user.ip ? ' on ' + System.user.ip : '') + '\n';
                 },
-                prompt: '$> ',
+                prompt: function(callback) {
+                    callback('[' + System.user.name + ' ' + Util.getFullPath() + ']$ ');
+                },
                 completion: function(term, str, callback) {
                     var results = Util.tabComplete(term, System.user.commands);
                     callback(results);
