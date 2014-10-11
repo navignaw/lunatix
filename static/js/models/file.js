@@ -29,7 +29,7 @@ File.getDirectory = function(name, callback) {
         type: 'GET',
         url: $app.SCRIPT_ROOT + '/static/dirs/' + name,
         success: function(json) {
-            callback($.parseJSON(json));
+            callback(json);
         },
     }).fail(function(jqXHR, textStatus, error) {
         console.error(error);
