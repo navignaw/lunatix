@@ -263,9 +263,28 @@ var Util = (function() {
         _.delay(readCharacter, delay);
     };
 
+    /* Promises! Allow chaining of multiple asynchronous requests via then and fail */
     self.animateText = function(term, message, prompt, delay) {
         var deferred = $.Deferred();
         self.animateTextAsync(term, message, prompt, deferred.resolve, delay);
+        return deferred.promise();
+    };
+
+    self.confirm = function(term, prompt) {
+        var deferred = $.Deferred();
+        Terminal.confirm(term, prompt, deferred.resolve, deferred.reject);
+        return deferred.promise();
+    };
+
+    self.multichoice = function(term, options, prompt) {
+        var deferred = $.Deferred();
+        Terminal.multichoice(term, options, prompt, deferred.resolve);
+        return deferred.promise();
+    };
+
+    self.input = function(term, prompt) {
+        var deferred = $.Deferred();
+        Terminal.input(term, prompt, deferred.resolve);
         return deferred.promise();
     };
 

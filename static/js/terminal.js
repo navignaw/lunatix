@@ -247,9 +247,27 @@ var Terminal = (function() {
                         prettyPrint(term, '<em>italicized html</em>', {raw: true});
                         break;
 
+                    case 'chain':
+                        Util.animateText(term, 'Testing a chain of commands').then(function() {
+                            return Util.confirm(term, 'DOES IT WORK? [y/n] ').fail(function() {
+                                prettyPrint(term, 'you failed!');
+                            });
+                        }).then(function() {
+                            prettyPrint(term, 'What is your favorite color?');
+                            return Util.input(term);
+                        }).then(function(result) {
+                            prettyPrint(term, 'you typed: ' + result);
+                            prettyPrint(term, 'What is your favorite thing to rm? (cheese, milk, puppies)');
+                            return Util.multichoice(term, ['cheese', 'milk', 'puppies']);
+                        }).then(function(result) {
+                            prettyPrint(term, 'you typed: ' + result);
+                            prettyPrint(term, 'YOU HAVE ADVANCED THE STORY');
+                        });
+                        break;
+
                     default:
                         prettyPrint(term, 'Invalid command. Options are: ' + [
-                            'confirm', 'animateText', 'echoTemplate', 'prettyPrint', 'command']
+                            'chain', 'confirm', 'animateText', 'echoTemplate', 'prettyPrint', 'command']
                             .join(', '));
                 }
             },
@@ -300,24 +318,39 @@ var Terminal = (function() {
         },
 
         /* Confirmation terminal: awaits y/n input */
-        confirm: function(term, prompt, success) {
+        confirm: function(term, prompt, success, reject) {
             term.push(function(command) {
+                command = $.trim(command);
                 if (/^(y|yes|yea)$/i.test(command)) {
                     term.pop();
-                    success();
+                    success(command);
                 } else if (/^(n|no|nay)$/i.test(command)) {
                     term.pop();
+                    (reject || _.noop)(command);
                 } else {
                     prettyPrint(term, "Please enter 'yes' or 'no'.");
                 }
             }, self.options.confirm(prompt));
         },
 
+        /* Multiple choice terminal: select a predetermined option */
+        multichoice: function(term, options, prompt, callback) {
+            term.push(function(command) {
+                command = $.trim(command);
+                if (_.contains(options, command)) {
+                    term.pop();
+                    callback(command);
+                } else {
+                    prettyPrint(term, "Please enter one of the options above.");
+                }
+            }, self.options.multichoice(options, prompt));
+        },
+
         /* Input terminal: prints prompt and calls callback with input */
         input: function(term, prompt, callback) {
             term.push(function(command) {
                 term.pop();
-                callback(command);
+                callback($.trim(command));
             }, self.options.input(prompt));
         },
 
@@ -406,9 +439,16 @@ var Terminal = (function() {
                 };
             },
 
+            multichoice: function(options, prompt) {
+                return {
+                    completion: options,
+                    prompt: prompt || '$> '
+                };
+            },
+
             input: function(prompt) {
                 return {
-                    prompt: prompt
+                    prompt: prompt || '$> '
                 };
             }
         },

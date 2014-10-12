@@ -8,8 +8,11 @@ var Story = (function() {
 
     /* Check System variables after every command in order to advance the story. */
     self.checkStory = function(term, cmd) {
-        var prettyPrint = Util.prettyPrint;
-        var animateText = Util.animateText;
+        var prettyPrint = _.partial(Util.prettyPrint, term);
+        var animateText = _.partial(Util.animateText, term);
+        var confirm = _.partial(Util.confirm, term);
+        var multichoice = _.partial(Util.multichoice, term);
+        var input = _.partial(Util.input, term);
 
         switch (System.progress.arc) {
             // Intro survey
@@ -23,11 +26,20 @@ var Story = (function() {
                                    'Loading adjective nouns...`500`\n' +
                                    'Downloading malware.`200`.`200`.`700`\n' +
                                    'rming puppies...`800`\n';
-                        animateText(term, text).then(function() {
-                            prettyPrint(term, 'YOU HAVE ADVANCED THE STORY');
-                            return animateText(term, 'second animated text');
+                        animateText(text).then(function() {
+                            return confirm('DOES IT WORK? [y/n] ').fail(function() {
+                                prettyPrint('you failed!');
+                            });
                         }).then(function() {
-                            prettyPrint(term, "THE CHAIN WORKED");
+                            prettyPrint('What is your favorite color?');
+                            return input();
+                        }).then(function(result) {
+                            prettyPrint('you typed: ' + result);
+                            prettyPrint('What is your favorite thing to rm? (cheese, milk, puppies)');
+                            return multichoice(['cheese', 'milk', 'puppies']);
+                        }).then(function(result) {
+                            prettyPrint('you typed: ' + result);
+                            prettyPrint('YOU HAVE ADVANCED THE STORY');
                             advanceArc('test01');
                         });
                         break;
