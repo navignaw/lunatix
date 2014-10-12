@@ -227,7 +227,7 @@ var Terminal = (function() {
 
                     case 'animateText':
                         var text = 'i am typing`2000`\nwatch me ``escape``';
-                        Util.animateText(term, text, '%> ', function() {
+                        Util.animateText(term, text, '%> ').then(function() {
                             prettyPrint(term, 'all done');
                         });
                         break;

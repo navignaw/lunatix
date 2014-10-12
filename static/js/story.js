@@ -23,8 +23,11 @@ var Story = (function() {
                                    'Loading adjective nouns...`500`\n' +
                                    'Downloading malware.`200`.`200`.`700`\n' +
                                    'rming puppies...`800`\n';
-                        animateText(term, text, '', function() {
+                        animateText(term, text).then(function() {
                             prettyPrint(term, 'YOU HAVE ADVANCED THE STORY');
+                            return animateText(term, 'second animated text');
+                        }).then(function() {
+                            prettyPrint(term, "THE CHAIN WORKED");
                             advanceArc('test01');
                         });
                         break;

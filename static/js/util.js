@@ -214,7 +214,7 @@ var Util = (function() {
      * Use `x` in message to indicate x ms pause,
      * and `` to escape (write ` character). */
     self.animating = false;
-    self.animateText = function(term, message, prompt, callback, delay) {
+    self.animateTextAsync = function(term, message, prompt, callback, delay) {
         if (message.length === 0) {
             return;
         }
@@ -261,6 +261,12 @@ var Util = (function() {
             _.delay(readCharacter, delay);
         };
         _.delay(readCharacter, delay);
+    };
+
+    self.animateText = function(term, message, prompt, delay) {
+        var deferred = $.Deferred();
+        self.animateTextAsync(term, message, prompt, deferred.resolve, delay);
+        return deferred.promise();
     };
 
     return self;
