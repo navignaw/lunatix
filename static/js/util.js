@@ -106,6 +106,9 @@ var Util = (function() {
                 self.log('Directory not found:', path);
                 return null;
             }
+            if (currentDir.hidden) {
+                return null;
+            }
         }
         return currentDir;
     };

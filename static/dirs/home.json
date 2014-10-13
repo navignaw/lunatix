@@ -106,6 +106,7 @@
 	"02-clutter": {
 		"name": "02-clutter",
 		"type": "dir",
+        "hidden": true,
 		"parent": "test",
 		"children": ["blah.txt"]
 	},
