@@ -34,10 +34,12 @@ var Story = (function() {
                             prettyPrint('What is your favorite color?');
                             return input();
                         }).then(function(result) {
+                            System.user.answers.favcolor = result;
                             prettyPrint('you typed: ' + result);
                             prettyPrint('What is your favorite thing to rm? (cheese, milk, puppies)');
                             return multichoice(['cheese', 'milk', 'puppies']);
                         }).then(function(result) {
+                            System.user.answers.favrm = result;
                             prettyPrint('you typed: ' + result);
                             prettyPrint('YOU HAVE ADVANCED THE STORY');
                             advanceArc('test01');

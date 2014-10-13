@@ -7,6 +7,9 @@ function User(name) {
     // Creepy government tracking information
     this.ip = '';
 
+    // Survey answers
+    this.answers = {};
+
     $.ajax({
         type: 'GET',
         url: $app.SCRIPT_ROOT + '/user/ip'
