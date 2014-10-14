@@ -1,9 +1,13 @@
 var Story = (function() {
     var self = {};
 
-    function advanceArc(newArc) {
+    function advanceArc(newArc, newDir) {
         System.progress.arc = newArc;
         System.progress.value = 0;
+
+        if (newDir) {
+            System.dirTree[newDir].hidden = false;
+        }
     }
 
     /* Check System variables after every command in order to advance the story. */
@@ -42,7 +46,7 @@ var Story = (function() {
                             System.user.answers.favrm = result;
                             prettyPrint('you typed: ' + result);
                             prettyPrint('YOU HAVE ADVANCED THE STORY');
-                            advanceArc('test01');
+                            advanceArc('test01', '01');
                         });
                         break;
                 }
