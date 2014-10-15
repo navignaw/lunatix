@@ -336,7 +336,7 @@ var Terminal = (function() {
         /* Multiple choice terminal: select a predetermined option */
         multichoice: function(term, options, prompt, callback) {
             term.push(function(command) {
-                command = $.trim(command);
+                command = $.trim(command.toLowerCase());
                 if (_.contains(options, command)) {
                     term.pop();
                     callback(command);
@@ -394,7 +394,7 @@ var Terminal = (function() {
                 name: 'login',
                 greetings: function() {
                     var randomId = (Math.floor(Math.random() * 10000) + 10000).toString();
-                    return 'LX2084 Training Program\n' +
+                    return 'LX2084 Server Literacy Training Course\n' +
                            'v' + System.version + '\n\n' +
                            'Greetings, USER #' + randomId + '\n' +
                            'Please enter your official government identifier.';
@@ -410,9 +410,8 @@ var Terminal = (function() {
             main: {
                 name: 'main',
                 greetings: function() {
-                    return 'LX2084 Training Program\n' +
-                           'v' + System.version + '\n\n' +
-                           'User: ' + System.user.name + (System.user.ip ? ' on ' + System.user.ip : '') + '\n';
+                    return 'LX2084 Server Literacy Training Course\n' +
+                           'v' + System.version + '\n\n';
                 },
                 prompt: function(callback) {
                     callback('[' + System.user.name + ' ' + Util.getFullPath() + ']$ ');

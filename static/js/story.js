@@ -14,6 +14,7 @@ var Story = (function() {
     self.checkStory = function(term, cmd) {
         var prettyPrint = _.partial(Util.prettyPrint, term);
         var animateText = _.partial(Util.animateText, term);
+        var animateAI = _.partial(Util.animateAI, term);
         var confirm = _.partial(Util.confirm, term);
         var multichoice = _.partial(Util.multichoice, term);
         var input = _.partial(Util.input, term);
@@ -26,25 +27,37 @@ var Story = (function() {
                         // Initializing app
                         var text = 'Searching for user profile...`500` None found!\n' +
                                    'Creating profile for user ' + System.user.name + '...`400`\n\n' +
-                                   'Initializing survey...`600`\n' +
-                                   'Loading adjective nouns...`500`\n' +
-                                   'Downloading malware.`200`.`200`.`700`\n' +
-                                   'rming puppies...`800`\n';
+                                   'Updating logs...`500`\n' +
+                                   'Initializing survey.`400`.`500`.`1200`\n\n`200`';
                         animateText(text).then(function() {
-                            return confirm('DOES IT WORK? [y/n] ').fail(function() {
-                                prettyPrint('you failed!');
-                            });
+                            term.clear();
+                            text = 'We need to learn a little bit more about you.`500`\n\n' +
+                                   'In which department are you most interested?`200`\n' +
+                                   '[Innovation, Enforcement, Resources, General]';
+                            return animateAI(text);
                         }).then(function() {
-                            prettyPrint('What is your favorite color?');
-                            return input();
+                            return multichoice(['innovation', 'enforcement', 'resources', 'general']);
                         }).then(function(result) {
-                            System.user.answers.favcolor = result;
-                            prettyPrint('you typed: ' + result);
-                            prettyPrint('What is your favorite thing to rm? (cheese, milk, puppies)');
-                            return multichoice(['cheese', 'milk', 'puppies']);
+                            System.user.answers.department = result;
+                            text = '\nHow have you served us before?`200`\n' +
+                                   '[Employment, Promotion, Compliance, None]';
+                            return animateAI(text);
+                        }).then(function() {
+                            return multichoice(['employment', 'promotion', 'compliance', 'none']);
                         }).then(function(result) {
-                            System.user.answers.favrm = result;
-                            prettyPrint('you typed: ' + result);
+                            System.user.answers.previous = result;
+                            return animateAI('\nQuantify your proficiency.`200` [1-5]');
+                        }).then(function() {
+                            return multichoice(['1', '2', '3', '4', '5']);
+                        }).then(function(result) {
+                            System.user.answers.proficiency = result;
+                            text = '\nState the optimum color.`200`\n' +
+                                   '[Fuschia, Chartreuse, Cornflower, Green]';
+                            return animateAI(text);
+                        }).then(function() {
+                            return multichoice(['fuschia', 'chartreuse', 'cornflower', 'green']);
+                        }).then(function(result) {
+                            System.user.answers.color = result;
                             prettyPrint('YOU HAVE ADVANCED THE STORY');
                             advanceArc('test01', '01');
                         });

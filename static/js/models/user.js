@@ -2,7 +2,7 @@ function User(name) {
     this.name = name || '';
 
     // List of unlocked commands
-    this.commands = ['cat', 'cd', 'help', 'logout', 'ls', 'man', 'mute', 'pwd', 'quit', 'whoami'];
+    this.commands = ['cd', 'help', 'logout', 'ls', 'man', 'mute', 'pwd', 'quit', 'whoami'];
 
     // Creepy government tracking information
     this.ip = '';

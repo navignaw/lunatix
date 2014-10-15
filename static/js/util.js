@@ -217,7 +217,7 @@ var Util = (function() {
      * Use `x` in message to indicate x ms pause,
      * and `` to escape (write ` character). */
     self.animating = false;
-    self.animateTextAsync = function(term, message, prompt, callback, delay) {
+    self.animateTextAsync = function(term, message, prompt, callback, delay, style) {
         if (message.length === 0) {
             return;
         }
@@ -229,9 +229,11 @@ var Util = (function() {
         var old_prompt = term.get_prompt();
         var c = 0;
         term.set_prompt(prompt);
+        /* Every delay ms, insert a new character into the command line.
+         * When all characters are inserted, echo to terminal and replace prompt. */
         var readCharacter = function() {
             if (!self.animating || c === message.length) {
-                self.prettyPrint(term, prompt + term.get_command());
+                self.prettyPrint(term, prompt + term.get_command(), null, style);
                 term.set_command('');
                 term.set_prompt(old_prompt);
                 self.animating = false;
@@ -267,9 +269,23 @@ var Util = (function() {
     };
 
     /* Promises! Allow chaining of multiple asynchronous requests via then and fail */
-    self.animateText = function(term, message, prompt, delay) {
+    self.animateText = function(term, message, prompt, delay, style) {
         var deferred = $.Deferred();
         self.animateTextAsync(term, message, prompt, deferred.resolve, delay);
+        return deferred.promise();
+    };
+
+    // Animated AI text: hard-code green text and text speed
+    self.animateAI = function(term, message, prompt) {
+        var deferred = $.Deferred();
+        var cmd = term.children('.cmd');
+        var old_color = cmd.css('color');
+        var resolve = function() {
+            cmd.css('color', old_color);
+            deferred.resolve();
+        };
+        cmd.css('color', '#78C778');
+        self.animateTextAsync(term, message, prompt, resolve, 40, {color: '#78C778'});
         return deferred.promise();
     };
 
