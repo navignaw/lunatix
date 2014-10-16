@@ -275,8 +275,8 @@ var Util = (function() {
         return deferred.promise();
     };
 
-    // Animated AI text: hard-code green text and text speed
-    self.animateAI = function(term, message, prompt) {
+    // Animated AI text: hard-code text color and speed
+    self.animateAI = function(term, color, message, prompt) {
         var deferred = $.Deferred();
         var cmd = term.children('.cmd');
         var old_color = cmd.css('color');
@@ -284,8 +284,8 @@ var Util = (function() {
             cmd.css('color', old_color);
             deferred.resolve();
         };
-        cmd.css('color', '#78C778');
-        self.animateTextAsync(term, message, prompt, resolve, 40, {color: '#78C778'});
+        cmd.css('color', color);
+        self.animateTextAsync(term, message, prompt, resolve, 40, {color: color});
         return deferred.promise();
     };
 

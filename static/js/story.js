@@ -1,4 +1,9 @@
 var Story = (function() {
+
+    /* Constants */
+    var UI_GREEN = '#78C778';
+    var UI_RED = '#FF2424';
+
     var self = {};
 
     function advanceArc(newArc, newDir) {
@@ -14,7 +19,8 @@ var Story = (function() {
     self.checkStory = function(term, cmd) {
         var prettyPrint = _.partial(Util.prettyPrint, term);
         var animateText = _.partial(Util.animateText, term);
-        var animateAI = _.partial(Util.animateAI, term);
+        var greenAI = _.partial(Util.animateAI, term, UI_GREEN);
+        var redAI = _.partial(Util.animateAI, term, UI_RED);
         var confirm = _.partial(Util.confirm, term);
         var multichoice = _.partial(Util.multichoice, term);
         var input = _.partial(Util.input, term);
@@ -34,26 +40,26 @@ var Story = (function() {
                             text = 'We need to learn a little bit more about you.`500`\n\n' +
                                    'In which department are you most interested?`200`\n' +
                                    '[Innovation, Enforcement, Resources, General]';
-                            return animateAI(text);
+                            return redAI(text);
                         }).then(function() {
                             return multichoice(['innovation', 'enforcement', 'resources', 'general']);
                         }).then(function(result) {
                             System.user.answers.department = result;
                             text = '\nHow have you served us before?`200`\n' +
                                    '[Employment, Promotion, Compliance, None]';
-                            return animateAI(text);
+                            return redAI(text);
                         }).then(function() {
                             return multichoice(['employment', 'promotion', 'compliance', 'none']);
                         }).then(function(result) {
                             System.user.answers.previous = result;
-                            return animateAI('\nQuantify your proficiency.`200` [1-5]');
+                            return redAI('\nQuantify your proficiency.`200` [1-5]');
                         }).then(function() {
                             return multichoice(['1', '2', '3', '4', '5']);
                         }).then(function(result) {
                             System.user.answers.proficiency = result;
                             text = '\nState the optimum color.`200`\n' +
                                    '[Fuschia, Chartreuse, Cornflower, Green]';
-                            return animateAI(text);
+                            return redAI(text);
                         }).then(function() {
                             return multichoice(['fuschia', 'chartreuse', 'cornflower', 'green']);
                         }).then(function(result) {
