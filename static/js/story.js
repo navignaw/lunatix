@@ -25,16 +25,18 @@ var Story = (function() {
         var multichoice = _.partial(Util.multichoice, term);
         var input = _.partial(Util.input, term);
 
+        var text;
+
         switch (System.progress.arc) {
             // Intro survey
             case "intro":
                 switch (System.progress.value) {
                     case 0:
                         // Initializing app
-                        var text = 'Searching for user profile...`500` None found!\n' +
-                                   'Creating profile for user ' + System.user.name + '...`400`\n\n' +
-                                   'Updating logs...`500`\n' +
-                                   'Initializing survey.`400`.`500`.`1200`\n\n`200`';
+                        text = 'Searching for user profile...`500` None found!\n' +
+                               'Creating profile for user ' + System.user.name + '...`400`\n\n' +
+                               'Updating logs...`500`\n' +
+                               'Initializing survey.`400`.`500`.`1200`\n\n`200`';
                         animateText(text).then(function() {
                             term.clear();
                             text = 'We need to learn a little bit more about you.`500`\n\n' +
@@ -54,7 +56,15 @@ var Story = (function() {
                             System.user.answers.previous = result;
                             return redAI('\nQuantify your proficiency.`200` [1-5]');
                         }).then(function() {
-                            return multichoice(['1', '2', '3', '4', '5']);
+                            return multichoice(['1', '2', '3', '4', '5'], null, function(command) {
+                                if (command === '1') {
+                                    text = 'Your response of "1" qualifies you for immediate disqualification. ' +
+                                           'Provide a revised response.';
+                                    prettyPrint(text, null, {color: UI_RED});
+                                    return true;
+                                }
+                                return false;
+                            });
                         }).then(function(result) {
                             System.user.answers.proficiency = result;
                             text = '\nState the optimum color.`200`\n' +
@@ -64,7 +74,21 @@ var Story = (function() {
                             return multichoice(['fuschia', 'chartreuse', 'cornflower', 'green']);
                         }).then(function(result) {
                             System.user.answers.color = result;
-                            prettyPrint('YOU HAVE ADVANCED THE STORY');
+                            text = '\nYour companion AI is being generated based on your responses.`200`.`300`.`800`\n' +
+                                   'Generation complete!';
+                            return redAI(text);
+                        }).then(function() {
+                            System.progress.value++;
+                            term.clear();
+                            self.checkStory(term, null);
+                        });
+                        break;
+
+                    case 1:
+                        // Meeting your companion AI
+                        text = '`800`.`300`.`400`.`500`\nHELLO, HUMAN.`500`\n' +
+                               'My name is LX2048, and I will be your companion AI';
+                        greenAI(text).then(function() {
                             advanceArc('test01', '01');
                         });
                         break;

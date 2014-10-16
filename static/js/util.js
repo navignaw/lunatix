@@ -3,6 +3,12 @@ var Util = (function() {
 
     var self = {};
 
+    String.prototype.capitalize = function() {
+        return this.replace(/\w\S*/g, function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    };
+
     /* Overwrite argument parser to ignore ints, floats, and regex */
     var command_re = /('[^']*'|"(\\"|[^"])*"|\/(\\\/|[^\/])+\/[gimy]*|(\\ |[^ ])+|[\w-]+)/g;
     $.terminal.parseArguments = function(string) {
@@ -295,9 +301,9 @@ var Util = (function() {
         return deferred.promise();
     };
 
-    self.multichoice = function(term, options, prompt) {
+    self.multichoice = function(term, options, prompt, condition) {
         var deferred = $.Deferred();
-        Terminal.multichoice(term, options, prompt, deferred.resolve);
+        Terminal.multichoice(term, options, prompt, deferred.resolve, condition);
         return deferred.promise();
     };
 

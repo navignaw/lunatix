@@ -334,10 +334,12 @@ var Terminal = (function() {
         },
 
         /* Multiple choice terminal: select a predetermined option */
-        multichoice: function(term, options, prompt, callback) {
+        multichoice: function(term, options, prompt, callback, condition) {
             term.push(function(command) {
                 command = $.trim(command.toLowerCase());
-                if (_.contains(options, command)) {
+                if ((condition || _.noop)(command)) {
+                    return;
+                } else if (_.contains(options, command)) {
                     term.pop();
                     callback(command);
                 } else {
