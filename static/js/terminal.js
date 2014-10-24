@@ -147,7 +147,10 @@ var Terminal = (function() {
                 var newDir = dir ? parseDirectory(dir) : System.directory;
                 if (newDir) {
                     if (newDir.type === 'dir') {
-                        return _.map(newDir.children, function(child) {
+                        var children = _.filter(newDir.children, function(child) {
+                            return !(System.dirTree[child].hidden);
+                        });
+                        return _.map(children, function(child) {
                             return System.dirTree[child].name;
                         }).join('\t');
                     } else {
