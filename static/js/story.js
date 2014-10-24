@@ -106,6 +106,7 @@ var Story = (function() {
 
             // Test 01: Maze
             case 'test01':
+                var log = System.progress.logs['test01'];
                 switch (System.progress.value) {
                     case 0:
                         if (System.directory.name !== '01') break;
@@ -123,87 +124,108 @@ var Story = (function() {
                         System.dirTree['finish'].parent = System.user.answers.color;
                         System.dirTree['start'].parent = System.user.answers.color;
                         System.progress.logs['test01'] = {
-                            text: []
+                            text: [],
+                            good: 0, // total of 7
+                            bad: 0   // total of 23
                         };
                         System.progress.value++;
                         break;
 
                     case 2:
                         // Maze directory logs
-                        var log = System.progress.logs['test01'];
                         if (_.has(log, System.directory.name)) break;
                         switch (System.directory.name) {
                             case 'wall':
                                 text = 'Subject demonstrates poor understanding of basic physical limitations.';
+                                log.bad++;
                                 log['hall'] = true; // disable correct log
                                 break;
 
                             case 'hall':
                                 text = 'Subject can follow provided paths if clearly presented.';
+                                log.good++;
                                 break;
 
                             case 'right':
                                 text = 'Subject is capable of basic navigational orientation.';
+                                log.good++;
                                 break;
 
                             case 'uncertain':
                                 text = 'Subject is willing to follow hunches.';
+                                log.good++;
                                 break;
 
                             case 'vague':
                                 text = 'Subject persists in precipitating events that do not generate results.';
+                                log.bad++;
                                 break;
 
                             case 'probable':
                                 text = 'Subject is prepared to gamble in favorable situations.';
+                                log.good++;
                                 break;
 
                             case 'definite':
                                 text = 'Subject is content to follow an obvious answer.';
+                                log.good++;
                                 break;
 
                             case 'finish':
                                 text = 'Subject has fulfilled the minimum qualifications for the first module.';
+                                log.good += 2;
                                 break;
 
                             case 'start':
                                 text = 'Subject is content to undo satisfactory work unnecessarily.';
+                                log.bad += 5;
                                 break;
 
                             case 'impossible':
                                 text = 'Subject has failed to internalize lessons regarding limitations.';
+                                log.bad++;
                                 break;
 
                             case 'dubious':
                                 text = 'Subject is bold but reckless.';
+                                log.bad++;
                                 break;
 
                             case 'impractical':
                                 text = 'Subject continues to demonstrate reckless behavior.';
+                                log.bad++;
                                 break;
 
                             case 'absurd':
                                 text = 'Subject puts belief in clearly ridiculous concepts.';
+                                log.bad++;
                                 break;
 
                             case 'wrong':
                                 text = 'Subject has marginally impaired mental processing.';
+                                log.bad++;
+                                log['right'] = true; // disable correct log
                                 break;
 
                             case 'still_wrong':
                                 text = 'Subject demonstrates extreme obstinacy to a fault.';
+                                log.bad += 3;
                                 break;
 
                             case 'more_wrong':
                                 text = 'Subject is grossly lacking in mental capabilities.';
+                                log.bad += 5;
+                                log['hall'] = true; // disable correct log
                                 break;
 
                             default:
                                 text = '';
                                 if (System.directory.name === System.user.answers.color) {
                                     text = 'Subject is capable of recognizing immediately familiar stimuli.';
+                                    log.good++;
                                 } else if (_.contains(['fuschia', 'chartreuse', 'cornflower', 'green'], System.directory.name)) {
                                     text = 'Subject demonstrates dangerous tendencies toward deceit or inconsistency.';
+                                    log.bad++;
                                 }
                                 break;
                         }
@@ -225,10 +247,14 @@ var Story = (function() {
 
                     case 3:
                         // Successfully traversed maze!
-                        text = 'gj m8 you win the demo.\nResults:';
+                        text = 'gj m8 you win the demo!\n';
+                        System.directory = System.dirTree['01'];
                         greenAI(text).then(function() {
                             // Save log into new file and print results.
-                            text = saveLog('test01');
+                            var score = (log.good + 23 - log.bad);
+                            var percentage = Math.round(score * 10000.0 / 30) / 100;
+                            text = 'Results:\n' + saveLog('test01') +
+                                   '\nScore: ' + score.toString() + '/30 (' + percentage.toString() + '%)';
                             prettyPrint(text);
                             advanceArc('test02', '02');
                         });
