@@ -138,13 +138,17 @@ var Util = (function() {
     self.tabComplete = function(term, commands) {
         // Return array of suggested commands on tab-complete.
         var allChildren = function(dir) {
-            return _.map(dir.children, function(child) {
+            var children = _.filter(dir.children, function(dirOrFile) {
+                return !(System.dirTree[dirOrFile].hidden);
+            });
+            return _.map(children, function(child) {
                 return System.dirTree[child].name;
             });
         };
         var allDirectories = function(dir) {
             var dirs = _.filter(allChildren(dir), function(dirOrFile) {
-                return System.dirTree[dirOrFile].type === 'dir';
+                return (System.dirTree[dirOrFile].type === 'dir') &&
+                       !(System.dirTree[dirOrFile].hidden);
             });
             return _.map(dirs, function(dirName) {
                 return dirName + '/';
@@ -152,7 +156,8 @@ var Util = (function() {
         };
         var allFiles = function(dir) {
             return _.filter(allChildren(dir), function(dirOrFile) {
-                return System.dirTree[dirOrFile].type !== 'dir';
+                return (System.dirTree[dirOrFile].type !== 'dir') &&
+                       !(System.dirTree[dirOrFile].hidden);
             });
         };
 
