@@ -3,6 +3,7 @@ var Story = (function() {
     /* Constants */
     var UI_GREEN = '#78C778';
     var UI_RED = '#FF2424';
+    var LOG_DIR = 'test';
 
     var self = {};
 
@@ -13,6 +14,13 @@ var Story = (function() {
         if (newDir) {
             System.dirTree[newDir].hidden = false;
         }
+    }
+
+    function saveLog(test) {
+        var log = System.progress.logs[test];
+        var text = log.text.join('\n');
+        // TODO: save log to new file in directory?
+        return text;
     }
 
     /* Check System variables after every command in order to advance the story. */
@@ -29,7 +37,7 @@ var Story = (function() {
 
         switch (System.progress.arc) {
             // Intro survey
-            case "intro":
+            case 'intro':
                 switch (System.progress.value) {
                     case 0:
                         // Initializing app
@@ -75,7 +83,7 @@ var Story = (function() {
                         }).then(function(result) {
                             System.user.answers.color = result;
                             text = '\nYour companion AI is being generated based on your responses.`200`.`300`.`800`\n' +
-                                   'Generation complete!';
+                                   'Generation complete!`200`';
                             return redAI(text);
                         }).then(function() {
                             System.progress.value++;
@@ -88,6 +96,7 @@ var Story = (function() {
                         // Meeting your companion AI
                         text = '`800`.`300`.`400`.`500`\nHELLO, HUMAN.`500`\n' +
                                'My name is LX2048, and I will be your companion AI';
+                        // TODO: finish introduction and unhide 01
                         greenAI(text).then(function() {
                             advanceArc('test01', '01');
                         });
@@ -96,11 +105,139 @@ var Story = (function() {
                 break;
 
             // Test 01: Maze
-            case "test01":
+            case 'test01':
                 switch (System.progress.value) {
                     case 0:
+                        if (System.directory.name !== '01') break;
+                        // TODO: text for initializing test 01
+                        text = 'TODO: Initializing test 01...';
+                        greenAI(text).then(function() {
+                            System.progress.value++;
+                            self.checkStory(term, null);
+                        });
+                        break;
+
+                    case 1:
+                        // Create logs and custom directories
+                        System.dirTree[System.user.answers.color].children = ['finish', 'start'];
+                        System.dirTree['finish'].parent = System.user.answers.color;
+                        System.dirTree['start'].parent = System.user.answers.color;
+                        System.progress.logs['test01'] = {
+                            text: []
+                        };
+                        System.progress.value++;
+                        break;
+
+                    case 2:
+                        // Maze directory logs
+                        var log = System.progress.logs['test01'];
+                        if (_.has(log, System.directory.name)) break;
+                        switch (System.directory.name) {
+                            case 'wall':
+                                text = 'Subject demonstrates poor understanding of basic physical limitations.';
+                                log['hall'] = true; // disable correct log
+                                break;
+
+                            case 'hall':
+                                text = 'Subject can follow provided paths if clearly presented.';
+                                break;
+
+                            case 'right':
+                                text = 'Subject is capable of basic navigational orientation.';
+                                break;
+
+                            case 'uncertain':
+                                text = 'Subject is willing to follow hunches.';
+                                break;
+
+                            case 'vague':
+                                text = 'Subject persists in precipitating events that do not generate results.';
+                                break;
+
+                            case 'probable':
+                                text = 'Subject is prepared to gamble in favorable situations.';
+                                break;
+
+                            case 'definite':
+                                text = 'Subject is content to follow an obvious answer.';
+                                break;
+
+                            case 'finish':
+                                text = 'Subject has fulfilled the minimum qualifications for the first module.';
+                                break;
+
+                            case 'start':
+                                text = 'Subject is content to undo satisfactory work unnecessarily.';
+                                break;
+
+                            case 'impossible':
+                                text = 'Subject has failed to internalize lessons regarding limitations.';
+                                break;
+
+                            case 'dubious':
+                                text = 'Subject is bold but reckless.';
+                                break;
+
+                            case 'impractical':
+                                text = 'Subject continues to demonstrate reckless behavior.';
+                                break;
+
+                            case 'absurd':
+                                text = 'Subject puts belief in clearly ridiculous concepts.';
+                                break;
+
+                            case 'wrong':
+                                text = 'Subject has marginally impaired mental processing.';
+                                break;
+
+                            case 'still_wrong':
+                                text = 'Subject demonstrates extreme obstinacy to a fault.';
+                                break;
+
+                            case 'more_wrong':
+                                text = 'Subject is grossly lacking in mental capabilities.';
+                                break;
+
+                            default:
+                                text = '';
+                                if (System.directory.name === System.user.answers.color) {
+                                    text = 'Subject is capable of recognizing immediately familiar stimuli.';
+                                } else if (_.contains(['fuschia', 'chartreuse', 'cornflower', 'green'], System.directory.name)) {
+                                    text = 'Subject demonstrates dangerous tendencies toward deceit or inconsistency.';
+                                }
+                                break;
+                        }
+                        if (text) {
+                            greenAI('LOG: ' + text).then(function() {
+                                log[System.directory.name] = true;
+                                log.text.push(text);
+
+                                if (System.directory.name === 'finish') {
+                                    System.progress.value++;
+                                    self.checkStory(term, null);
+                                }
+                            });
+                        }
+                        if (System.directory.name === 'start') {
+                            System.directory = System.dirTree['maze']; // lol
+                        }
+                        break;
+
+                    case 3:
+                        // Successfully traversed maze!
+                        text = 'gj m8 you win the demo.\nResults:';
+                        greenAI(text).then(function() {
+                            // Save log into new file and print results.
+                            text = saveLog('test01');
+                            prettyPrint(text);
+                            advanceArc('test02', '02');
+                        });
                         break;
                 }
+                break;
+
+            // Test 02: Clutter
+            case 'test02':
                 break;
         }
     };

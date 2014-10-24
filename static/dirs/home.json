@@ -28,13 +28,13 @@
             "wall": {
                 "name": "wall",
                 "type": "dir",
-                "parent": "01-maze",
+                "parent": "maze",
                 "children": []
             },
             "hall": {
                 "name": "hall",
                 "type": "dir",
-                "parent": "01-maze",
+                "parent": "maze",
                 "children": ["right", "wrong", "more_wrong"]
             },
                 "right": {
@@ -59,14 +59,50 @@
                             "name": "probable",
                             "type": "dir",
                             "parent": "uncertain",
-                            "children": ["unmistakable"]
+                            "children": ["definite"]
                         },
-                            "unmistakable": {
-                                "name": "unmistakable",
+                            "definite": {
+                                "name": "definite",
                                 "type": "dir",
                                 "parent": "probable",
-                                "children": []
+                                "children": ["fuschia", "chartreuse", "cornflower", "green"]
                             },
+                                "fuschia": {
+                                    "name": "fuschia",
+                                    "type": "dir",
+                                    "parent": "definite",
+                                    "children": []
+                                },
+                                "chartreuse": {
+                                    "name": "chartreuse",
+                                    "type": "dir",
+                                    "parent": "definite",
+                                    "children": []
+                                },
+                                "cornflower": {
+                                    "name": "cornflower",
+                                    "type": "dir",
+                                    "parent": "definite",
+                                    "children": []
+                                },
+                                "green": {
+                                    "name": "green",
+                                    "type": "dir",
+                                    "parent": "definite",
+                                    "children": []
+                                },
+                                    "finish": {
+                                        "name": "finish",
+                                        "type": "dir",
+                                        "parent": "user.color",
+                                        "children": []
+                                    },
+                                    "start": {
+                                        "name": "start",
+                                        "type": "dir",
+                                        "parent": "user.color",
+                                        "children": []
+                                    },
                         "impossible": {
                             "name": "impossible",
                             "type": "dir",

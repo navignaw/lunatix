@@ -7,7 +7,8 @@ var System = {
     directory: {},
     progress: {
         arc: "intro",
-        value: 0
+        value: 0,
+        logs: {}
     },
     user: null
 };
