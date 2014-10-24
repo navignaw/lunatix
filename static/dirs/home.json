@@ -28,13 +28,13 @@
             "wall": {
                 "name": "wall",
                 "type": "dir",
-                "parent": "01-maze",
+                "parent": "maze",
                 "children": []
             },
             "hall": {
                 "name": "hall",
                 "type": "dir",
-                "parent": "01-maze",
+                "parent": "maze",
                 "children": ["right", "wrong", "more_wrong"]
             },
                 "right": {
