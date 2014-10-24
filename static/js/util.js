@@ -127,7 +127,15 @@ var Util = (function() {
                               self.getFullPath(System.dirTree[currentDir.parent]) + '/' + currentDir.name :
                               '~';
         }
-        return fullHome ? '/home' + currentDir.path.substring(1) : currentDir.path;
+        if (fullHome) {
+            return '/home' + currentDir.path.substring(1);
+        }
+
+        // Extra hack to hide path while in maze
+        if ((/01\/maze\/.+/).test(currentDir.path)) {
+            return self.getFullPath(System.dirTree['maze']) + '/???';
+        }
+        return currentDir.path;
     };
 
     self.isExecutable = function(path) {
