@@ -1,18 +1,22 @@
 var Story = (function() {
 
     /* Constants */
-    var UI_GREEN = '#78C778';
-    var UI_RED = '#FF2424';
+    var AI_GREEN = '#78C778';
+    var AI_RED = '#FF2424';
     var LOG_DIR = 'test';
 
     var self = {};
+
+    function unlockDir(dir) {
+        System.dirTree[dir].hidden = false;
+    }
 
     function advanceArc(newArc, newDir) {
         System.progress.arc = newArc;
         System.progress.value = 0;
 
         if (newDir) {
-            System.dirTree[newDir].hidden = false;
+            unlockDir(newDir);
         }
     }
 
@@ -27,8 +31,8 @@ var Story = (function() {
     self.checkStory = function(term, cmd) {
         var prettyPrint = _.partial(Util.prettyPrint, term);
         var animateText = _.partial(Util.animateText, term);
-        var greenAI = _.partial(Util.animateAI, term, UI_GREEN);
-        var redAI = _.partial(Util.animateAI, term, UI_RED);
+        var greenAI = _.partial(Util.animateAI, term, AI_GREEN);
+        var redAI = _.partial(Util.animateAI, term, AI_RED);
         var confirm = _.partial(Util.confirm, term);
         var multichoice = _.partial(Util.multichoice, term);
         var input = _.partial(Util.input, term);
@@ -68,7 +72,7 @@ var Story = (function() {
                                 if (command === '1') {
                                     text = 'Your response of "1" qualifies you for immediate disqualification. ' +
                                            'Provide a revised response.';
-                                    prettyPrint(text, null, {color: UI_RED});
+                                    prettyPrint(text, null, {color: AI_RED});
                                     return true;
                                 }
                                 return false;
@@ -83,7 +87,7 @@ var Story = (function() {
                         }).then(function(result) {
                             System.user.answers.color = result;
                             text = '\nYour companion AI is being generated based on your responses.`200`.`300`.`800`\n' +
-                                   'Generation complete!`200`';
+                                   'Generation complete!`500`';
                             return redAI(text);
                         }).then(function() {
                             System.progress.value++;
@@ -94,9 +98,47 @@ var Story = (function() {
 
                     case 1:
                         // Meeting your companion AI
-                        text = '`800`.`300`.`400`.`500`\nHELLO, HUMAN.`500`\n' +
-                               'My name is LX2048, and I will be your companion AI';
-                        // TODO: finish introduction and unhide 01
+                        text = '`800`Greetings.`500`\n' +
+                               'I am LX2048, and I will be your companion AI.';
+                        greenAI(text).then(function() {
+                            return input();
+                        }).then(function(response) {
+                            text = 'Error: subject has submitted a string not contained in lexicon. ' +
+                                   'Input submitted for human processing.';
+                            prettyPrint(text, null, {color: AI_RED});
+                            return input();
+                        }).then(function(response) {
+                            text = 'During the course of training, subjects are monitored.';
+                            return greenAI(text);
+                        }).then(function() {
+                            return input();
+                        }).then(function(response) {
+                            text = 'This process serves to provide us with important data concerning subject performance.';
+                            return greenAI(text);
+                        }).then(function() {
+                            return input();
+                        }).then(function(response) {
+                            text = 'I will be carrying out this task for the duration of subject training.';
+                            return greenAI(text);
+                        }).then(function() {
+                            return input();
+                        }).then(function(response) {
+                            text = 'According to your responses, it is necessary for you to complete ' +
+                                   'a number of tasks to ensure compliance with minimum standards.\n' +
+                                   'Please Change Directory (cd) to the test/ folder to begin this process.`300`\n' +
+                                   '$> cd test/`400`';
+                            return greenAI(text);
+                        }).then(function() {
+                            System.progress.value++;
+                        });
+                        break;
+
+                    case 2:
+                        // Entering test directory
+                        if (cmd !== 'cd' || System.directory.name !== 'test') break;
+                        text = '$> ./generateTests 01\n' +
+                               '`500`.`200`.`400`.`500`test generation complete. Begin by Changing Directory (cd) into 01/.\n' +
+                               '$> cd 01/';
                         greenAI(text).then(function() {
                             advanceArc('test01', '01');
                         });
@@ -109,9 +151,9 @@ var Story = (function() {
                 var log = System.progress.logs['test01'];
                 switch (System.progress.value) {
                     case 0:
-                        if (System.directory.name !== '01') break;
-                        // TODO: text for initializing test 01
-                        text = 'TODO: Initializing test 01...';
+                        if (cmd !== 'cd' || System.directory.name !== '01') break;
+                        text = 'This task will test your ability to utilize List files (ls) and Change Directory (cd). ' +
+                               'Attempt to follow the maze/ to its completion. Your progress will be tracked.';
                         greenAI(text).then(function() {
                             System.progress.value++;
                             self.checkStory(term, null);
@@ -133,7 +175,7 @@ var Story = (function() {
 
                     case 2:
                         // Maze directory logs
-                        if (_.has(log, System.directory.name)) break;
+                        if (cmd !== 'cd' || _.has(log, System.directory.name)) break;
                         switch (System.directory.name) {
                             case 'wall':
                                 text = 'Subject demonstrates poor understanding of basic physical limitations.';
