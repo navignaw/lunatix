@@ -198,7 +198,28 @@ var Terminal = (function() {
             },
 
             mv: function(cmd, term) {
-                // TODO: move files
+                //TODO: Fix bug with changing the filename
+                
+                var file = cmd.args[0];
+                var targetname = _.last(cmd.args[1].split('/'));
+                var targetdir = _.initial(cmd.args[1].split('/')).join('/');
+                var oldLoc = parseDirectory(file);
+                var newLoc = parseDirectory(targetdir);
+                if (!targetname) targetname = oldLoc.name;
+
+                if (oldLoc && newLoc && targetname) {
+                    if (oldLoc && oldLoc.type !== 'dir' && newLoc.type === 'dir') {
+                        _.pull(System.dirTree[oldLoc.parent].children, oldLoc.name);
+                        newLoc.children.push(oldLoc.name);
+                        oldLoc.parent = newLoc.name;
+                        oldLoc.name = targetname;
+                    } else {
+                        prettyPrint(term, 'mv: ' + _.first(cmd.args) + ': No such file');
+                    }
+                } else {
+                    // Handle case without proper arguments
+                    prettyPrint(term, 'cannot mv without 2 arguments');
+                }
             },
 
             pwd: function(cmd, term) {
