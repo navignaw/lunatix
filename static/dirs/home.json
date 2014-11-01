@@ -61,46 +61,46 @@
                             "parent": "uncertain",
                             "children": ["definite"]
                         },
-                            "/home/test/01/maze/hall/right/uncertain/definite": {
+                            "/home/test/01/maze/hall/right/uncertain/probable/definite": {
                                 "name": "definite",
                                 "type": "dir",
                                 "parent": "probable",
                                 "children": ["fuschia", "chartreuse", "cornflower", "green"]
                             },
-                                "/home/test/01/maze/hall/right/uncertain/definite/fuschia": {
+                                "/home/test/01/maze/hall/right/uncertain/probable/definite/fuschia": {
                                     "name": "fuschia",
                                     "type": "dir",
                                     "parent": "definite",
                                     "children": []
                                 },
-                                "/home/test/01/maze/hall/right/uncertain/definite/chartreuse": {
+                                "/home/test/01/maze/hall/right/uncertain/probable/definite/chartreuse": {
                                     "name": "chartreuse",
                                     "type": "dir",
                                     "parent": "definite",
                                     "children": []
                                 },
-                                "/home/test/01/maze/hall/right/uncertain/definite/cornflower": {
+                                "/home/test/01/maze/hall/right/uncertain/probable/definite/cornflower": {
                                     "name": "cornflower",
                                     "type": "dir",
                                     "parent": "definite",
                                     "children": []
                                 },
-                                "/home/test/01/maze/hall/right/uncertain/definite/green": {
+                                "/home/test/01/maze/hall/right/uncertain/probable/definite/green": {
                                     "name": "green",
                                     "type": "dir",
                                     "parent": "definite",
                                     "children": []
                                 },
-                                    "/home/test/01/maze/finish": {
+                                    "COLOR/finish": {
                                         "name": "finish",
                                         "type": "dir",
-                                        "parent": "{COLOR}",
+                                        "parent": "COLOR",
                                         "children": []
                                     },
-                                    "/home/test/01/maze/start": {
+                                    "COLOR/start": {
                                         "name": "start",
                                         "type": "dir",
-                                        "parent": "{COLOR}",
+                                        "parent": "COLOR",
                                         "children": []
                                     },
                         "/home/test/01/maze/hall/right/uncertain/impossible": {

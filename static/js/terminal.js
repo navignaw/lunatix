@@ -151,7 +151,7 @@ var Terminal = (function() {
                 if (newPath) {
                     var newDir = System.dirTree[newPath];
                     if (newDir.type === 'dir') {
-                        return _.map(Util.getChildren(newDir, newPath), function(child) {
+                        return _.map(Util.getChildren(newPath), function(child) {
                             return System.dirTree[child].name;
                         }).join('\t');
                     } else {

@@ -92,7 +92,8 @@ var Util = (function() {
     };
 
     /* Return array of full paths of all non-hidden children */
-    self.getChildren = function(dir, path) {
+    self.getChildren = function(path) {
+        var dir = System.dirTree[path];
         return _(dir.children).map(function(child) {
             if (child.charAt(0) === '/') {
                 return child;
@@ -130,7 +131,7 @@ var Util = (function() {
                 currentDir = System.dirTree[currentPath];
             } else {
                 // Go to child directory or file
-                var child = _.find(self.getChildren(currentDir, currentPath), function(child) {
+                var child = _.find(self.getChildren(currentPath), function(child) {
                     return System.dirTree[child].name === dirs[i];
                 });
                 if (child) {
@@ -143,9 +144,6 @@ var Util = (function() {
                     return null;
                 }
             }
-            /*if (currentDir.hidden) {
-                return null;
-            }*/
         }
         return currentPath;
     };
@@ -173,35 +171,41 @@ var Util = (function() {
     /* Return array of suggested commands on tab-complete. */
     self.tabComplete = function(term, commands) {
         // TODO: Fix after refactoring: these functions should now take path strings
-        var allChildren = function(dir) {
-            var children = _.filter(dir.children, function(dirOrFile) {
-                return !(System.dirTree[dirOrFile].hidden);
-            });
-            return _.map(children, function(child) {
-                return System.dirTree[child].name;
-            });
-        };
-        var allDirectories = function(dir) {
-            var dirs = _.filter(allChildren(dir), function(dirOrFile) {
-                return (System.dirTree[dirOrFile].type === 'dir') &&
-                       !(System.dirTree[dirOrFile].hidden);
-            });
-            return _.map(dirs, function(dirName) {
-                return dirName + '/';
-            });
-        };
-        var allFiles = function(dir) {
-            return _.filter(allChildren(dir), function(dirOrFile) {
-                return (System.dirTree[dirOrFile].type !== 'dir') &&
-                       !(System.dirTree[dirOrFile].hidden);
-            });
-        };
-
         var str = term.get_command();
         var input = _.last(_.compact(str.split(' '))) || '';
 
-        // TODO: Return relative path to object and prepend to all children
-        // in tabcomplete array.
+        var allChildren = function(path) {
+            return _.map(self.getChildren(path), function(dir) {
+                // TODO: prepend relative path from input to all children
+                /*if (/\//.test(input)) {
+                    return input.replace(/\/[^\/]+$/, System.dirTree[dir].name);
+                }*/
+                return System.dirTree[dir].name;
+            });
+        };
+        var allDirectories = function(path) {
+            return _(self.getChildren(path)).filter(function(dirOrFile) {
+                return System.dirTree[dirOrFile].type === 'dir';
+            }).map(function(dir) {
+                // TODO: prepend relative path from input to all children
+                /*if (/\//.test(input)) {
+                    return input.replace(/\/[^\/]+$/, System.dirTree[dir].name + '/');
+                }*/
+                return System.dirTree[dir].name + '/';
+            }).value();
+        };
+        var allFiles = function(dir) {
+            return _(self.getChildren(path)).filter(function(dirOrFile) {
+                return System.dirTree[dirOrFile].type === 'dir';
+            }).map(function(dir) {
+                // TODO: prepend relative path from input to all children
+                /*if (/\//.test(input)) {
+                    return input.replace(/\/[^\/]+$/, System.dirTree[dir].name);
+                }*/
+                return System.dirTree[dir].name;
+            }).value();
+        };
+
         if ((/^\s*(cat)\s(.*)/).test(str)) {
             return allChildren(self.parseDirectory(input, true));
         } else if ((/^\s*(cd|ls)\s(.*)/).test(str)) {

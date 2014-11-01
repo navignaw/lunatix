@@ -162,8 +162,13 @@ var Story = (function() {
 
                     case 1:
                         // Create logs and custom directories
-                        var COLOR_PARENT_DIR = '/home/test/01/maze/hall/right/uncertain/definite/';
+                        var COLOR_PARENT_DIR = '/home/test/01/maze/hall/right/uncertain/probable/definite/';
+                        // TODO: replace with a call to 'mv' util function when implemented
                         System.dirTree[COLOR_PARENT_DIR + System.user.answers.color].children = ['finish', 'start'];
+                        var finish = System.dirTree['COLOR/finish'];
+                        var start = System.dirTree['COLOR/start'];
+                        System.dirTree[COLOR_PARENT_DIR + System.user.answers.color + '/finish'] = finish;
+                        System.dirTree[COLOR_PARENT_DIR + System.user.answers.color + '/start'] = start;
                         System.progress.logs['test01'] = {
                             text: [],
                             good: 0, // total of 7
@@ -282,14 +287,16 @@ var Story = (function() {
                             });
                         }
                         if (System.directory.name === 'start') {
-                            System.directory = System.dirTree['maze']; // lol
+                            System.path = '/home/test/01/maze';
+                            System.directory = System.dirTree[System.path]; // lol
                         }
                         break;
 
                     case 3:
                         // Successfully traversed maze!
                         text = 'gj m8 you win the demo!\n';
-                        System.directory = System.dirTree['01'];
+                        System.path = '/home/test/01';
+                        System.directory = System.dirTree[System.path];
                         greenAI(text).then(function() {
                             // Save log into new file and print results.
                             var score = (log.good + 23 - log.bad);
