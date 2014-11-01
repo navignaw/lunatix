@@ -5,6 +5,7 @@ var System = {
     version: '0.0.1',
     dirTree: {},
     directory: {},
+    path: '/home',
     progress: {
         arc: "intro",
         value: 0,

@@ -1,215 +1,215 @@
 {
-    "home": {
+    "/home": {
         "name": "home",
         "type": "dir",
         "parent": "",
         "children": ["test"]
     },
-    "test": {
+    "/home/test": {
         "name": "test",
         "type": "dir",
         "parent": "home",
         "children": ["01", "02", "03"]
     },
 
-    "01": {
+    "/home/test/01": {
         "name": "01",
         "type": "dir",
         "hidden": true,
         "parent": "test",
         "children": ["maze"]
     },
-        "maze": {
+        "/home/test/01/maze": {
             "name": "maze",
             "type": "dir",
             "parent": "01",
             "children": ["wall", "hall"]
         },
-            "wall": {
+            "/home/test/01/maze/wall": {
                 "name": "wall",
                 "type": "dir",
                 "parent": "maze",
                 "children": []
             },
-            "hall": {
+            "/home/test/01/maze/hall": {
                 "name": "hall",
                 "type": "dir",
                 "parent": "maze",
                 "children": ["right", "wrong", "more_wrong"]
             },
-                "right": {
+                "/home/test/01/maze/hall/right": {
                     "name": "right",
                     "type": "dir",
                     "parent": "hall",
                     "children": ["uncertain", "dubious"]
                 },
-                    "uncertain": {
+                    "/home/test/01/maze/hall/right/uncertain": {
                         "name": "uncertain",
                         "type": "dir",
                         "parent": "right",
                         "children": ["vague", "probable", "impossible"]
                     },
-                        "vague": {
+                        "/home/test/01/maze/hall/right/uncertain/vague": {
                             "name": "vague",
                             "type": "dir",
                             "parent": "uncertain",
-                            "children": ["uncertain"]
+                            "children": ["/home/test/01/maze/hall/right/uncertain"]
                         },
-                        "probable": {
+                        "/home/test/01/maze/hall/right/uncertain/probable": {
                             "name": "probable",
                             "type": "dir",
                             "parent": "uncertain",
                             "children": ["definite"]
                         },
-                            "definite": {
+                            "/home/test/01/maze/hall/right/uncertain/definite": {
                                 "name": "definite",
                                 "type": "dir",
                                 "parent": "probable",
                                 "children": ["fuschia", "chartreuse", "cornflower", "green"]
                             },
-                                "fuschia": {
+                                "/home/test/01/maze/hall/right/uncertain/definite/fuschia": {
                                     "name": "fuschia",
                                     "type": "dir",
                                     "parent": "definite",
                                     "children": []
                                 },
-                                "chartreuse": {
+                                "/home/test/01/maze/hall/right/uncertain/definite/chartreuse": {
                                     "name": "chartreuse",
                                     "type": "dir",
                                     "parent": "definite",
                                     "children": []
                                 },
-                                "cornflower": {
+                                "/home/test/01/maze/hall/right/uncertain/definite/cornflower": {
                                     "name": "cornflower",
                                     "type": "dir",
                                     "parent": "definite",
                                     "children": []
                                 },
-                                "green": {
+                                "/home/test/01/maze/hall/right/uncertain/definite/green": {
                                     "name": "green",
                                     "type": "dir",
                                     "parent": "definite",
                                     "children": []
                                 },
-                                    "finish": {
+                                    "/home/test/01/maze/finish": {
                                         "name": "finish",
                                         "type": "dir",
-                                        "parent": "user.color",
+                                        "parent": "{COLOR}",
                                         "children": []
                                     },
-                                    "start": {
+                                    "/home/test/01/maze/start": {
                                         "name": "start",
                                         "type": "dir",
-                                        "parent": "user.color",
+                                        "parent": "{COLOR}",
                                         "children": []
                                     },
-                        "impossible": {
+                        "/home/test/01/maze/hall/right/uncertain/impossible": {
                             "name": "impossible",
                             "type": "dir",
                             "parent": "uncertain",
                             "children": []
                         },
-                    "dubious": {
+                    "/home/test/01/maze/hall/right/dubious": {
                         "name": "dubious",
                         "type": "dir",
                         "parent": "right",
                         "children": ["impractical", "absurd"]
                     },
-                        "impractical": {
+                        "/home/test/01/maze/hall/right/dubious/impractical": {
                             "name": "impractical",
                             "type": "dir",
                             "parent": "dubious",
                             "children": []
                         },
-                        "absurd": {
+                        "/home/test/01/maze/hall/right/dubious/absurd": {
                             "name": "absurd",
                             "type": "dir",
                             "parent": "dubious",
                             "children": []
                         },
-                "wrong": {
+                "/home/test/01/maze/hall/wrong": {
                     "name": "wrong",
                     "type": "dir",
                     "parent": "hall",
                     "children": ["still_wrong"]
                 },
-                    "still_wrong": {
+                    "/home/test/01/maze/hall/wrong/still_wrong": {
                         "name": "still_wrong",
                         "type": "dir",
                         "parent": "wrong",
                         "children": []
                     },
-                "more_wrong": {
+                "/home/test/01/maze/hall/more_wrong": {
                     "name": "more_wrong",
                     "type": "dir",
                     "parent": "hall",
                     "children": []
                 },
 
-    "02": {
+    "/home/test/02": {
         "name": "02",
         "type": "dir",
         "hidden": true,
         "parent": "test",
         "children": ["clutter"]
     },
-        "clutter": {
+        "/home/test/02/clutter": {
             "name": "clutter",
             "type": "dir",
             "parent": "02",
             "children": ["helpful.txt"]
         },
-            "helpful.txt": {
+            "/home/test/02/clutter/helpful.txt": {
                 "name": "helpful.txt",
                 "type": "txt",
                 "parent": "clutter",
                 "children": [],
-                "text": "./u______b__"
+                "text": "u______b__"
             },
-            "placeholder.txt": {
+            "/home/test/02/clutter/placeholder.txt": {
                 "name": "placeholder.txt",
                 "type": "txt",
                 "parent": "clutter",
                 "children": [],
-                "text": "./_n____a___"
+                "text": "_n____a___"
             },
-            "unhelpful.txt": {
+            "/home/test/02/clutter/unhelpful.txt": {
                 "name": "unhelpful.txt",
                 "type": "txt",
                 "parent": "clutter",
                 "children": [],
-                "text": "./__tast____"
+                "text": "__tast____"
             },
-            "food.txt": {
+            "/home/test/02/clutter/food.txt": {
                 "name": "food.txt",
                 "type": "txt",
                 "parent": "clutter",
                 "children": [],
-                "text": "./__chew____"
+                "text": "__chew____"
             },
-            "first.txt": {
+            "/home/test/02/clutter/first.txt": {
                 "name": "first.txt",
                 "type": "txt",
                 "parent": "clutter",
                 "children": [],
-                "text": "./________le"
+                "text": "________le"
             },
-            "answer.txt": {
+            "/home/test/02/clutter/answer.txt": {
                 "name": "answer.txt",
                 "type": "txt",
                 "parent": "clutter",
                 "children": [],
-                "text": "./__solv____"
+                "text": "__solv____"
             },
 
-    "03": {
+    "/home/test/03": {
         "name": "03",
         "type": "dir",
         "hidden": true,
         "parent": "test",
         "children": ["animalSort"]
     },
-        "animalSort": {
+        "/home/test/03/animalSort": {
             "name": "animalSort",
             "type": "dir",
             "parent": "03",

@@ -24,7 +24,7 @@ var Terminal = (function() {
                         Util.log(System.user);
                         File.getDirectory('home.json', function(json) {
                             System.dirTree = json;
-                            System.directory = json["home"];
+                            System.directory = json[System.path];
                             term.push(self.interpreter, self.options.main);
                             term.clear();
                             term.greetings();
@@ -47,8 +47,9 @@ var Terminal = (function() {
         commands: {
             cat: function(cmd, term) {
                 var dir = _.first(cmd.args);
-                var newFile = dir ? parseDirectory(dir) : System.directory;
-                if (newFile) {
+                var newPath = dir ? parseDirectory(dir) : System.path;
+                if (newPath) {
+                    var newFile = System.dirTree[newPath];
                     if (newFile.type !== 'dir') {
                         return newFile.text;
                     } else {
@@ -63,10 +64,11 @@ var Terminal = (function() {
                 // TODO: Improve error messages
                 var dir = _.first(cmd.args);
                 if (dir) {
-                    var newDir = parseDirectory(dir);
-                    if (newDir) {
-                        // TODO: what if they don't have permission to access directory?
+                    var newPath = parseDirectory(dir);
+                    if (newPath) {
+                        var newDir = System.dirTree[newPath];
                         if (newDir.type === 'dir') {
+                            System.path = newPath;
                             System.directory = newDir;
                         } else {
                             prettyPrint(term, 'cd: ' + cmd.rest + ' is not a directory');
@@ -76,6 +78,7 @@ var Terminal = (function() {
                     }
                 } else {
                     // Handle case with no arguments
+                    // TODO: add AI script text
                     prettyPrint(term, 'cannot cd without arguments');
                 }
             },
@@ -144,17 +147,15 @@ var Terminal = (function() {
 
             ls: function(cmd, term) {
                 var dir = _.first(cmd.args);
-                var newDir = dir ? parseDirectory(dir) : System.directory;
-                if (newDir) {
+                var newPath = dir ? parseDirectory(dir) : System.path;
+                if (newPath) {
+                    var newDir = System.dirTree[newPath];
                     if (newDir.type === 'dir') {
-                        var children = _.filter(newDir.children, function(child) {
-                            return !(System.dirTree[child].hidden);
-                        });
-                        return _.map(children, function(child) {
+                        return _.map(Util.getChildren(newDir, newPath), function(child) {
                             return System.dirTree[child].name;
                         }).join('\t');
                     } else {
-                        return newDir.name;
+                        return dir;
                     }
                 } else {
                     prettyPrint(term, 'ls: ' + cmd.rest + ': directory not found');
@@ -199,7 +200,7 @@ var Terminal = (function() {
 
             mv: function(cmd, term) {
                 //TODO: Fix bug with changing the filename
-                
+                // Fix after refactoring! parseDirectory now returns a path string
                 var file = cmd.args[0];
                 var targetname = _.last(cmd.args[1].split('/'));
                 var targetdir = _.initial(cmd.args[1].split('/')).join('/');

@@ -99,7 +99,7 @@ var Story = (function() {
                     case 1:
                         // Meeting your companion AI
                         text = '`800`Greetings.`500`\n' +
-                               'I am LX2048, and I will be your companion AI.';
+                               'I am LX2084, and I will be your companion AI.';
                         greenAI(text).then(function() {
                             return input();
                         }).then(function(response) {
@@ -140,7 +140,7 @@ var Story = (function() {
                                '`500`.`200`.`400`.`500`test generation complete. Begin by Changing Directory (cd) into 01/.\n' +
                                '$> cd 01/';
                         greenAI(text).then(function() {
-                            advanceArc('test01', '01');
+                            advanceArc('test01', '/home/test/01');
                         });
                         break;
                 }
@@ -162,9 +162,8 @@ var Story = (function() {
 
                     case 1:
                         // Create logs and custom directories
-                        System.dirTree[System.user.answers.color].children = ['finish', 'start'];
-                        System.dirTree['finish'].parent = System.user.answers.color;
-                        System.dirTree['start'].parent = System.user.answers.color;
+                        var COLOR_PARENT_DIR = '/home/test/01/maze/hall/right/uncertain/definite/';
+                        System.dirTree[COLOR_PARENT_DIR + System.user.answers.color].children = ['finish', 'start'];
                         System.progress.logs['test01'] = {
                             text: [],
                             good: 0, // total of 7
@@ -298,7 +297,7 @@ var Story = (function() {
                             text = 'Results:\n' + saveLog('test01') +
                                    '\nScore: ' + score.toString() + '/30 (' + percentage.toString() + '%)';
                             prettyPrint(text);
-                            advanceArc('test02', '02');
+                            advanceArc('test02', '/home/test/02');
                         });
                         break;
                 }

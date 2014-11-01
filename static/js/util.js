@@ -1,6 +1,7 @@
 /* Utility and helper functions */
 var Util = (function() {
 
+    var HOME_DIR = '/home';
     var self = {};
 
     String.prototype.capitalize = function() {
@@ -84,58 +85,84 @@ var Util = (function() {
         };
     };
 
-    /* Process path and return file object or null if path is invalid.
+    /* Trim directory or file from path after last / */
+    self.getParent = function(path) {
+        if (path === HOME_DIR) return null;
+        return path.replace(/\/[^\/]+$/, '');
+    };
+
+    /* Return array of full paths of all non-hidden children */
+    self.getChildren = function(dir, path) {
+        return _(dir.children).map(function(child) {
+            if (child.charAt(0) === '/') {
+                return child;
+            } else {
+                return path + '/' + child;
+            }
+        }).filter(function(child) {
+            return !System.dirTree[child].hidden;
+        }).value();
+    };
+
+    /* Process path and return new path or null if path is invalid.
      * If partial, returns last valid directory in string.
      */
     self.parseDirectory = function(path, partial) {
         // TODO: check permissions?
         var dirs = _.compact(path.split('/'));
         var currentDir = System.directory;
+        var currentPath = System.path;
         for (var i = 0; i < dirs.length; i++) {
             if (dirs[i] === '.') {
                 continue;
             } else if (dirs[i] === '..') {
                 // Go up a level
-                if (currentDir.parent) {
-                    currentDir = System.dirTree[currentDir.parent];
+                currentPath = self.getParent(currentPath);
+                if (currentPath) {
+                    currentDir = System.dirTree[currentPath];
                 } else {
                     self.log('At root directory, cannot go up!');
                     return null;
                 }
             } else if (i === 0 && (dirs[i] === 'home' || dirs[i] === '~')) {
-                currentDir = System.dirTree['home'];
-            } else if (_.contains(currentDir.children, dirs[i])) {
-                currentDir = System.dirTree[dirs[i]];
-            } else if (partial) {
-                break;
+                // Return to home directory
+                currentPath = HOME_DIR;
+                currentDir = System.dirTree[currentPath];
             } else {
-                self.log('Directory not found:', path);
-                return null;
+                // Go to child directory or file
+                var child = _.find(self.getChildren(currentDir, currentPath), function(child) {
+                    return System.dirTree[child].name === dirs[i];
+                });
+                if (child) {
+                    currentPath = child;
+                    currentDir = System.dirTree[child];
+                } else if (partial) {
+                    break;
+                } else {
+                    self.log('Directory not found:', path);
+                    return null;
+                }
             }
-            if (currentDir.hidden) {
+            /*if (currentDir.hidden) {
                 return null;
-            }
+            }*/
         }
-        return currentDir;
+        return currentPath;
     };
 
     /* Return full path of file or directory */
-    self.getFullPath = function(dir, fullHome) {
-        var currentDir = dir || System.directory;
-        if (!currentDir.path) {
-            currentDir.path = currentDir.parent ?
-                              self.getFullPath(System.dirTree[currentDir.parent]) + '/' + currentDir.name :
-                              '~';
-        }
+    self.getFullPath = function(path, fullHome) {
+        var currentPath = path || System.path;
         if (fullHome) {
-            return '/home' + currentDir.path.substring(1);
+            return currentPath;
         }
+        currentPath = currentPath.replace(new RegExp('^' + HOME_DIR), '~');
 
         // Extra hack to hide path while in maze
-        if ((/01\/maze\/.+/).test(currentDir.path)) {
-            return self.getFullPath(System.dirTree['maze']) + '/???';
+        if ((/01\/maze\/.+/).test(currentPath)) {
+            currentPath = currentPath.replace(/\/maze\/.+/, '/maze/???');
         }
-        return currentDir.path;
+        return currentPath;
     };
 
     self.isExecutable = function(path) {
@@ -143,8 +170,9 @@ var Util = (function() {
         return false;
     };
 
+    /* Return array of suggested commands on tab-complete. */
     self.tabComplete = function(term, commands) {
-        // Return array of suggested commands on tab-complete.
+        // TODO: Fix after refactoring: these functions should now take path strings
         var allChildren = function(dir) {
             var children = _.filter(dir.children, function(dirOrFile) {
                 return !(System.dirTree[dirOrFile].hidden);
