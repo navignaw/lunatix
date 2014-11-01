@@ -28,7 +28,7 @@ var Story = (function() {
     }
 
     /* Check System variables after every command in order to advance the story. */
-    self.checkStory = function(term, cmd) {
+    self.checkStory = function(term, cmd, error) {
         var prettyPrint = _.partial(Util.prettyPrint, term);
         var animateText = _.partial(Util.animateText, term);
         var greenAI = _.partial(Util.animateAI, term, AI_GREEN);
@@ -134,6 +134,18 @@ var Story = (function() {
                         break;
 
                     case 2:
+                        // Invalid command
+                        if (error) {
+                            if (cmd === 'cd') {
+                                if (error.type === TermError.Type.INVALID_ARGUMENTS)
+                                    text = 'Subject must provide an argument to cd into.';
+                                else if (error.type === TermError.Type.DIRECTORY_NOT_FOUND)
+                                    text = 'Subject has attempted to cd into non-existent directory.';
+                                redAI(text);
+                            }
+                            return;
+                        }
+
                         // Entering test directory
                         if (cmd !== 'cd' || System.directory.name !== 'test') break;
                         text = '$> ./generateTests 01\n' +
@@ -313,6 +325,11 @@ var Story = (function() {
             // Test 02: Clutter
             case 'test02':
                 break;
+        }
+
+        // If error is not handled in story text, print default message to terminal.
+        if (error) {
+            prettyPrint(error.message);
         }
     };
 

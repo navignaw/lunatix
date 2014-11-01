@@ -41,7 +41,8 @@ var Terminal = (function() {
         },
 
         /* Accepted commands.
-         * Return a string to allow piping or redirecting result.
+         * Return a string to allow piping or redirecting result,
+         * or an TermError object with a default message.
          * End result will be printed in terminal.
          */
         commands: {
@@ -71,15 +72,14 @@ var Terminal = (function() {
                             System.path = newPath;
                             System.directory = newDir;
                         } else {
-                            prettyPrint(term, 'cd: ' + cmd.rest + ' is not a directory');
+                            return new TermError(TermError.Type.INVALID_FILE_TYPE, 'cd: ' + cmd.rest + ' is not a directory');
                         }
                     } else {
-                        prettyPrint(term, 'cd: ' + cmd.rest + ': No such file or directory');
+                        return new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'cd: ' + cmd.rest + ': No such file or directory');
                     }
                 } else {
                     // Handle case with no arguments
-                    // TODO: add AI script text
-                    prettyPrint(term, 'cannot cd without arguments');
+                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cd without arguments');
                 }
             },
 
@@ -103,9 +103,9 @@ var Terminal = (function() {
                 // Only available to debuggers or console hackers!
                 // Lying is bad, but we don't want to get their hopes up.
                 if (!System.debug) {
-                    prettyPrint(term, 'eval: command not found');
+                    return new TermError(TermError.Type.COMMAND_NOT_FOUND, 'eval: command not found');
                 } else if (cmd.rest === '') {
-                    prettyPrint(term, 'please enter script to eval.');
+                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'please enter script to eval.');
                 }
                 try {
                     var result = window.eval(cmd.rest);
@@ -158,7 +158,7 @@ var Terminal = (function() {
                         return dir;
                     }
                 } else {
-                    prettyPrint(term, 'ls: ' + cmd.rest + ': directory not found');
+                    return new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'ls: ' + cmd.rest + ': directory not found');
                 }
             },
 
@@ -215,11 +215,11 @@ var Terminal = (function() {
                         oldLoc.parent = newLoc.name;
                         oldLoc.name = targetname;
                     } else {
-                        prettyPrint(term, 'mv: ' + _.first(cmd.args) + ': No such file');
+                         return new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + _.first(cmd.args) + ': No such file');
                     }
                 } else {
                     // Handle case without proper arguments
-                    prettyPrint(term, 'cannot mv without 2 arguments');
+                     return new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot mv without 2 arguments');
                 }
             },
 
@@ -241,7 +241,7 @@ var Terminal = (function() {
                 // Only available to debuggers or console hackers!
                 // Lying is bad, but we don't want to get their hopes up.
                 if (!System.debug) {
-                    prettyPrint(term, 'test: command not found');
+                    return new TermError(TermError.Type.COMMAND_NOT_FOUND, 'test: command not found');
                 }
                 switch (cmd.args[0]) {
                     case 'confirm':
@@ -324,22 +324,22 @@ var Terminal = (function() {
                             break;
                         }
                     } else {
-                        prettyPrint(term, cmd.name + ': permission denied');
-                        return;
+                        result = new TermError(TermError.Type.PERMISSION_DENIED, cmd.name + ': permission denied');
+                        break;
                     }
                 } else if (Util.isExecutable(cmd.name)) {
                     // TODO: execute file if permissions are okay.
                 } else {
-                    prettyPrint(term, cmd.name + ': command not found');
-                    return;
+                    result = new TermError(TermError.Type.COMMAND_NOT_FOUND, cmd.name + ': command not found');
+                    break;
                 }
             }
 
             // Print final result to terminal and check to advance story.
-            if (result) {
+            if (result && _.isString(result)) {
                 prettyPrint(term, result);
             }
-            Story.checkStory(term, name);
+            Story.checkStory(term, name, result && result.isError ? result : null);
         },
 
         /* Confirmation terminal: awaits y/n input */
