@@ -157,49 +157,48 @@
             "name": "clutter",
             "type": "dir",
             "parent": "02",
-            "children": ["helpful.txt"]
+            "children": ["helpful.txt", "placeholder.txt", "unhelpful.txt", "food.txt", "first.txt", "answer.txt", "submit"]
         },
             "/home/test/02/clutter/helpful.txt": {
                 "name": "helpful.txt",
                 "type": "txt",
                 "parent": "clutter",
-                "children": [],
                 "text": "u______b__"
             },
             "/home/test/02/clutter/placeholder.txt": {
                 "name": "placeholder.txt",
                 "type": "txt",
                 "parent": "clutter",
-                "children": [],
                 "text": "_n____a___"
             },
             "/home/test/02/clutter/unhelpful.txt": {
                 "name": "unhelpful.txt",
                 "type": "txt",
                 "parent": "clutter",
-                "children": [],
                 "text": "__tast____"
             },
             "/home/test/02/clutter/food.txt": {
                 "name": "food.txt",
                 "type": "txt",
                 "parent": "clutter",
-                "children": [],
                 "text": "__chew____"
             },
             "/home/test/02/clutter/first.txt": {
                 "name": "first.txt",
                 "type": "txt",
                 "parent": "clutter",
-                "children": [],
                 "text": "________le"
             },
             "/home/test/02/clutter/answer.txt": {
                 "name": "answer.txt",
                 "type": "txt",
                 "parent": "clutter",
-                "children": [],
                 "text": "__solv____"
+            },
+            "/home/test/02/clutter/submit": {
+                "name": "submit",
+                "type": "exe",
+                "parent": "clutter"
             },
 
     "/home/test/03": {

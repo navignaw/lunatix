@@ -11,5 +11,6 @@ TermError.Type = Object.freeze({
     'INVALID_FILE_TYPE': 3,
     'PERMISSION_DENIED': 403,
     'DIRECTORY_NOT_FOUND': 404,
-    'FILE_NOT_FOUND': 405
+    'FILE_NOT_FOUND': 405,
+    'MISCELLANEOUS': 999
 });

@@ -94,6 +94,9 @@ var Util = (function() {
     /* Return array of full paths of all non-hidden children */
     self.getChildren = function(path) {
         var dir = System.dirTree[path];
+        if (dir.type !== 'dir') {
+            return [];
+        }
         return _(dir.children).map(function(child) {
             if (child.charAt(0) === '/') {
                 return child;
@@ -163,11 +166,6 @@ var Util = (function() {
         return currentPath;
     };
 
-    self.isExecutable = function(path) {
-        // TODO: Check if file at path exists and is executable.
-        return false;
-    };
-
     /* Return array of suggested commands on tab-complete. */
     self.tabComplete = function(term, commands) {
         // TODO: Fix after refactoring: these functions should now take path strings
@@ -175,12 +173,12 @@ var Util = (function() {
         var input = _.last(_.compact(str.split(' '))) || '';
 
         var allChildren = function(path) {
-            return _.map(self.getChildren(path), function(dir) {
+            return _.map(self.getChildren(path), function(dirOrFile) {
                 // TODO: prepend relative path from input to all children
                 /*if (/\//.test(input)) {
-                    return input.replace(/\/[^\/]+$/, System.dirTree[dir].name);
+                    return input.replace(/\/[^\/]+$/, System.dirTree[dirOrFile].name);
                 }*/
-                return System.dirTree[dir].name;
+                return System.dirTree[dirOrFile].name;
             });
         };
         var allDirectories = function(path) {
@@ -194,15 +192,15 @@ var Util = (function() {
                 return System.dirTree[dir].name + '/';
             }).value();
         };
-        var allFiles = function(dir) {
+        var allFiles = function(path) {
             return _(self.getChildren(path)).filter(function(dirOrFile) {
-                return System.dirTree[dirOrFile].type === 'dir';
-            }).map(function(dir) {
+                return System.dirTree[dirOrFile].type !== 'dir';
+            }).map(function(file) {
                 // TODO: prepend relative path from input to all children
                 /*if (/\//.test(input)) {
-                    return input.replace(/\/[^\/]+$/, System.dirTree[dir].name);
+                    return input.replace(/\/[^\/]+$/, System.dirTree[file].name);
                 }*/
-                return System.dirTree[dir].name;
+                return System.dirTree[file].name;
             }).value();
         };
 

@@ -312,6 +312,10 @@ var Terminal = (function() {
             var commands = command.split('|');
             var name;
 
+            var children = _.map(Util.getChildren(System.path), function(child) {
+                return System.dirTree[child].name;
+            });
+
             // Loop through piped commands, appending each result onto next command.
             for (var i = 0; i < commands.length; i++) {
                 var cmd = Util.parseCommand([commands[i], result].join(' '));
@@ -331,8 +335,15 @@ var Terminal = (function() {
                         result = new TermError(TermError.Type.PERMISSION_DENIED, cmd.name + ': permission denied');
                         break;
                     }
-                } else if (Util.isExecutable(cmd.name)) {
-                    // TODO: execute file if permissions are okay.
+                } else if ((/^\.\/\w+/).test(cmd.name)) {
+                    // Run executable if file exists and user has valid permissions.
+                    // TODO: for now, assume executables are only run in the same directory.
+                    var file = cmd.name.substring(2);
+                    if (_.contains(children, file)) {
+                        result = Executable.executeFile(file, cmd);
+                    } else {
+                        result = new TermError(TermError.Type.FILE_NOT_FOUND, cmd.name + ': no such file or directory');
+                    }
                 } else {
                     result = new TermError(TermError.Type.COMMAND_NOT_FOUND, cmd.name + ': command not found');
                     break;
