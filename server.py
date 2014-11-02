@@ -27,20 +27,6 @@ def logout():
     return jsonify(success=True)
 
 
-@app.route('/commands/<template>')
-def get_command_template(template):
-    try:
-        return render_template('commands/%s.html' % template)
-    except TemplateNotFound:
-        abort(404)
-
-@app.route('/man/<template>')
-def get_man_template(template):
-    try:
-        return render_template('man/%s.html' % template)
-    except TemplateNotFound:
-        abort(404)
-
 # Creepy government stuff
 @app.route('/user/ip')
 def get_ip():

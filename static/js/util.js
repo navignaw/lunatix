@@ -247,12 +247,12 @@ var Util = (function() {
     };
 
     /* Echo HTML from template */
-    self.echoTemplate = function(term, type, template) {
+    self.echoTemplate = function(term, template) {
         term.pause();
 
         $.ajax({
             type: 'GET',
-            url: $app.SCRIPT_ROOT + '/' + type + '/' + template,
+            url: [$app.SCRIPT_ROOT, '/static/messages/', template, '.html'].join(''),
             success: function(html) {
                 term.echo(html, {raw: true});
             }

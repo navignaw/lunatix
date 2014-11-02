@@ -27,7 +27,7 @@ var File = {};
 File.getDirectory = function(name, callback) {
     $.ajax({
         type: 'GET',
-        url: $app.SCRIPT_ROOT + '/static/dirs/' + name,
+        url: [$app.SCRIPT_ROOT, '/static/dirs/', name].join(''),
         success: function(json) {
             // TODO: Deal with weird bug when retrieving json from server
             callback(_.isString(json) ? $.parseJSON(json) : json);

@@ -92,7 +92,7 @@ var Terminal = (function() {
             },
 
             credits: function(cmd, term) {
-                echoTemplate(term, 'commands', 'credits');
+                echoTemplate(term, 'credits');
             },
 
             echo: function(cmd, term) {
@@ -167,7 +167,7 @@ var Terminal = (function() {
                     var command = cmd.args[0];
                     if (_.contains(System.user.commands, command)) {
                         // Load manual for command.
-                        echoTemplate(term, 'man', cmd.args[0]);
+                        echoTemplate(term, cmd.args[0]);
                         return;
                     } else {
                         return 'No manual entry found for `[[i;#fff;]' + command + ']`.\n' +
@@ -262,7 +262,11 @@ var Terminal = (function() {
                         break;
 
                     case 'echoTemplate':
-                        echoTemplate(term, 'commands', 'doesNotExist');
+                        echoTemplate(term, 'doesNotExist');
+                        break;
+
+                    case 'panic':
+                        echoTemplate(term, 'panic');
                         break;
 
                     case 'prettyPrint':
@@ -292,7 +296,7 @@ var Terminal = (function() {
 
                     default:
                         prettyPrint(term, 'Invalid command. Options are: ' + [
-                            'chain', 'confirm', 'animateText', 'echoTemplate', 'prettyPrint', 'command']
+                            'chain', 'confirm', 'animateText', 'echoTemplate', 'panic', 'prettyPrint', 'command']
                             .join(', '));
                 }
             },
