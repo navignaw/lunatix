@@ -5,6 +5,11 @@ var Terminal = (function() {
     var prettyPrint = Util.prettyPrint;
     var echoTemplate = Util.echoTemplate;
 
+    // TODO: refactor colors into Util
+    var DIR_BLUE = '#0080FF';
+    var AI_GREEN = '#78C778';
+    var AI_RED = '#FF2424';
+
     var self = {
 
         /* Login interpreter */
@@ -155,7 +160,13 @@ var Terminal = (function() {
                     var newDir = System.dirTree[newPath];
                     if (newDir.type === 'dir') {
                         return _.map(Util.getChildren(newPath), function(child) {
-                            return System.dirTree[child].name;
+                            var fileOrDir = System.dirTree[child];
+                            if (fileOrDir.type === 'dir') {
+                                return ['[[;', DIR_BLUE, ';]', fileOrDir.name, '/]'].join('');
+                            } else if (fileOrDir.type === 'exe') {
+                                return ['[[;', AI_GREEN, ';]', fileOrDir.name, ']'].join('');
+                            }
+                            return fileOrDir.name;
                         }).join('\t');
                     } else {
                         return dir;

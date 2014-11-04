@@ -1,8 +1,10 @@
 var Story = (function() {
 
     /* Constants */
+    // TODO: refactor colors into Util?
     var AI_GREEN = '#78C778';
     var AI_RED = '#FF2424';
+    var DIR_BLUE = '#0080FF';
     var LOG_DIR = 'test';
 
     var self = {};
@@ -113,8 +115,8 @@ var Story = (function() {
                         greenAI(text).then(function() {
                             return input();
                         }).then(function(response) {
-                            text = 'According to your responses, it is necessary for you to complete a brief training program ' +
-                            'to ensure compliance with minimum standards.\nDuring this program, you will be monitored.';
+                            text = 'In accordance with Literacy Act 3249, it is necessary for you to complete a brief training program.\n' +
+                            'During this program, you will be monitored to ensure compliance with minimum standards.';
                             return greenAI(text);
                         }).then(function() {
                             return input();
@@ -445,11 +447,93 @@ var Story = (function() {
                             // TODO: save log file
                             advanceArc('test03', '/home/test/03');
                         });
+                        break;
                 }
                 break;
 
             // Test 03: animalSort
             case 'test03':
+                switch (System.progress.value) {
+                    case 0:
+                        if (cmd !== 'cd' || System.directory.name !== 'animalSort') break;
+
+                        System.progress.logs['test03'] = {
+                            text: [],
+                            moves: 0
+                        };
+                        text = 'For this task, you will be Moving and renaming <mv> files. ' +
+                               'Assign the correct name to each animal, and sort them into their correct directories.\n' +
+                               'When you are finished, run the executable ./submit. Your progress will be tracked.';
+                        greenAI(text).then(function() {
+                            System.progress.value++;
+                        });
+                        break;
+
+                    case 1:
+                        log = System.progress.logs['test03'];
+                        if (error) {
+                            if (cmd === 'cat') {
+                                if (error.type === TermError.Type.INVALID_ARGUMENTS)
+                                    text = 'cat requires you to choose a file to view. Remember, choose wisely.';
+                            }
+                            else if (cmd !== 'ls') {
+                                text = 'Examination of the files is impossible without the usage of <ls> and <cat>.\n' +
+                                       'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
+                            }
+                            if (text) {
+                                redAI(text);
+                                return;
+                            }
+                        } else if (cmd === 'mv') {
+                            log.moves++;
+                        }
+                        break;
+
+                    case 2:
+                        // Correct sorting submitted
+                        // TODO: unhard-code score; 6 is best case
+                        log = System.progress.logs['test03'];
+                        text = 'Results:\n' + 'Number of moves: ' + log.moves + '\n' +
+                               'Score: O(n) - relatively efficient\n';
+                        prettyPrint(text);
+                        text = 'Log saved to results/.`400`\n' +
+                               'As Asimov would say, a hard worker earns relaxing breaks. Visit test/04 for your reward.`200`\n' +
+                               '$> sudo chmod u+rx /home/test/04';
+                        greenAI(text).then(function() {
+                            // TODO: save log file
+                            advanceArc('test04', '/home/test/04');
+                        });
+                        break;
+                }
+                break;
+
+            // Test 04: relaxation station
+            case 'test04':
+                switch (System.progress.value) {
+                    case 0:
+                        if (cmd !== 'cd' || System.directory.name !== '04') break;
+
+                        System.progress.logs['test04'] = {
+                            text: [],
+                            good: 0,
+                            bad: 0
+                        };
+                        text = 'Welcome to the Relaxation Station! In accordance with the Sedation Act 1918, ' +
+                               'we have included an optional rest period to ensure our citizens’ well-being.\n' +
+                               'To begin, run the executable ./relax.';
+                        greenAI(text).then(function() {
+                            System.progress.value++;
+                        });
+                        break;
+
+                    case 1:
+                        break;
+
+                    case 2:
+                        // Ctrl-C'd out
+                        // TODO: print results
+                        break;
+                }
                 break;
         }
 

@@ -185,7 +185,7 @@
         "/home/test/03/animalSort": {
             "name": "animalSort",
             "type": "dir",
-            "children": ["monkey", "sheep", "pig", "dog", "platypus", "cat"]
+            "children": ["monkey", "sheep", "pig", "dog", "platypus", "cat", "you", "me", "him", "her", "it", "they", "submit"]
         },
             "/home/test/03/animalSort/monkey": {
                 "name": "monkey",
@@ -217,6 +217,41 @@
                 "type": "unicorn",
                 "text": "\n                  .\n                 /'\n                //\n            .  //\n            |\//7\n           /' \" \\\n          .   . .\n          | (    \\     '._\n          |  '._  '    '. '\n          /    \\'-'_---. ) )\n         .              :.'\n         |               \\\n         | .    .   .     .\n         ' .    |  |      |\n          \\^   /_-':     /\n          / | |    '\\  .'\n         / /| |     \\\\  |\n         \\ \\( )     // /\n          \\ | |    // /\n           L! !   // /\n            [_]  L[_|\n\n                THEY\n"
             },
+            "/home/test/03/animalSort/you": {
+                "name": "you",
+                "type": "dir",
+                "children": []
+            },
+            "/home/test/03/animalSort/me": {
+                "name": "me",
+                "type": "dir",
+                "children": []
+            },
+            "/home/test/03/animalSort/him": {
+                "name": "him",
+                "type": "dir",
+                "children": []
+            },
+            "/home/test/03/animalSort/her": {
+                "name": "her",
+                "type": "dir",
+                "children": []
+            },
+            "/home/test/03/animalSort/it": {
+                "name": "it",
+                "type": "dir",
+                "children": []
+            },
+            "/home/test/03/animalSort/they": {
+                "name": "they",
+                "type": "dir",
+                "children": []
+            },
+            "/home/test/03/animalSort/submit": {
+                "name": "submit",
+                "type": "exe",
+                "text": "This executable can be run with ./submit"
+            },
 
     "/home/test/04": {
         "name": "04",
@@ -228,5 +263,12 @@
             "name": "relax",
             "type": "exe",
             "text": "Run this executable with ./relax"
-        }
+        },
+
+    "/home/test/05": {
+        "name": "05",
+        "type": "dir",
+        "hidden": true,
+        "children": []
+    },
 }

@@ -63,9 +63,56 @@ var Executable = (function() {
                             log.text.push(text);
                         }
                     });
+                } else if (System.progress.arc === 'test03' && System.progress.value === 1) {
+                    // Test 03: animalSort
+                    var animalSort = '/home/test/03/animalSort/';
+                    var pronouns = ['you', 'me', 'him', 'her', 'it', 'they'];
+                    var animals = ['sheep', 'pig', 'dog', 'cat', 'platypus', 'unicorn'];
+                    // For each pronoun, check if directory contains correct animal type and name
+                    var correct = _.map(pronouns, function(pronoun, index) {
+                        var animalDir = animalSort + pronoun;
+                        var animalPath = [animalDir, animals[index]].join('/');
+                        return _.contains(System.dirTree[animalDir].children, animals[index]) &&
+                               System.dirTree[animalPath] &&
+                               System.dirTree[animalPath].name === System.dirTree[animalPath].type;
+                    });
+                    if (_.every(correct)) {
+                        text = 'Well done. The animalSort appears to be in order.';
+                        greenAI(text).then(function() {
+                            System.progress.value++;
+                            Story.checkStory(term, null);
+                        });
+                        return;
+                    }
+
+                    // TODO: hint text depending on which ones are correct
+                    redAI('Incorrect. Please ensure the animals are correctly named and in the appropriate directories.');
                 } else {
                     redAI('This test has already terminated.');
                 }
+                break;
+
+            case 'relax':
+                if (System.progress.arc !== 'test04') {
+                    redAI('The relaxation period has ended. Return to your current task immediately.');
+                    return;
+                }
+
+                // TODO: IMPLEMENT ME + Ctrl-C support
+                text = 'NOTE: To opt out of this rest break, you may terminate the program with <Ctrl-C> at any time.`300`\n' +
+                       'Initializing relaxation station.`200`.`400`.`500`\n' +
+                       'Starting relaxing music.`500`.`400`.`500`\n';
+                greenAI(text).then(function() {
+                    // TODO: play elevator music
+                    text = 'Sit back and relax.';
+                    return greenAI(text);
+                }).then(function() {
+                    text = 'relax mode not yet implemented. terminating';
+                    return redAI(text);
+                }).then(function() {
+                    System.progress.value++;
+                    Story.checkStory(term, null);
+                });
                 break;
 
             default:
