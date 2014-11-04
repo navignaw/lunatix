@@ -206,7 +206,8 @@
             "/home/test/02/clutter/submit": {
                 "name": "submit",
                 "type": "exe",
-                "parent": "clutter"
+                "parent": "clutter",
+                "text": "This executable can be run with ./submit <answer>"
             },
 
     "/home/test/03": {

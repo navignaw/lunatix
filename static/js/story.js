@@ -38,7 +38,14 @@ var Story = (function() {
         var multichoice = _.partial(Util.multichoice, term);
         var input = _.partial(Util.input, term);
 
-        var text;
+        var text, log;
+
+        // FIXME: REMOVE after testing
+        if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
+            System.progress.arc = 'test02';
+            unlockDir('/home/test/01');
+            unlockDir('/home/test/02');
+        }
 
         switch (System.progress.arc) {
             // Intro survey
@@ -147,8 +154,10 @@ var Story = (function() {
                                     text = 'The command is <cd test/>. Please type <cd test/>.';
                                 System.progress.hints++;
                             }
-                            redAI(text);
-                            return;
+                            if (text) {
+                                redAI(text);
+                                return;
+                            }
                         }
 
                         // Entering test directory
@@ -165,7 +174,7 @@ var Story = (function() {
 
             // Test 01: Maze
             case 'test01':
-                var log = System.progress.logs['test01'];
+                log = System.progress.logs['test01'];
                 switch (System.progress.value) {
                     case 0:
                         // Invalid command
@@ -174,12 +183,14 @@ var Story = (function() {
                                 text = 'Error: not enough arguments. The test directory is 01/.';
                             else if (error.type === TermError.Type.DIRECTORY_NOT_FOUND)
                                 text = 'Error: directory not found. The test directory is 01/.';
-                            redAI(text);
-                            return;
+                            if (text) {
+                                redAI(text);
+                                return;
+                            }
                         }
 
                         if (cmd !== 'cd' || System.directory.name !== '01') break;
-                        text = 'This task will test your ability to utilize List files <ls> and Change Directory <cd>. ' +
+                        text = 'This task will test your ability to utilize List files <ls> and Change Directory <cd>.`200`\n' +
                                'Attempt to follow the maze/ to its completion. Your progress will be tracked.`200`\n' +
                                '(Note that the names of subsequent directories will no longer be provided. ' +
                                 'Usage of <ls> is required to progress.)';
@@ -378,7 +389,7 @@ var Story = (function() {
 
                             text = '`600`\nAs Huxley would say, eliminating defects is the only way to improve.`400`\n' +
                             'Change directory back to ../02, as there are still many more tests for you to complete.`200`\n' +
-                            '$> sudo chmod u+rx ../02';
+                            '$> sudo chmod u+rx /home/test/02';
                             return greenAI(text);
                         }).then(function() {
                             advanceArc('test02', '/home/test/02');
@@ -389,12 +400,60 @@ var Story = (function() {
 
             // Test 02: Clutter
             case 'test02':
+                switch (System.progress.value) {
+                    case 0:
+                        if (cmd !== 'cd' || System.directory.name !== 'clutter') break;
+
+                        System.progress.logs['test02'] = {
+                            text: [],
+                            good: 0,
+                            bad: 0
+                        };
+                        text = 'The following test will measure your ability to Catenate <cat> files. ' +
+                               'This will allow you to observe their contents.`200`\nWhen you have deduced the solution, ' +
+                               'run the executable ./submit <answer>. Your progress will be tracked.';
+                        greenAI(text).then(function() {
+                            System.progress.value++;
+                        });
+                        break;
+
+                    case 1:
+                        if (error) {
+                            if (cmd === 'cat') {
+                                if (error.type === TermError.Type.INVALID_ARGUMENTS)
+                                    text = 'cat requires you to choose a file to view. Remember, choose wisely.';
+                            }
+                            else if (cmd !== 'ls') {
+                                text = 'Examination of the files is impossible without the usage of <ls> and <cat>.\n' +
+                                       'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
+                            }
+                            if (text) {
+                                redAI(text);
+                                return;
+                            }
+                        }
+                        break;
+
+                    case 2:
+                        // Correct answer submitted
+                        text = 'Logging complete. Visit the results/ directory for more information.`400`\n\n' +
+                               'Still more tests await you. Change Directory to test/03 to continue your assessment.`200`\n' +
+                               '$> sudo chmod u+rx /home/test/03';
+                        greenAI(text).then(function() {
+                            // TODO: save log file
+                            advanceArc('test03', '/home/test/03');
+                        });
+                }
+                break;
+
+            // Test 03: animalSort
+            case 'test03':
                 break;
         }
 
         // If error is not handled in story text, print default message to terminal.
         if (error) {
-            prettyPrint(error.message, null, {color: AI_RED});
+            redAI(error.message);
         }
     };
 

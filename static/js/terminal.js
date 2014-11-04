@@ -48,16 +48,19 @@ var Terminal = (function() {
         commands: {
             cat: function(cmd, term) {
                 var dir = _.first(cmd.args);
-                var newPath = dir ? parseDirectory(dir) : System.path;
+                if (!dir) {
+                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cat without arguments');
+                }
+                var newPath = parseDirectory(dir);
                 if (newPath) {
                     var newFile = System.dirTree[newPath];
                     if (newFile.type !== 'dir') {
                         return newFile.text;
                     } else {
-                        prettyPrint(term, 'cat: ' + cmd.rest + ': is a directory');
+                        return new TermError(TermError.Type.INVALID_FILE_TYPE, 'cat: ' + cmd.rest + ' is a directory');
                     }
                 } else {
-                    prettyPrint(term, 'cat: ' + cmd.rest + ': No such file');
+                    return new TermError(TermError.Type.FILE_NOT_FOUND, 'cat: ' + cmd.rest + ': No such file');
                 }
             },
 
@@ -340,7 +343,7 @@ var Terminal = (function() {
                     // TODO: for now, assume executables are only run in the same directory.
                     var file = cmd.name.substring(2);
                     if (_.contains(children, file)) {
-                        result = Executable.executeFile(file, cmd);
+                        result = Executable.executeFile(term, file, cmd);
                     } else {
                         result = new TermError(TermError.Type.FILE_NOT_FOUND, cmd.name + ': no such file or directory');
                     }
