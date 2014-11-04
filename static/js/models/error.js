@@ -2,7 +2,8 @@ function TermError(type, message) {
     this.type = type;  // type of error message
     this.message = message || 'Error! Something bad happened :(';  // default error message to print to console
 }
-TermError.prototype.isError = true;
+TermError.prototype = new Error();
+TermError.prototype.constructor = TermError;
 
 TermError.Type = Object.freeze({
     'COMMAND_NOT_FOUND': 0,

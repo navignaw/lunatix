@@ -49,7 +49,7 @@ var Terminal = (function() {
             cat: function(cmd, term) {
                 var dir = _.first(cmd.args);
                 if (!dir) {
-                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cat without arguments');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cat without arguments');
                 }
                 var newPath = parseDirectory(dir);
                 if (newPath) {
@@ -57,10 +57,10 @@ var Terminal = (function() {
                     if (newFile.type !== 'dir') {
                         return newFile.text;
                     } else {
-                        return new TermError(TermError.Type.INVALID_FILE_TYPE, 'cat: ' + cmd.rest + ' is a directory');
+                        throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cat: ' + cmd.rest + ' is a directory');
                     }
                 } else {
-                    return new TermError(TermError.Type.FILE_NOT_FOUND, 'cat: ' + cmd.rest + ': No such file');
+                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'cat: ' + cmd.rest + ': No such file');
                 }
             },
 
@@ -75,14 +75,14 @@ var Terminal = (function() {
                             System.path = newPath;
                             System.directory = newDir;
                         } else {
-                            return new TermError(TermError.Type.INVALID_FILE_TYPE, 'cd: ' + cmd.rest + ' is not a directory');
+                            throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cd: ' + cmd.rest + ' is not a directory');
                         }
                     } else {
-                        return new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'cd: ' + cmd.rest + ': No such file or directory');
+                        throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'cd: ' + cmd.rest + ': No such file or directory');
                     }
                 } else {
                     // Handle case with no arguments
-                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cd without arguments');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cd without arguments');
                 }
             },
 
@@ -106,9 +106,9 @@ var Terminal = (function() {
                 // Only available to debuggers or console hackers!
                 // Lying is bad, but we don't want to get their hopes up.
                 if (!System.debug) {
-                    return new TermError(TermError.Type.COMMAND_NOT_FOUND, 'eval: command not found');
+                    throw new TermError(TermError.Type.COMMAND_NOT_FOUND, 'eval: command not found');
                 } else if (cmd.rest === '') {
-                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'please enter script to eval.');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'please enter script to eval.');
                 }
                 try {
                     var result = window.eval(cmd.rest);
@@ -161,7 +161,7 @@ var Terminal = (function() {
                         return dir;
                     }
                 } else {
-                    return new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'ls: ' + cmd.rest + ': directory not found');
+                    throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'ls: ' + cmd.rest + ': directory not found');
                 }
             },
 
@@ -203,7 +203,7 @@ var Terminal = (function() {
 
             mv: function(cmd, term) {
                 if (cmd.args.length < 2) {
-                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot mv without 2 arguments');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot mv without 2 arguments');
                 }
                 var file, target, targetName;
                 var fileDir = parseDirectory(cmd.args[0]);
@@ -214,10 +214,10 @@ var Terminal = (function() {
                     file = System.dirTree[fileDir];
                     targetName = file.name;
                     if (file.type === 'dir') {
-                        return new TermError(TermError.Type.INVALID_FILE_TYPE, 'mv: ' + cmd.args[0] + ': cannot move directory');
+                        throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'mv: ' + cmd.args[0] + ': cannot move directory');
                     }
                 } else {
-                    return new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[0] + ': No such file');
+                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[0] + ': No such file');
                 }
 
                 // If target does not exist, check one directory above.
@@ -228,10 +228,10 @@ var Terminal = (function() {
                 if (targetDir) {
                     target = System.dirTree[targetDir];
                     if (target.type !== 'dir') {
-                        return new TermError(TermError.Type.FILE_ALREADY_EXISTS, 'mv: ' + cmd.args[1] + ': target already exists');
+                        throw new TermError(TermError.Type.FILE_ALREADY_EXISTS, 'mv: ' + cmd.args[1] + ': target already exists');
                     }
                 } else {
-                    return new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[1] + ': No such file or directory');
+                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[1] + ': No such file or directory');
                 }
 
                 // TODO: account for permissions (don't allow moving random files!)
@@ -257,15 +257,15 @@ var Terminal = (function() {
 
             rm: function(cmd, term) {
                 if (!cmd.args) {
-                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'rm: needs an argument');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'rm: needs an argument');
                 }
                 var fileDir = parseDirectory(cmd.args[0]);
                 if (!fileDir) {
-                    return new TermError(TermError.Type.FILE_NOT_FOUND, 'rm: ' + cmd.args[0] + ': No such file');
+                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'rm: ' + cmd.args[0] + ': No such file');
                 }
                 var file = System.dirTree[fileDir];
                 if (file.type === 'dir') {
-                    return new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied! cannot rm directory');
+                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied! cannot rm directory');
                 }
 
                 // TODO: account for permissions (don't allow deleting random files!)
@@ -276,7 +276,7 @@ var Terminal = (function() {
                 // Only available to debuggers or console hackers!
                 // Lying is bad, but we don't want to get their hopes up.
                 if (!System.debug) {
-                    return new TermError(TermError.Type.COMMAND_NOT_FOUND, 'test: command not found');
+                    throw new TermError(TermError.Type.COMMAND_NOT_FOUND, 'test: command not found');
                 }
                 switch (cmd.args[0]) {
                     case 'confirm':
@@ -352,44 +352,47 @@ var Terminal = (function() {
             });
 
             // Loop through piped commands, appending each result onto next command.
-            for (var i = 0, len = commands.length; i < len; i++) {
-                var cmd = Util.parseCommand([commands[i], result].join(' '));
-                if (!cmd) {
-                    return;
-                }
-                name = cmd.name;
+            try {
+                for (var i = 0, len = commands.length; i < len; i++) {
+                    var cmd = Util.parseCommand([commands[i], result].join(' '));
+                    if (!cmd) {
+                        return;
+                    }
+                    name = cmd.name;
 
-                if (_.has(self.commands, cmd.name)) {
-                    // Check for permissions.
-                    if (System.debug || _.contains(System.user.commands, cmd.name)) {
-                        result = self.commands[cmd.name](cmd, term);
-                        if (!result || !_.isString(result)) {
-                            break;
+                    if (_.has(self.commands, cmd.name)) {
+                        // Check for permissions.
+                        if (System.debug || _.contains(System.user.commands, cmd.name)) {
+                            result = self.commands[cmd.name](cmd, term);
+                            if (!result || !_.isString(result)) {
+                                break;
+                            }
+                        } else {
+                            throw new TermError(TermError.Type.PERMISSION_DENIED, cmd.name + ': permission denied');
+                        }
+                    } else if ((/^\.\/\w+/).test(cmd.name)) {
+                        // Run executable if file exists and user has valid permissions.
+                        // TODO: for now, assume executables are only run in the same directory.
+                        var file = cmd.name.substring(2);
+                        if (_.contains(children, file)) {
+                            result = Executable.executeFile(term, file, cmd);
+                        } else {
+                            throw new TermError(TermError.Type.FILE_NOT_FOUND, cmd.name + ': no such file or directory');
                         }
                     } else {
-                        result = new TermError(TermError.Type.PERMISSION_DENIED, cmd.name + ': permission denied');
-                        break;
+                        throw new TermError(TermError.Type.COMMAND_NOT_FOUND, cmd.name + ': command not found');
                     }
-                } else if ((/^\.\/\w+/).test(cmd.name)) {
-                    // Run executable if file exists and user has valid permissions.
-                    // TODO: for now, assume executables are only run in the same directory.
-                    var file = cmd.name.substring(2);
-                    if (_.contains(children, file)) {
-                        result = Executable.executeFile(term, file, cmd);
-                    } else {
-                        result = new TermError(TermError.Type.FILE_NOT_FOUND, cmd.name + ': no such file or directory');
-                    }
-                } else {
-                    result = new TermError(TermError.Type.COMMAND_NOT_FOUND, cmd.name + ': command not found');
-                    break;
                 }
+            } catch (error) {
+                Story.checkStory(term, name, error);
+                return;
             }
 
             // Print final result to terminal and check to advance story.
             if (result && _.isString(result)) {
                 prettyPrint(term, result);
             }
-            Story.checkStory(term, name, result && result.isError ? result : null);
+            Story.checkStory(term, name, null);
         },
 
         /* Confirmation terminal: awaits y/n input */

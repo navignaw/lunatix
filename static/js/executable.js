@@ -70,7 +70,7 @@ var Executable = (function() {
 
             default:
                 System.log('Executable not found!');
-                return new TermError(TermError.Type.MISCELLANEOUS, 'Executable not found!');
+                throw new TermError(TermError.Type.MISCELLANEOUS, 'Executable not found!');
         }
     };
 
