@@ -7,7 +7,7 @@
     "/home/test": {
         "name": "test",
         "type": "dir",
-        "children": ["results", "01", "02", "03"]
+        "children": ["results", "01", "02", "03", "04", "05"]
     },
     "/home/test/results": {
         "name": "results",
@@ -269,6 +269,42 @@
         "name": "05",
         "type": "dir",
         "hidden": true,
-        "children": []
+        "children": ["box"]
     },
+        "/home/test/05/box": {
+            "name": "box",
+            "type": "dir",
+            "children": ["war", "pestilence", "despair", "death", "famine", "hope"]
+        },
+            "/home/test/05/box/war": {
+                "name": "war",
+                "type": "txt",
+                "text": "list of wars government has won"
+            },
+            "/home/test/05/box/pestilence": {
+                "name": "pestilence",
+                "type": "txt",
+                "text": "list of diseases that were eradicated"
+            },
+            "/home/test/05/box/despair": {
+                "name": "despair",
+                "type": "txt",
+                "text": "list of things that make you sad"
+            },
+            "/home/test/05/box/death": {
+                "name": "death",
+                "type": "txt",
+                "text": "dead things"
+            },
+            "/home/test/05/box/famine": {
+                "name": "famine",
+                "type": "txt",
+                "text": "list of famines"
+            },
+            "/home/test/05/box/hope": {
+                "name": "hope",
+                "type": "txt",
+                "hidden": true,
+                "text": "Elpis"
+            }
 }

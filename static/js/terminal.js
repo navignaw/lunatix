@@ -469,7 +469,7 @@ var Terminal = (function() {
                     // Disable keypresses while animating text.
                     if (Util.animating) {
                         // Ctrl+C: skip animating text (in debug mode only)
-                        if (System.debug && e.which === 67 && e.ctrlKey) {
+                        if (System.debug && System.exe !== 'relax' && e.which === 67 && e.ctrlKey) {
                             Util.animating = false;
                         }
                         return false;

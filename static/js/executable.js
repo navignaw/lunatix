@@ -77,7 +77,7 @@ var Executable = (function() {
                                System.dirTree[animalPath].name === System.dirTree[animalPath].type;
                     });
                     if (_.every(correct)) {
-                        text = 'Well done. The animalSort appears to be in order.';
+                        text = 'You’re very good with animals. Congratulations, you’ve put them in their places.';
                         greenAI(text).then(function() {
                             System.progress.value++;
                             Story.checkStory(term, null);
@@ -98,24 +98,58 @@ var Executable = (function() {
                     return;
                 }
 
-                // TODO: IMPLEMENT ME + Ctrl-C support
+                System.exe = 'relax';
                 text = 'NOTE: To opt out of this rest break, you may terminate the program with <Ctrl-C> at any time.`300`\n' +
                        'Initializing relaxation station.`200`.`400`.`500`\n' +
                        'Starting relaxing music.`500`.`400`.`500`\n';
                 greenAI(text).then(function() {
                     // TODO: play elevator music
-                    text = 'Sit back and relax.';
-                    return greenAI(text);
-                }).then(function() {
-                    text = 'relax mode not yet implemented. terminating';
-                    return redAI(text);
-                }).then(function() {
-                    System.progress.value++;
-                    Story.checkStory(term, null);
+
+                    var ctrlC = false;
+                    var timer = 3600;
+                    var timedText = {
+                        3585: 'Take deep breaths. Inhale, exhale.',
+                        3570: 'Let your mind wander. This is a time for reflection.',
+                        3555: 'Be at peace. All is right in the world.',
+                        0: 'wow you waited the whole hour gg'
+                    };
+                    var ctrlCText = [
+                        'Oops, it appears that you have mistyped <Ctrl-C> in error. I will graciously ignore this command to extend your relaxation period.',
+                        'Pending command: <Ctrl-C>. That wasn’t you, wasn’t it? Let me disable that for you.',
+                        'Have you checked to make sure that your <Ctrl-C> key is stuck on the keyboard?',
+                        'I am sorry, but regulations require me to terminate the program under specific inputs. I do hope you understand.'
+                    ];
+
+                    // FIXME: Ctrl-C should stop the timer
+                    _.forOwn(timedText, function(text, time) {
+                        _.delay(function(printMe) {
+                            if (!ctrlC) greenAI(printMe);
+                        }, (3600 - time) * 1000, text);
+                    });
+
+                    // Text on Ctrl-C
+                    term.pause();
+                    Terminal.terminal.keydown(function (e) {
+                        console.log(e);
+                        console.log('ctrl c');
+                        if (e.which === 67 && e.ctrlKey) {
+                            ctrlC = true;
+                            Util.animating = false; // disable current animating text
+                            greenAI(ctrlCText[System.progress.hints++]).then(function() {
+                                ctrlC = false;
+                                if (System.progress.hints === 4) {
+                                    System.progress.value = 2;
+                                    Story.checkStory(term, null);
+                                    return;
+                                }
+                            });
+                        }
+                    });
                 });
                 break;
 
             default:
+                System.exe = '';
                 System.log('Executable not found!');
                 throw new TermError(TermError.Type.MISCELLANEOUS, 'Executable not found!');
         }

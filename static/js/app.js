@@ -12,6 +12,7 @@ var System = {
         hints: 0,
         logs: {}
     },
+    exe: '',
     user: null
 };
 

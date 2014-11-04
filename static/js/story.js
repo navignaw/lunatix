@@ -9,7 +9,7 @@ var Story = (function() {
 
     var self = {};
 
-    function unlockDir(dir) {
+    function unlockFile(dir) {
         System.dirTree[dir].hidden = false;
     }
 
@@ -19,7 +19,7 @@ var Story = (function() {
         System.progress.hints = 0;
 
         if (newDir) {
-            unlockDir(newDir);
+            unlockFile(newDir);
         }
     }
 
@@ -43,13 +43,14 @@ var Story = (function() {
         var text, log;
 
         // FIXME: Remove after testing
-        if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            // Hack to skip to test 3
-            System.progress.arc = 'test03';
-            unlockDir('/home/test/01');
-            unlockDir('/home/test/02');
-            unlockDir('/home/test/03');
-        }
+        /*if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
+            // Hack to skip to test 4
+            System.progress.arc = 'test04';
+            unlockFile('/home/test/01');
+            unlockFile('/home/test/02');
+            unlockFile('/home/test/03');
+            unlockFile('/home/test/04');
+        }*/
 
         switch (System.progress.arc) {
             // Intro survey
@@ -206,7 +207,7 @@ var Story = (function() {
 
                     case 1:
                         // Create logs and custom directories
-                        unlockDir('/home/test/01/maze');
+                        unlockFile('/home/test/01/maze');
                         var COLOR_PARENT_DIR = '/home/test/01/maze/hall/right/uncertain/probable/definite/';
                         // TODO: replace with a call to 'mv' util function when implemented
                         System.dirTree[COLOR_PARENT_DIR + System.user.answers.color].children = ['finish', 'start'];
@@ -373,7 +374,7 @@ var Story = (function() {
                         System.path = '/home/test/01';
                         System.directory = System.dirTree[System.path];
                         greenAI(text).then(function() {
-                            unlockDir('/home/test/results');
+                            unlockFile('/home/test/results');
                             System.progress.value++;
                         });
                         break;
@@ -518,8 +519,8 @@ var Story = (function() {
                             good: 0,
                             bad: 0
                         };
-                        text = 'Welcome to the Relaxation Station! In accordance with the Sedation Act 1918, ' +
-                               'we have included an optional rest period to ensure our citizens’ well-being.\n' +
+                        text = 'Welcome to the Relaxation Station. In accordance with Sedation Act 1918, ' +
+                               'a scheduled rest period has been included to improve performance and ensure your well-being.\n' +
                                'To begin, run the executable ./relax.';
                         greenAI(text).then(function() {
                             System.progress.value++;
@@ -527,6 +528,11 @@ var Story = (function() {
                         break;
 
                     case 1:
+                        if (error && cmd !== './relax') {
+                            text = 'A break will help you on future tasks. Go ahead and ./relax. I insist.';
+                            redAI(text);
+                            return;
+                        }
                         break;
 
                     case 2:
@@ -534,6 +540,47 @@ var Story = (function() {
                         // TODO: print results
                         break;
                 }
+                break;
+
+            // Test 05: Pandora's Box
+            case 'test05':
+                switch (System.progress.value) {
+                    case 0:
+                        if (cmd !== 'cd' || System.directory.name !== 'box') break;
+
+                        System.progress.logs['test05'] = {
+                            text: [],
+                            good: 0,
+                            bad: 0
+                        };
+                        text = 'intro text for rm.';
+                        greenAI(text).then(function() {
+                            System.progress.value++;
+                        });
+                        break;
+
+                    case 1:
+                        if (cmd !== 'rm') break;
+
+                        var box = System.dirTree['/home/test/05/box'];
+                        if (box.children.length === 1) {
+                            // Removed all files except hope
+                            unlockFile('/home/test/05/box/hope');
+                        } else if (box.children.length === 0) {
+                            // Hope removed! Kernel panic
+                            advanceArc('kernelPanic');
+                            self.checkStory(term, null);
+                        }
+                        break;
+
+                    case 2:
+                        break;
+                }
+                break;
+
+            // Kernel Panic
+            case 'kernelPanic':
+                // TODO
                 break;
         }
 
