@@ -202,28 +202,43 @@ var Terminal = (function() {
             },
 
             mv: function(cmd, term) {
-                //TODO: Fix bug with changing the filename
-                // Fix after refactoring! parseDirectory now returns a path string
-                var file = cmd.args[0];
-                var targetname = _.last(cmd.args[1].split('/'));
-                var targetdir = _.initial(cmd.args[1].split('/')).join('/');
-                var oldLoc = parseDirectory(file);
-                var newLoc = parseDirectory(targetdir);
-                if (!targetname) targetname = oldLoc.name;
+                if (cmd.args.length < 2) {
+                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot mv without 2 arguments');
+                }
+                var file, target, targetName;
+                var fileDir = parseDirectory(cmd.args[0]);
+                var targetDir = parseDirectory(cmd.args[1]);
 
-                if (oldLoc && newLoc && targetname) {
-                    if (oldLoc && oldLoc.type !== 'dir' && newLoc.type === 'dir') {
-                        _.pull(System.dirTree[oldLoc.parent].children, oldLoc.name);
-                        newLoc.children.push(oldLoc.name);
-                        oldLoc.parent = newLoc.name;
-                        oldLoc.name = targetname;
-                    } else {
-                         return new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + _.first(cmd.args) + ': No such file');
+                // Check that file exists and is not directory
+                if (fileDir) {
+                    file = System.dirTree[fileDir];
+                    targetName = file.name;
+                    if (file.type === 'dir') {
+                        return new TermError(TermError.Type.INVALID_FILE_TYPE, 'mv: ' + cmd.args[0] + ': cannot move directory');
                     }
                 } else {
-                    // Handle case without proper arguments
-                     return new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot mv without 2 arguments');
+                    return new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[0] + ': No such file');
                 }
+
+                // If target does not exist, check one directory above.
+                if (!targetDir) {
+                    targetDir = parseDirectory(_.initial(cmd.args[1].split('/')).join('/'));
+                    targetName = _.last(cmd.args[1].split('/'));
+                }
+                if (targetDir) {
+                    target = System.dirTree[targetDir];
+                    if (target.type !== 'dir') {
+                        return new TermError(TermError.Type.FILE_ALREADY_EXISTS, 'mv: ' + cmd.args[1] + ': target already exists');
+                    }
+                } else {
+                    return new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[1] + ': No such file or directory');
+                }
+
+                // TODO: account for permissions (don't allow moving random files!)
+                var newFile = _.clone(file);
+                newFile.name = targetName;
+                File.createFile(targetDir, targetName, newFile);
+                File.removeFile(_.initial(fileDir.split('/')).join('/'), file.name);
             },
 
             pwd: function(cmd, term) {
@@ -238,6 +253,23 @@ var Terminal = (function() {
 
             quit: function(cmd, term) {
                 self.commands.logout(cmd, term);
+            },
+
+            rm: function(cmd, term) {
+                if (!cmd.args) {
+                    return new TermError(TermError.Type.INVALID_ARGUMENTS, 'rm: needs an argument');
+                }
+                var fileDir = parseDirectory(cmd.args[0]);
+                if (!fileDir) {
+                    return new TermError(TermError.Type.FILE_NOT_FOUND, 'rm: ' + cmd.args[0] + ': No such file');
+                }
+                var file = System.dirTree[fileDir];
+                if (file.type === 'dir') {
+                    return new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied! cannot rm directory');
+                }
+
+                // TODO: account for permissions (don't allow deleting random files!)
+                File.removeFile(_.initial(fileDir.split('/')).join('/'), file.name);
             },
 
             test: function(cmd, term) {

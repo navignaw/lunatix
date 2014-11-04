@@ -1,27 +1,4 @@
-/*function File(name, type, permissions, parent, children) {
-    this.name = name;
-    this.type = type || '';                    // filetype, one of dir, txt, exe, png, jpg
-    this.permissions = permissions || (1 + 2); // read and writeable by default
-    this.parent = parent || null;              // parent directory File (..)
-    this.children = children || [];            // list of Files (if type === "dir")
-
-}
-
-File.PERMISSIONS = Object.freeze({
-    'R': 1 << 0,
-    'W': 1 << 1,
-    'X': 1 << 2
-});
-
-File.prototype.isReadable = function() {
-    return (this.permissions >> 0) % 2 === 1;
-};
-File.prototype.isWriteable = function() {
-    return (this.permissions >> 1) % 2 === 1;
-};
-File.prototype.isExecutable = function() {
-    return (this.permissions >> 2) % 2 === 1;
-};*/
+// TODO: Refactor to util.js?
 
 var File = {};
 File.getDirectory = function(name, callback) {
@@ -29,10 +6,21 @@ File.getDirectory = function(name, callback) {
         type: 'GET',
         url: [$app.SCRIPT_ROOT, '/static/dirs/', name].join(''),
         success: function(json) {
-            // TODO: Deal with weird bug when retrieving json from server
             callback(_.isString(json) ? $.parseJSON(json) : json);
         },
     }).fail(function(jqXHR, textStatus, error) {
         console.error(error);
     });
+};
+
+File.createFile = function(dir, name, file) {
+    Util.log('Creating ' + name + ' in ' + dir);
+    System.dirTree[dir].children.push(name);
+    System.dirTree[dir + '/' + name] = file;
+};
+
+File.removeFile = function(dir, name) {
+    Util.log('Removing ' + name + ' from ' + dir);
+    _.pull(System.dirTree[dir].children, name);
+    System.dirTree = _.omit(System.dirTree, dir + '/' + name);
 };
