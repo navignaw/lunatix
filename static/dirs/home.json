@@ -2,20 +2,17 @@
     "/home": {
         "name": "home",
         "type": "dir",
-        "parent": "",
         "children": ["test"]
     },
     "/home/test": {
         "name": "test",
         "type": "dir",
-        "parent": "home",
         "children": ["results", "01", "02", "03"]
     },
     "/home/test/results": {
         "name": "results",
         "type": "dir",
         "hidden": true,
-        "parent": "test",
         "children": []
     },
 
@@ -23,134 +20,112 @@
         "name": "01",
         "type": "dir",
         "hidden": true,
-        "parent": "test",
         "children": ["maze"]
     },
         "/home/test/01/maze": {
             "name": "maze",
             "type": "dir",
             "hidden": true,
-            "parent": "01",
             "children": ["wall", "hall"]
         },
             "/home/test/01/maze/wall": {
                 "name": "wall",
                 "type": "dir",
-                "parent": "maze",
                 "children": []
             },
             "/home/test/01/maze/hall": {
                 "name": "hall",
                 "type": "dir",
-                "parent": "maze",
                 "children": ["right", "wrong", "more_wrong"]
             },
                 "/home/test/01/maze/hall/right": {
                     "name": "right",
                     "type": "dir",
-                    "parent": "hall",
                     "children": ["uncertain", "dubious"]
                 },
                     "/home/test/01/maze/hall/right/uncertain": {
                         "name": "uncertain",
                         "type": "dir",
-                        "parent": "right",
                         "children": ["vague", "probable", "impossible"]
                     },
                         "/home/test/01/maze/hall/right/uncertain/vague": {
                             "name": "vague",
                             "type": "dir",
-                            "parent": "uncertain",
                             "children": ["/home/test/01/maze/hall/right/uncertain"]
                         },
                         "/home/test/01/maze/hall/right/uncertain/probable": {
                             "name": "probable",
                             "type": "dir",
-                            "parent": "uncertain",
                             "children": ["definite"]
                         },
                             "/home/test/01/maze/hall/right/uncertain/probable/definite": {
                                 "name": "definite",
                                 "type": "dir",
-                                "parent": "probable",
                                 "children": ["fuschia", "chartreuse", "cornflower", "green"]
                             },
                                 "/home/test/01/maze/hall/right/uncertain/probable/definite/fuschia": {
                                     "name": "fuschia",
                                     "type": "dir",
-                                    "parent": "definite",
                                     "children": []
                                 },
                                 "/home/test/01/maze/hall/right/uncertain/probable/definite/chartreuse": {
                                     "name": "chartreuse",
                                     "type": "dir",
-                                    "parent": "definite",
                                     "children": []
                                 },
                                 "/home/test/01/maze/hall/right/uncertain/probable/definite/cornflower": {
                                     "name": "cornflower",
                                     "type": "dir",
-                                    "parent": "definite",
                                     "children": []
                                 },
                                 "/home/test/01/maze/hall/right/uncertain/probable/definite/green": {
                                     "name": "green",
                                     "type": "dir",
-                                    "parent": "definite",
                                     "children": []
                                 },
                                     "COLOR/finish": {
                                         "name": "finish",
                                         "type": "dir",
-                                        "parent": "COLOR",
                                         "children": []
                                     },
                                     "COLOR/start": {
                                         "name": "start",
                                         "type": "dir",
-                                        "parent": "COLOR",
                                         "children": []
                                     },
                         "/home/test/01/maze/hall/right/uncertain/impossible": {
                             "name": "impossible",
                             "type": "dir",
-                            "parent": "uncertain",
                             "children": []
                         },
                     "/home/test/01/maze/hall/right/dubious": {
                         "name": "dubious",
                         "type": "dir",
-                        "parent": "right",
                         "children": ["impractical", "absurd"]
                     },
                         "/home/test/01/maze/hall/right/dubious/impractical": {
                             "name": "impractical",
                             "type": "dir",
-                            "parent": "dubious",
                             "children": []
                         },
                         "/home/test/01/maze/hall/right/dubious/absurd": {
                             "name": "absurd",
                             "type": "dir",
-                            "parent": "dubious",
                             "children": []
                         },
                 "/home/test/01/maze/hall/wrong": {
                     "name": "wrong",
                     "type": "dir",
-                    "parent": "hall",
                     "children": ["still_wrong"]
                 },
                     "/home/test/01/maze/hall/wrong/still_wrong": {
                         "name": "still_wrong",
                         "type": "dir",
-                        "parent": "wrong",
                         "children": []
                     },
                 "/home/test/01/maze/hall/more_wrong": {
                     "name": "more_wrong",
                     "type": "dir",
-                    "parent": "hall",
                     "children": []
                 },
 
@@ -158,55 +133,46 @@
         "name": "02",
         "type": "dir",
         "hidden": true,
-        "parent": "test",
         "children": ["clutter"]
     },
         "/home/test/02/clutter": {
             "name": "clutter",
             "type": "dir",
-            "parent": "02",
             "children": ["helpful.txt", "placeholder.txt", "unhelpful.txt", "food.txt", "first.txt", "answer.txt", "submit"]
         },
             "/home/test/02/clutter/helpful.txt": {
                 "name": "helpful.txt",
                 "type": "txt",
-                "parent": "clutter",
                 "text": "u______b__"
             },
             "/home/test/02/clutter/placeholder.txt": {
                 "name": "placeholder.txt",
                 "type": "txt",
-                "parent": "clutter",
                 "text": "_n____a___"
             },
             "/home/test/02/clutter/unhelpful.txt": {
                 "name": "unhelpful.txt",
                 "type": "txt",
-                "parent": "clutter",
                 "text": "__tast____"
             },
             "/home/test/02/clutter/food.txt": {
                 "name": "food.txt",
                 "type": "txt",
-                "parent": "clutter",
                 "text": "__chew____"
             },
             "/home/test/02/clutter/first.txt": {
                 "name": "first.txt",
                 "type": "txt",
-                "parent": "clutter",
                 "text": "________le"
             },
             "/home/test/02/clutter/answer.txt": {
                 "name": "answer.txt",
                 "type": "txt",
-                "parent": "clutter",
                 "text": "__solv____"
             },
             "/home/test/02/clutter/submit": {
                 "name": "submit",
                 "type": "exe",
-                "parent": "clutter",
                 "text": "This executable can be run with ./submit <answer>"
             },
 
@@ -214,49 +180,41 @@
         "name": "03",
         "type": "dir",
         "hidden": true,
-        "parent": "test",
         "children": ["animalSort"]
     },
         "/home/test/03/animalSort": {
             "name": "animalSort",
             "type": "dir",
-            "parent": "03",
             "children": ["monkey", "sheep", "pig", "dog", "platypus", "cat"]
         },
             "/home/test/03/animalSort/monkey": {
                 "name": "monkey",
                 "type": "sheep",
-                "parent": "animalSort",
                 "text": "\n           __  _\n       .-.'  `; `-._  __  _\n      (_,         .-:'  `; `-._\n    ,'o\"(        (_,           )\n   (__,-'      ,'o\"(            )>\n      (       (__,-'            )\n       `-'._.--._(             )\n          |||  |||`-'._.--._.-'\n                     |||  |||\n\n                YOU\n"
             },
             "/home/test/03/animalSort/sheep": {
                 "name": "sheep",
                 "type": "pig",
-                "parent": "animalSort",
                 "text": "\n             _\n          <`--'\\>______\n          /. .  `'     \\\n         (`')  ,        @\n          `-._,        /\n             )-)_/--( >\n            ''''  ''''\n\n                ME\n"
             },
             "/home/test/03/animalSort/pig": {
                 "name": "pig",
                 "type": "dog",
-                "parent": "animalSort",
                 "text": "\n                          ,     ,\n                          |\\---/|\n                         /  , , |\n                    __.-'|  / \\ /\n           __ ___.-'        ._O|\n        .-'  '        :      _/\n       / ,    .        .     |\n      :  ;    :        :   _/\n      |  |   .'     __:   /\n      |  :   /'----'| \\  |\n      \\  |\\  |      | /| |\n       '.'| /       || \\ |\n       | /|.'       '.l \\\\_\n       || ||             '-'\n       '-''-'\n\n                HIM\n"
             },
             "/home/test/03/animalSort/dog": {
                 "name": "dog",
                 "type": "cat",
-                "parent": "animalSort",
                 "text": "\n                             / )\n              (\\__/)         ( (\n              )    (          ) )\n            ={      }=       / /\n              )     `-------/ /\n             (               /\n              \\              |\n             ,'\\       ,    ,'\n             `-'\\  ,---\\   | \\\n                _) )    `. \\ /\n               (__/       ) )\n                         (_/\n\n                HER\n"
             },
             "/home/test/03/animalSort/platypus": {
                 "name": "platypus",
                 "type": "platypus",
-                "parent": "animalSort",
                 "text": "\n                            ,=.\n              ,=\"\"\"\"==.__.=\"  o\".___\n        ,=.==\"                  ___/\n  ,==.,\"    ,          , \\,===\"\"\n <     ,==)  \\\"'\"=._.==)  \\\n  `==''    `\"           `\"\n\n                IT\n"
             },
             "/home/test/03/animalSort/cat": {
                 "name": "cat",
                 "type": "unicorn",
-                "parent": "animalSort",
                 "text": "\n                  .\n                 /'\n                //\n            .  //\n            |\//7\n           /' \" \\\n          .   . .\n          | (    \\     '._\n          |  '._  '    '. '\n          /    \\'-'_---. ) )\n         .              :.'\n         |               \\\n         | .    .   .     .\n         ' .    |  |      |\n          \\^   /_-':     /\n          / | |    '\\  .'\n         / /| |     \\\\  |\n         \\ \\( )     // /\n          \\ | |    // /\n           L! !   // /\n            [_]  L[_|\n\n                THEY\n"
             },
 
@@ -264,13 +222,11 @@
         "name": "04",
         "type": "dir",
         "hidden": true,
-        "parent": "test",
         "children": ["relax"]
     },
         "/home/test/04/relax": {
             "name": "relax",
             "type": "exe",
-            "parent": "04",
             "text": "Run this executable with ./relax"
         }
 }
