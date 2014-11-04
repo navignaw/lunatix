@@ -203,13 +203,24 @@ var Util = (function() {
                 return System.dirTree[file].name;
             }).value();
         };
+        var allExes = function(path) {
+            return _(self.getChildren(path)).filter(function(dirOrFile) {
+                return System.dirTree[dirOrFile].type === 'exe';
+            }).map(function(file) {
+                // TODO: prepend relative path from input to all children
+                /*if (/\//.test(input)) {
+                    return input.replace(/\/[^\/]+$/, System.dirTree[file].name);
+                }*/
+                return './' + System.dirTree[file].name;
+            }).value();
+        };
 
         if ((/^\s*(cat)\s(.*)/).test(str)) {
             return allChildren(self.parseDirectory(input, true));
         } else if ((/^\s*(cd|ls)\s(.*)/).test(str)) {
             return allDirectories(self.parseDirectory(input, true));
         } else if ((/^\.\/(.*)/).test(str)) {
-            return allFiles(self.parseDirectory(input, true));
+            return allExes(self.parseDirectory(input, true));
         }
         return commands;
     };

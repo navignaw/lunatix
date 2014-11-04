@@ -221,6 +221,56 @@
             "name": "animalSort",
             "type": "dir",
             "parent": "03",
-            "children": []
+            "children": ["monkey", "sheep", "pig", "dog", "platypus", "cat"]
+        },
+            "/home/test/03/animalSort/monkey": {
+                "name": "monkey",
+                "type": "sheep",
+                "parent": "animalSort",
+                "text": "\n           __  _\n       .-.'  `; `-._  __  _\n      (_,         .-:'  `; `-._\n    ,'o\"(        (_,           )\n   (__,-'      ,'o\"(            )>\n      (       (__,-'            )\n       `-'._.--._(             )\n          |||  |||`-'._.--._.-'\n                     |||  |||\n\n                YOU\n"
+            },
+            "/home/test/03/animalSort/sheep": {
+                "name": "sheep",
+                "type": "pig",
+                "parent": "animalSort",
+                "text": "\n             _\n          <`--'\\>______\n          /. .  `'     \\\n         (`')  ,        @\n          `-._,        /\n             )-)_/--( >\n            ''''  ''''\n\n                ME\n"
+            },
+            "/home/test/03/animalSort/pig": {
+                "name": "pig",
+                "type": "dog",
+                "parent": "animalSort",
+                "text": "\n                          ,     ,\n                          |\\---/|\n                         /  , , |\n                    __.-'|  / \\ /\n           __ ___.-'        ._O|\n        .-'  '        :      _/\n       / ,    .        .     |\n      :  ;    :        :   _/\n      |  |   .'     __:   /\n      |  :   /'----'| \\  |\n      \\  |\\  |      | /| |\n       '.'| /       || \\ |\n       | /|.'       '.l \\\\_\n       || ||             '-'\n       '-''-'\n\n                HIM\n"
+            },
+            "/home/test/03/animalSort/dog": {
+                "name": "dog",
+                "type": "cat",
+                "parent": "animalSort",
+                "text": "\n                             / )\n              (\\__/)         ( (\n              )    (          ) )\n            ={      }=       / /\n              )     `-------/ /\n             (               /\n              \\              |\n             ,'\\       ,    ,'\n             `-'\\  ,---\\   | \\\n                _) )    `. \\ /\n               (__/       ) )\n                         (_/\n\n                HER\n"
+            },
+            "/home/test/03/animalSort/platypus": {
+                "name": "platypus",
+                "type": "platypus",
+                "parent": "animalSort",
+                "text": "\n                            ,=.\n              ,=\"\"\"\"==.__.=\"  o\".___\n        ,=.==\"                  ___/\n  ,==.,\"    ,          , \\,===\"\"\n <     ,==)  \\\"'\"=._.==)  \\\n  `==''    `\"           `\"\n\n                IT\n"
+            },
+            "/home/test/03/animalSort/cat": {
+                "name": "cat",
+                "type": "unicorn",
+                "parent": "animalSort",
+                "text": "\n                  .\n                 /'\n                //\n            .  //\n            |\//7\n           /' \" \\\n          .   . .\n          | (    \\     '._\n          |  '._  '    '. '\n          /    \\'-'_---. ) )\n         .              :.'\n         |               \\\n         | .    .   .     .\n         ' .    |  |      |\n          \\^   /_-':     /\n          / | |    '\\  .'\n         / /| |     \\\\  |\n         \\ \\( )     // /\n          \\ | |    // /\n           L! !   // /\n            [_]  L[_|\n\n                THEY\n"
+            },
+
+    "/home/test/04": {
+        "name": "04",
+        "type": "dir",
+        "hidden": true,
+        "parent": "test",
+        "children": ["relax"]
+    },
+        "/home/test/04/relax": {
+            "name": "relax",
+            "type": "exe",
+            "parent": "04",
+            "text": "Run this executable with ./relax"
         }
 }

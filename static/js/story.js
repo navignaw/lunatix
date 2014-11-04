@@ -40,11 +40,13 @@ var Story = (function() {
 
         var text, log;
 
-        // FIXME: REMOVE after testing
+        // FIXME: Remove after testing
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'test02';
+            // Hack to skip to test 3
+            System.progress.arc = 'test03';
             unlockDir('/home/test/01');
             unlockDir('/home/test/02');
+            unlockDir('/home/test/03');
         }
 
         switch (System.progress.arc) {
