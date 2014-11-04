@@ -9,7 +9,14 @@
         "name": "test",
         "type": "dir",
         "parent": "home",
-        "children": ["01", "02", "03"]
+        "children": ["results", "01", "02", "03"]
+    },
+    "/home/test/results": {
+        "name": "results",
+        "type": "dir",
+        "hidden": true,
+        "parent": "test",
+        "children": []
     },
 
     "/home/test/01": {
@@ -22,6 +29,7 @@
         "/home/test/01/maze": {
             "name": "maze",
             "type": "dir",
+            "hidden": true,
             "parent": "01",
             "children": ["wall", "hall"]
         },

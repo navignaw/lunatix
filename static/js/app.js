@@ -9,6 +9,7 @@ var System = {
     progress: {
         arc: "intro",
         value: 0,
+        hints: 0,
         logs: {}
     },
     user: null

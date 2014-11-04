@@ -14,6 +14,7 @@ var Story = (function() {
     function advanceArc(newArc, newDir) {
         System.progress.arc = newArc;
         System.progress.value = 0;
+        System.progress.hints = 0;
 
         if (newDir) {
             unlockDir(newDir);
@@ -103,29 +104,19 @@ var Story = (function() {
                         greenAI(text).then(function() {
                             return input();
                         }).then(function(response) {
-                            text = 'Error: subject has submitted a string not contained in lexicon. ' +
-                                   'Input submitted for human processing.';
-                            prettyPrint(text, null, {color: AI_RED});
-                            return input();
-                        }).then(function(response) {
-                            text = 'During the course of training, subjects are monitored.';
+                            text = 'According to your responses, it is necessary for you to complete a brief training program ' +
+                            'to ensure compliance with minimum standards.\nDuring this program, you will be monitored.';
                             return greenAI(text);
                         }).then(function() {
                             return input();
                         }).then(function(response) {
-                            text = 'This process serves to provide us with important data concerning subject performance.';
+                            text = 'For maximum engagement, all English commands will be ignored.';
                             return greenAI(text);
                         }).then(function() {
                             return input();
                         }).then(function(response) {
-                            text = 'I will be carrying out this task for the duration of subject training.';
-                            return greenAI(text);
-                        }).then(function() {
-                            return input();
-                        }).then(function(response) {
-                            text = 'According to your responses, it is necessary for you to complete ' +
-                                   'a number of tasks to ensure compliance with minimum standards.\n' +
-                                   'Please Change Directory (cd) to the test/ folder to begin this process.`300`\n' +
+                            text = 'As Clarke was fond of saying, compliance equals excellence!`300`\n' +
+                                   'Please Change Directory <cd> to the test/ folder to begin this process.`300`\n' +
                                    '$> cd test/`400`';
                             return greenAI(text);
                         }).then(function() {
@@ -138,18 +129,32 @@ var Story = (function() {
                         if (error) {
                             if (cmd === 'cd') {
                                 if (error.type === TermError.Type.INVALID_ARGUMENTS)
-                                    text = 'Subject must provide an argument to cd into.';
+                                    text = 'Error: not enough arguments. Provide a directory to switch to. ' +
+                                           'In this case, you should <cd> into the test/ directory.';
                                 else if (error.type === TermError.Type.DIRECTORY_NOT_FOUND)
-                                    text = 'Subject has attempted to cd into non-existent directory.';
-                                redAI(text);
+                                    text = 'Error: directory not found. Please <cd> into the test/ directory.';
+                                else if (error.type === TermError.Type.PERMISSION_DENIED)
+                                    text = 'Error: permission denied.\n In accordance with standard protocol, your access to ' +
+                                            cmd.args[0] + ' has been suspended until you have met minimum standards of proficiency. ' +
+                                            'Your curiosity has been noted.';
+                            } else {
+                                if (System.progress.hints === 0)
+                                    text = 'You will be inclined to use the Change Directory <cd> command.';
+                                else if (System.progress.hints === 1)
+                                    text = 'The command to Change Directory is <cd>. The complexity of future tasks ' +
+                                           'is being re-evaluated based on your demonstrated proficiency.';
+                                else
+                                    text = 'The command is <cd test/>. Please type <cd test/>.';
+                                System.progress.hints++;
                             }
+                            redAI(text);
                             return;
                         }
 
                         // Entering test directory
                         if (cmd !== 'cd' || System.directory.name !== 'test') break;
-                        text = '$> ./generateTests 01\n' +
-                               '`500`.`200`.`400`.`500`test generation complete. Begin by Changing Directory (cd) into 01/.\n' +
+                        text = '$> sudo tar -xvf *.tar && sudo chmod u+r 01\n' +
+                               '`500`.`200`.`400`.`500`test generation complete. Begin by Changing Directory <cd> into 01/.\n' +
                                '$> cd 01/';
                         greenAI(text).then(function() {
                             advanceArc('test01', '/home/test/01');
@@ -163,9 +168,21 @@ var Story = (function() {
                 var log = System.progress.logs['test01'];
                 switch (System.progress.value) {
                     case 0:
+                        // Invalid command
+                        if (error && cmd === 'cd') {
+                            if (error.type === TermError.Type.INVALID_ARGUMENTS)
+                                text = 'Error: not enough arguments. The test directory is 01/.';
+                            else if (error.type === TermError.Type.DIRECTORY_NOT_FOUND)
+                                text = 'Error: directory not found. The test directory is 01/.';
+                            redAI(text);
+                            return;
+                        }
+
                         if (cmd !== 'cd' || System.directory.name !== '01') break;
-                        text = 'This task will test your ability to utilize List files (ls) and Change Directory (cd). ' +
-                               'Attempt to follow the maze/ to its completion. Your progress will be tracked.';
+                        text = 'This task will test your ability to utilize List files <ls> and Change Directory <cd>. ' +
+                               'Attempt to follow the maze/ to its completion. Your progress will be tracked.`200`\n' +
+                               '(Note that the names of subsequent directories will no longer be provided. ' +
+                                'Usage of <ls> is required to progress.)';
                         greenAI(text).then(function() {
                             System.progress.value++;
                             self.checkStory(term, null);
@@ -174,6 +191,7 @@ var Story = (function() {
 
                     case 1:
                         // Create logs and custom directories
+                        unlockDir('/home/test/01/maze');
                         var COLOR_PARENT_DIR = '/home/test/01/maze/hall/right/uncertain/probable/definite/';
                         // TODO: replace with a call to 'mv' util function when implemented
                         System.dirTree[COLOR_PARENT_DIR + System.user.answers.color].children = ['finish', 'start'];
@@ -190,6 +208,35 @@ var Story = (function() {
                         break;
 
                     case 2:
+                        // Invalid command
+                        if (error) {
+                            if (cmd === 'cd') {
+                                if (error.type === TermError.Type.INVALID_ARGUMENTS)
+                                    text = 'The maze requires you to choose a directory.';
+                                else if (error.type === TermError.Type.DIRECTORY_NOT_FOUND) {
+                                    if (_.contains(['wall', 'impossible', 'impractical', 'absurd', 'still_wrong', 'more_wrong'], System.directory.name))
+                                        text = 'You seem to have reached a dead end. To return to your previous point in the maze, input <cd ..>';
+                                    else
+                                        text = 'The maze contains no path that way. In the words of Wells, choose wisely.';
+                                }
+                                redAI(text);
+                                return;
+                            } else if (System.progress.hints === 0 && cmd !== 'ls') {
+                                text = 'Resorted to guesswork, have you? Your desperation has been noted. Usage of <ls> will List files.';
+                                redAI(text);
+                                return;
+                            }
+                            break;
+                        }
+
+                        if (System.progress.hints === 0 && cmd === 'ls') {
+                            text = 'The available paths have been output. Continue navigating the maze/ via <cd> to its completion.';
+                            greenAI(text).then(function() {
+                                System.progress.hints++;
+                            });
+                            break;
+                        }
+
                         // Maze directory logs
                         if (cmd !== 'cd' || _.has(log, System.directory.name)) break;
                         switch (System.directory.name) {
@@ -306,16 +353,34 @@ var Story = (function() {
 
                     case 3:
                         // Successfully traversed maze!
-                        text = 'gj m8 you win the demo!\n';
+                        text = 'Logging complete. Exit this directory with <cd ..> and visit the results/ directory for debriefing.`300`\n' +
+                               '$> cd ../results';
                         System.path = '/home/test/01';
                         System.directory = System.dirTree[System.path];
                         greenAI(text).then(function() {
-                            // Save log into new file and print results.
+                            unlockDir('/home/test/results');
+                            System.progress.value++;
+                        });
+                        break;
+
+                    case 4:
+                        if (cmd !== 'cd' || System.directory.name !== 'results') break;
+
+                        text = 'Your results are organized by test, and by examining them you can see exactly where your deficiencies lie.`300`\n' +
+                               '$> cat log01.txt`500`';
+                        greenAI(text).then(function() {
+                            // TODO: save log into new file 'log01.txt' and print results.
                             var score = (log.good + 23 - log.bad);
                             var percentage = Math.round(score * 10000.0 / 30) / 100;
                             text = 'Results:\n' + saveLog('test01') +
                                    '\nScore: ' + score.toString() + '/30 (' + percentage.toString() + '%)';
                             prettyPrint(text);
+
+                            text = '`600`\nAs Huxley would say, eliminating defects is the only way to improve.`400`\n' +
+                            'Change directory back to ../02, as there are still many more tests for you to complete.`200`\n' +
+                            '$> sudo chmod u+rx ../02';
+                            return greenAI(text);
+                        }).then(function() {
                             advanceArc('test02', '/home/test/02');
                         });
                         break;
@@ -329,7 +394,7 @@ var Story = (function() {
 
         // If error is not handled in story text, print default message to terminal.
         if (error) {
-            prettyPrint(error.message);
+            prettyPrint(error.message, null, {color: AI_RED});
         }
     };
 

@@ -317,7 +317,7 @@ var Terminal = (function() {
             });
 
             // Loop through piped commands, appending each result onto next command.
-            for (var i = 0; i < commands.length; i++) {
+            for (var i = 0, len = commands.length; i < len; i++) {
                 var cmd = Util.parseCommand([commands[i], result].join(' '));
                 if (!cmd) {
                     return;

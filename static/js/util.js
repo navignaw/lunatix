@@ -116,7 +116,7 @@ var Util = (function() {
         var dirs = _.compact(path.split('/'));
         var currentDir = System.directory;
         var currentPath = System.path;
-        for (var i = 0; i < dirs.length; i++) {
+        for (var i = 0, len = dirs.length; i < len; i++) {
             if (dirs[i] === '.') {
                 continue;
             } else if (dirs[i] === '..') {
