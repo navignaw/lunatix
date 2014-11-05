@@ -104,7 +104,8 @@ var Executable = (function() {
                        'Initializing relaxation station.`200`.`400`.`500`\n' +
                        'Starting relaxing music.`500`.`400`.`500`\n';
                 greenAI(text).then(function() {
-                    // TODO: play elevator music
+                    // Play elevator music
+                    Util.playMusic('refreshing.mp3');
 
                     var ctrlC = false;
                     var timer = 3600;
@@ -168,6 +169,7 @@ var Executable = (function() {
                                 if (System.progress.hints === 4) {
                                     System.progress.value = 2;
                                     Story.checkStory(term, null);
+                                    Util.stopMusic();
                                     return;
                                 }
                             });

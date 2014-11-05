@@ -367,5 +367,15 @@ var Util = (function() {
         return deferred.promise();
     };
 
+    var audio = null;
+    self.playMusic = function(music) {
+        audio = new Audio([$app.SCRIPT_ROOT, '/static/sound/', music].join(''));
+        audio.play();
+    };
+
+    self.stopMusic = function() {
+        audio.stop();
+    };
+
     return self;
 })();
