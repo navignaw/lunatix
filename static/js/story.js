@@ -5,7 +5,7 @@ var Story = (function() {
     var AI_GREEN = '#78C778';
     var AI_RED = '#FF2424';
     var DIR_BLUE = '#0080FF';
-    var LOG_DIR = 'test';
+    var LOG_DIR = '/home/test/results';
 
     var self = {};
 
@@ -23,10 +23,15 @@ var Story = (function() {
         }
     }
 
-    function saveLog(test) {
+    function saveLog(test, name) {
         var log = System.progress.logs[test];
-        var text = log.text.join('\n');
-        // TODO: save log to new file in directory?
+        var text = 'Results:\n' + log.text.join('\n');
+        var logFile = {
+            'name': name,
+            'type': 'txt',
+            'text': text
+        };
+        File.createFile(LOG_DIR, name, logFile);
         return text;
     }
 
@@ -87,7 +92,7 @@ var Story = (function() {
                                            'Provide a revised response.';
                                     prettyPrint(text, null, {color: AI_RED});
                                     return true;
-                                }
+                                } // TODO: if command > 5, witty message
                                 return false;
                             });
                         }).then(function(result) {
@@ -254,6 +259,11 @@ var Story = (function() {
                         }
 
                         // Maze directory logs
+                        if (cmd === 'ls' && _.contains(['wall', 'impossible', 'impractical', 'absurd', 'still_wrong', 'more_wrong'], System.directory.name)) {
+                            text = 'You seem to have reached a dead end. To return to your previous point in the maze, input <cd ..>';
+                            redAI(text);
+                            break;
+                        }
                         if (cmd !== 'cd' || _.has(log, System.directory.name)) break;
                         switch (System.directory.name) {
                             case 'wall':
@@ -294,7 +304,7 @@ var Story = (function() {
 
                             case 'finish':
                                 text = 'Subject has fulfilled the minimum qualifications for the first module.';
-                                log.good += 2;
+                                log.good++;
                                 break;
 
                             case 'start':
@@ -385,11 +395,10 @@ var Story = (function() {
                         text = 'Your results are organized by test, and by examining them you can see exactly where your deficiencies lie.`300`\n' +
                                '$> cat log01.txt`500`';
                         greenAI(text).then(function() {
-                            // TODO: save log into new file 'log01.txt' and print results.
                             var score = (log.good + 23 - log.bad);
                             var percentage = Math.round(score * 10000.0 / 30) / 100;
-                            text = 'Results:\n' + saveLog('test01') +
-                                   '\nScore: ' + score.toString() + '/30 (' + percentage.toString() + '%)';
+                            log.text.push('\nScore: ' + score.toString() + '/30 (' + percentage.toString() + '%)');
+                            text = saveLog('test01', 'log01.txt');
                             prettyPrint(text);
 
                             text = '`600`\nAs Huxley would say, eliminating defects is the only way to improve.`400`\n' +
@@ -405,6 +414,7 @@ var Story = (function() {
 
             // Test 02: Clutter
             case 'test02':
+                log = System.progress.logs['test02'];
                 switch (System.progress.value) {
                     case 0:
                         if (cmd !== 'cd' || System.directory.name !== 'clutter') break;
@@ -445,7 +455,7 @@ var Story = (function() {
                                'Still more tests await you. Change Directory to test/03 to continue your assessment.`200`\n' +
                                '$> sudo chmod u+rx /home/test/03';
                         greenAI(text).then(function() {
-                            // TODO: save log file
+                            saveLog('test02', 'log02.txt');
                             advanceArc('test03', '/home/test/03');
                         });
                         break;
@@ -454,6 +464,7 @@ var Story = (function() {
 
             // Test 03: animalSort
             case 'test03':
+                log = System.progress.logs['test03'];
                 switch (System.progress.value) {
                     case 0:
                         if (cmd !== 'cd' || System.directory.name !== 'animalSort') break;
@@ -471,13 +482,13 @@ var Story = (function() {
                         break;
 
                     case 1:
-                        log = System.progress.logs['test03'];
                         if (error) {
                             if (cmd === 'cat') {
                                 if (error.type === TermError.Type.INVALID_ARGUMENTS)
                                     text = 'cat requires you to choose a file to view. Remember, choose wisely.';
-                            }
-                            else if (cmd !== 'ls') {
+                            } else if (cmd === 'mv') {
+                                // TODO: invalid mv commands
+                            } else if (cmd !== 'ls') {
                                 text = 'Examination of the files is impossible without the usage of <ls> and <cat>.\n' +
                                        'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
                             }
@@ -493,15 +504,15 @@ var Story = (function() {
                     case 2:
                         // Correct sorting submitted
                         // TODO: unhard-code score; 6 is best case
-                        log = System.progress.logs['test03'];
-                        text = 'Results:\n' + 'Number of moves: ' + log.moves + '\n' +
-                               'Score: O(n) - relatively efficient\n';
+                        var score = 'O(n) - relatively efficient';
+                        log.text.push('Number of moves: ' + log.moves);
+                        log.text.push(score);
+                        text = saveLog('test03', 'log03.txt');
                         prettyPrint(text);
-                        text = 'Log saved to results/.`400`\n' +
+                        text = '\nLog saved to results/.`400`\n' +
                                'As Asimov would say, a hard worker earns relaxing breaks. Visit test/04 for your reward.`200`\n' +
                                '$> sudo chmod u+rx /home/test/04';
                         greenAI(text).then(function() {
-                            // TODO: save log file
                             advanceArc('test04', '/home/test/04');
                         });
                         break;
@@ -510,6 +521,7 @@ var Story = (function() {
 
             // Test 04: relaxation station
             case 'test04':
+                log = System.progress.logs['test04'];
                 switch (System.progress.value) {
                     case 0:
                         if (cmd !== 'cd' || System.directory.name !== '04') break;
