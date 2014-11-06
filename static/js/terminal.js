@@ -231,6 +231,11 @@ var Terminal = (function() {
                     throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[0] + ': No such file');
                 }
 
+                // Check permissions
+                if (!file.movable) {
+                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'mv: ' + cmd.args[0] + ': Permission denied');
+                }
+
                 // If target does not exist, check one directory above.
                 if (!targetDir) {
                     targetDir = parseDirectory(_.initial(cmd.args[1].split('/')).join('/'));
@@ -245,7 +250,6 @@ var Terminal = (function() {
                     throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[1] + ': No such file or directory');
                 }
 
-                // TODO: account for permissions (don't allow moving random files!)
                 var newFile = _.clone(file);
                 newFile.name = targetName;
                 File.createFile(targetDir, targetName, newFile);
@@ -279,7 +283,11 @@ var Terminal = (function() {
                     throw new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied! cannot rm directory');
                 }
 
-                // TODO: account for permissions (don't allow deleting random files!)
+                // Check permissions
+                if (!file.removable) {
+                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied');
+                }
+
                 File.removeFile(_.initial(fileDir.split('/')).join('/'), file.name);
             },
 
