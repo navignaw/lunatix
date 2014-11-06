@@ -230,7 +230,6 @@ var Terminal = (function() {
                 } else {
                     throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[0] + ': No such file');
                 }
-
                 // Check permissions
                 if (!file.movable) {
                     throw new TermError(TermError.Type.PERMISSION_DENIED, 'mv: ' + cmd.args[0] + ': Permission denied');
@@ -245,6 +244,9 @@ var Terminal = (function() {
                     target = System.dirTree[targetDir];
                     if (target.type !== 'dir') {
                         throw new TermError(TermError.Type.FILE_ALREADY_EXISTS, 'mv: ' + cmd.args[1] + ': target already exists');
+                    }
+                    if (!target.movable) {
+                        throw new TermError(TermError.Type.PERMISSION_DENIED, 'mv: ' + cmd.args[0] + ': Permission denied');
                     }
                 } else {
                     throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[1] + ': No such file or directory');

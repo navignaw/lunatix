@@ -104,8 +104,7 @@ var Executable = (function() {
                        'Initializing relaxation station.`200`.`400`.`500`\n' +
                        'Starting relaxing music.`500`.`400`.`500`\n';
                 greenAI(text).then(function() {
-                    // Play elevator music
-                    Util.playMusic('refreshing.mp3');
+                    Util.playMusic('refreshing.mp3'); // Play elevator music
 
                     var ctrlC = false;
                     var timer = 3600;

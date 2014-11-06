@@ -185,66 +185,79 @@
         "/home/test/03/animalSort": {
             "name": "animalSort",
             "type": "dir",
+            "movable": true,
             "children": ["monkey", "sheep", "pig", "dog", "platypus", "cat", "you", "me", "him", "her", "it", "they", "submit"]
         },
             "/home/test/03/animalSort/monkey": {
                 "name": "monkey",
                 "type": "sheep",
+                "movable": true,
                 "text": "\n           __  _\n       .-.'  `; `-._  __  _\n      (_,         .-:'  `; `-._\n    ,'o\"(        (_,           )\n   (__,-'      ,'o\"(            )>\n      (       (__,-'            )\n       `-'._.--._(             )\n          |||  |||`-'._.--._.-'\n                     |||  |||\n\n                YOU\n"
             },
             "/home/test/03/animalSort/sheep": {
                 "name": "sheep",
                 "type": "pig",
+                "movable": true,
                 "text": "\n             _\n          <`--'\\>______\n          /. .  `'     \\\n         (`')  ,        @\n          `-._,        /\n             )-)_/--( >\n            ''''  ''''\n\n                ME\n"
             },
             "/home/test/03/animalSort/pig": {
                 "name": "pig",
                 "type": "dog",
+                "movable": true,
                 "text": "\n                          ,     ,\n                          |\\---/|\n                         /  , , |\n                    __.-'|  / \\ /\n           __ ___.-'        ._O|\n        .-'  '        :      _/\n       / ,    .        .     |\n      :  ;    :        :   _/\n      |  |   .'     __:   /\n      |  :   /'----'| \\  |\n      \\  |\\  |      | /| |\n       '.'| /       || \\ |\n       | /|.'       '.l \\\\_\n       || ||             '-'\n       '-''-'\n\n                HIM\n"
             },
             "/home/test/03/animalSort/dog": {
                 "name": "dog",
                 "type": "cat",
+                "movable": true,
                 "text": "\n                             / )\n              (\\__/)         ( (\n              )    (          ) )\n            ={      }=       / /\n              )     `-------/ /\n             (               /\n              \\              |\n             ,'\\       ,    ,'\n             `-'\\  ,---\\   | \\\n                _) )    `. \\ /\n               (__/       ) )\n                         (_/\n\n                HER\n"
             },
             "/home/test/03/animalSort/platypus": {
                 "name": "platypus",
                 "type": "platypus",
+                "movable": true,
                 "text": "\n                            ,=.\n              ,=\"\"\"\"==.__.=\"  o\".___\n        ,=.==\"                  ___/\n  ,==.,\"    ,          , \\,===\"\"\n <     ,==)  \\\"'\"=._.==)  \\\n  `==''    `\"           `\"\n\n                IT\n"
             },
             "/home/test/03/animalSort/cat": {
                 "name": "cat",
                 "type": "unicorn",
+                "movable": true,
                 "text": "\n                  .\n                 /'\n                //\n            .  //\n            |\//7\n           /' \" \\\n          .   . .\n          | (    \\     '._\n          |  '._  '    '. '\n          /    \\'-'_---. ) )\n         .              :.'\n         |               \\\n         | .    .   .     .\n         ' .    |  |      |\n          \\^   /_-':     /\n          / | |    '\\  .'\n         / /| |     \\\\  |\n         \\ \\( )     // /\n          \\ | |    // /\n           L! !   // /\n            [_]  L[_|\n\n                THEY\n"
             },
             "/home/test/03/animalSort/you": {
                 "name": "you",
                 "type": "dir",
+                "movable": true,
                 "children": []
             },
             "/home/test/03/animalSort/me": {
                 "name": "me",
                 "type": "dir",
+                "movable": true,
                 "children": []
             },
             "/home/test/03/animalSort/him": {
                 "name": "him",
                 "type": "dir",
+                "movable": true,
                 "children": []
             },
             "/home/test/03/animalSort/her": {
                 "name": "her",
                 "type": "dir",
+                "movable": true,
                 "children": []
             },
             "/home/test/03/animalSort/it": {
                 "name": "it",
                 "type": "dir",
+                "movable": true,
                 "children": []
             },
             "/home/test/03/animalSort/they": {
                 "name": "they",
                 "type": "dir",
+                "movable": true,
                 "children": []
             },
             "/home/test/03/animalSort/submit": {
@@ -279,31 +292,37 @@
             "/home/test/05/box/war": {
                 "name": "war",
                 "type": "txt",
+                "removable": true,
                 "text": "list of wars government has won"
             },
             "/home/test/05/box/pestilence": {
                 "name": "pestilence",
                 "type": "txt",
+                "removable": true,
                 "text": "list of diseases that were eradicated"
             },
             "/home/test/05/box/despair": {
                 "name": "despair",
                 "type": "txt",
+                "removable": true,
                 "text": "list of things that make you sad"
             },
             "/home/test/05/box/death": {
                 "name": "death",
                 "type": "txt",
+                "removable": true,
                 "text": "dead things"
             },
             "/home/test/05/box/famine": {
                 "name": "famine",
                 "type": "txt",
+                "removable": true,
                 "text": "list of famines"
             },
             "/home/test/05/box/hope": {
                 "name": "hope",
                 "type": "txt",
+                "removable": true,
                 "hidden": true,
                 "text": "Elpis"
             }
