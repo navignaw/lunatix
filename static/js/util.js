@@ -168,54 +168,45 @@ var Util = (function() {
 
     /* Return array of suggested commands on tab-complete. */
     self.tabComplete = function(term, commands) {
-        // TODO: Fix after refactoring: these functions should now take path strings
         var str = term.get_command();
         var input = _.last(_.compact(str.split(' '))) || '';
 
+        // Prepend relative path from input to all children if path contains '/'
+        var prependRelativePath = function(name) {
+            if (/\//.test(input)) {
+                return input.replace(/\/[^\/]*$/, '/' + name);
+            }
+            return name;
+        };
+
         var allChildren = function(path) {
             return _.map(self.getChildren(path), function(dirOrFile) {
-                // TODO: prepend relative path from input to all children
-                /*if (/\//.test(input)) {
-                    return input.replace(/\/[^\/]+$/, System.dirTree[dirOrFile].name);
-                }*/
-                return System.dirTree[dirOrFile].name;
+                return prependRelativePath(System.dirTree[dirOrFile].name);
             });
         };
         var allDirectories = function(path) {
             return _(self.getChildren(path)).filter(function(dirOrFile) {
                 return System.dirTree[dirOrFile].type === 'dir';
             }).map(function(dir) {
-                // TODO: prepend relative path from input to all children
-                /*if (/\//.test(input)) {
-                    return input.replace(/\/[^\/]+$/, System.dirTree[dir].name + '/');
-                }*/
-                return System.dirTree[dir].name + '/';
+                return prependRelativePath(System.dirTree[dir].name + '/');
             }).value();
         };
         var allFiles = function(path) {
             return _(self.getChildren(path)).filter(function(dirOrFile) {
                 return System.dirTree[dirOrFile].type !== 'dir';
             }).map(function(file) {
-                // TODO: prepend relative path from input to all children
-                /*if (/\//.test(input)) {
-                    return input.replace(/\/[^\/]+$/, System.dirTree[file].name);
-                }*/
-                return System.dirTree[file].name;
+                return prependRelativePath(System.dirTree[file].name);
             }).value();
         };
         var allExes = function(path) {
             return _(self.getChildren(path)).filter(function(dirOrFile) {
                 return System.dirTree[dirOrFile].type === 'exe';
             }).map(function(file) {
-                // TODO: prepend relative path from input to all children
-                /*if (/\//.test(input)) {
-                    return input.replace(/\/[^\/]+$/, System.dirTree[file].name);
-                }*/
-                return './' + System.dirTree[file].name;
+                return prependRelativePath(System.dirTree[file].name);
             }).value();
         };
 
-        if ((/^\s*(cat)\s(.*)/).test(str)) {
+        if ((/^\s*(cat|mv|rm)\s(.*)/).test(str)) {
             return allChildren(self.parseDirectory(input, true));
         } else if ((/^\s*(cd|ls)\s(.*)/).test(str)) {
             return allDirectories(self.parseDirectory(input, true));

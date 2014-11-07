@@ -214,7 +214,6 @@ var Story = (function() {
                         // Create logs and custom directories
                         unlockFile('/home/test/01/maze');
                         var COLOR_PARENT_DIR = '/home/test/01/maze/hall/right/uncertain/probable/definite/';
-                        // TODO: replace with a call to 'mv' util function when implemented
                         System.dirTree[COLOR_PARENT_DIR + System.user.answers.color].children = ['finish', 'start'];
                         var finish = System.dirTree['COLOR/finish'];
                         var start = System.dirTree['COLOR/start'];
@@ -503,8 +502,10 @@ var Story = (function() {
 
                     case 2:
                         // Correct sorting submitted
-                        // TODO: unhard-code score; 6 is best case
-                        var score = 'O(n) - relatively efficient';
+                        var score = log.moves <= 6 ?  'O(log n) - efficient' :
+                                    log.moves <= 10 ? 'O(n) - relatively efficient' :
+                                    log.moves <= 15 ? 'O(n^2) - inefficient' :
+                                                      'O(2^n) - horribly inefficient';
                         log.text.push('Number of moves: ' + log.moves);
                         log.text.push(score);
                         text = saveLog('test03', 'log03.txt');
