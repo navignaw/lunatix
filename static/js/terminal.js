@@ -455,6 +455,11 @@ var Terminal = (function() {
             }, self.options.input(prompt));
         },
 
+        /* Countdown timer prompt (relaxation station) */
+        countdown: function(term, callback) {
+            term.push(_.noop, self.options.countdown(callback));
+        },
+
         /* Terminal options */
         options: {
             base: {
@@ -549,6 +554,20 @@ var Terminal = (function() {
             input: function(prompt) {
                 return {
                     prompt: prompt || '$> '
+                };
+            },
+
+            countdown: function(callback) {
+                return {
+                    prompt: '60:00',
+                    keydown: function(e, term) {
+                        // Check for Ctrl-C
+                        if (e.which === 67 && e.ctrlKey) {
+                            callback(term);
+                        } else {
+                            return false; // disable other keys
+                        }
+                    }
                 };
             }
         },

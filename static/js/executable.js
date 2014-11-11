@@ -98,6 +98,7 @@ var Executable = (function() {
                     return;
                 }
 
+                log = System.progress.logs['test04'];
                 term.clear();
                 System.exe = 'relax';
                 text = 'NOTE: To opt out of this rest break, you may terminate the program with <Ctrl-C> at any time.`300`\n' +
@@ -148,32 +149,43 @@ var Executable = (function() {
                         'I am sorry, but regulations require me to terminate the program under specific inputs. I do hope you understand.'
                     ];
 
-                    // FIXME: Ctrl-C should stop the timer
-                    _.forOwn(timedText, function(text, time) {
-                        _.delay(function(printMe) {
-                            if (!ctrlC) greenAI(printMe);
-                        }, (3600 - time) * 1000, text);
+                    // On Ctrl-C, pause timer and print text
+                    Util.hideCursor();
+                    Terminal.countdown(term, function() {
+                        if (ctrlC) return;
+                        ctrlC = true;
+                        Util.animating = false; // disable current animating text
+                        greenAI(ctrlCText[System.progress.hints++]).then(function() {
+                            ctrlC = false;
+                            if (System.progress.hints === 4) {
+                                log.waitTime = log.ranToCompletion ? 3600 : (3600 - timer);
+                                System.progress.value = 2;
+                                Util.stopMusic();
+                                Util.showCursor();
+                                term.pop();
+                                Story.checkStory(term, null);
+                            }
+                        });
                     });
 
-                    // Text on Ctrl-C
-                    term.pause();
-                    Terminal.terminal.keydown(function (e) {
-                        console.log(e);
-                        console.log('ctrl c');
-                        if (e.which === 67 && e.ctrlKey) {
-                            ctrlC = true;
-                            Util.animating = false; // disable current animating text
-                            greenAI(ctrlCText[System.progress.hints++]).then(function() {
-                                ctrlC = false;
-                                if (System.progress.hints === 4) {
-                                    System.progress.value = 2;
-                                    Story.checkStory(term, null);
-                                    Util.stopMusic();
-                                    return;
-                                }
-                            });
+                    var runTimer = function() {
+                        if (System.progress.value !== 1) return;
+
+                        if (_.has(timedText, --timer)) {
+                            // TODO: animate text without screwing up timer
+                            prettyPrint(timedText[timer], null, {color: AI_GREEN});
                         }
-                    });
+                        if (timer > 0) {
+                            if (!ctrlC) {
+                                term.set_prompt(Util.parseTime(timer));
+                            }
+                            _.delay(runTimer, 1000);
+                        } else {
+                            timer = 3600;
+                            log.ranToCompletion = true; // awesome award
+                        }
+                    };
+                    runTimer();
                 });
                 break;
 

@@ -50,11 +50,11 @@ var Story = (function() {
         // FIXME: Remove after testing
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
             // Hack to skip to test 4
-            System.progress.arc = 'test03';
+            System.progress.arc = 'test04';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
-            //unlockFile('/home/test/04');
+            unlockFile('/home/test/04');
         }
 
         switch (System.progress.arc) {
@@ -529,8 +529,7 @@ var Story = (function() {
 
                         System.progress.logs['test04'] = {
                             text: [],
-                            good: 0,
-                            bad: 0
+                            waitTime: 0
                         };
                         text = 'Welcome to the Relaxation Station. In accordance with Sedation Act 1918, ' +
                                'a scheduled rest period has been included to improve performance and ensure your well-being.\n' +
@@ -550,7 +549,25 @@ var Story = (function() {
 
                     case 2:
                         // Ctrl-C'd out
-                        // TODO: print results
+                        log.text.push(['Time spent in Relaxation Station:',
+                                        Math.floor(log.waitTime / 60).toString(), 'min,',
+                                        (log.waitTime % 60).toString(), 'sec'].join(' '));
+                        var state = log.waitTime < 60   ? '7 - dangerously agitated' :
+                                    log.waitTime < 180  ? '6 - very agitated' :
+                                    log.waitTime < 300  ? '5 - agitated' :
+                                    log.waitTime < 600  ? '4 - calm' :
+                                    log.waitTime < 1200 ? '3 - sedated' :
+                                    log.waitTime < 2400 ? '2 - very sedated' :
+                                                          '1 - unarousable';
+                        log.text.push('State: ' + state);
+                        text = saveLog('test04', 'log04.txt');
+                        prettyPrint(text);
+                        text = '\nLog saved to results/.`400`\n' +
+                               'Time for the final test! Head on over to 05/.\n' +
+                               '$> sudo chmod u+rx /home/test/05';
+                        greenAI(text).then(function() {
+                            advanceArc('test05', '/home/test/05');
+                        });
                         break;
                 }
                 break;

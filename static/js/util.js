@@ -140,7 +140,7 @@ var Util = (function() {
                 if (child) {
                     currentPath = child;
                     currentDir = System.dirTree[child];
-                } else if (partial) {
+                } else if (partial && i === len - 1) {
                     break;
                 } else {
                     self.log('Directory not found:', path);
@@ -358,6 +358,7 @@ var Util = (function() {
         return deferred.promise();
     };
 
+    // Audio
     var audio = null;
     self.playMusic = function(music) {
         audio = new Audio([$app.SCRIPT_ROOT, '/static/sound/', music].join(''));
@@ -365,7 +366,25 @@ var Util = (function() {
     };
 
     self.stopMusic = function() {
-        audio.stop();
+        audio.pause();
+        audio.currentTime = 0;
+    };
+
+    // Parsing times and dates
+    self.parseTime = function(time) {
+        function padZeroes(num) {
+            return (num < 10 ? '0' : '') + num.toString();
+        }
+        return [padZeroes(Math.floor(time / 60)), padZeroes(time % 60)].join(':');
+    };
+
+    // Cursor and aesthetics
+    self.showCursor = function() {
+        Terminal.terminal.find('.cursor').show();
+    };
+
+    self.hideCursor = function() {
+        Terminal.terminal.find('.cursor').hide();
     };
 
     return self;
