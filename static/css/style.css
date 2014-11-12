@@ -20,3 +20,10 @@ body {
     /*border-radius: 15px;*/
     color: #ccc;
 }
+
+pre {
+    background-color: #004a92;
+    color: white;
+    font-size: 14px;
+    border: none;
+}

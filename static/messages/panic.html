@@ -1,7 +1,7 @@
-<!-- TODO: un-htmlify this? animate print -->
-<h3>Kernel Panic</h3>
+<!-- TODO: un-htmlify this or print few lines at a time -->
+<h1>Kernel Panic</h1>
 
-Unable to rm hope: kernel paging request at virtual address 40025694
+<!--Unable to rm hope: kernel paging request at virtual address 40025694
 [37655.473976] pgd = d7138000
 [37655.474007] [40025694] *pgd=9ec1a831, *pte=bf2e659d, *ppte=00000000
 [37655.474038] Internal error: Oops: 17 [#1] PREEMPT SMP
@@ -73,4 +73,86 @@ Unable to rm hope: kernel paging request at virtual address 40025694
 [37655.475289] [<c01d31b4>] (shrink_inactive_list+0x1e0/0x330) from [<c01d3704>] (shrink_zone+0x400/0x588)
 [37655.475289] [<c01d3704>] (shrink_zone+0x400/0x588) from [<c01d3fd8>] (kswapd+0x594/0x970)
 [37655.475319] [<c01d3fd8>] (kswapd+0x594/0x970) from [<c018e04c>] (kthread+0x80/0x88)
-[37655.475319] [<c018e04c>] (kthread+0x80/0x88) from [<c01075c0>] (kernel_thread_exit+0x0/0x8)
+[37655.475319] [<c018e04c>] (kthread+0x80/0x88) from [<c01075c0>] (kernel_thread_exit+0x0/0x8)-->
+
+
+<!-- OR -->
+
+
+<pre>
+*** glibc detected *** Unable to rm hope: memory corruption: 0x0000000001188d90 ***
+======= Backtrace: =========
+/lib64/libc.so.6(+0x75e76)[0x7f774c366e76]
+/lib64/libc.so.6(+0x79904)[0x7f774c36a904]
+/lib64/libc.so.6(__libc_malloc+0x71)[0x7f774c36b6b1]
+/usr/local/lib/gcc/lib64/libstdc++.so.6(_Znwm+0x1d)[0x7f774cd8b2dd]
+./hope(_ZN4_4629PandorasBox9eradicatorERSt6clearINS_6DiseasESaIS2_EE+0xb7)[0x4395a7]
+./hope(_ZN4_4629Government12check_valid_filesEPNS_9VerifierES2_b+0xe9f)[0x441fef]
+./hope(_ZN4_46220LX208417test04_remove_filesEii+0xca)[0x43770a]
+./hope(_ZN4_46220AIApplication12handle_eventERK9Run_Test+0x4a)[0x4379ba]
+./hope(_ZN4_46211AIApplication17start_applicationEPSTest0_iidPKc+0x2b6)[0x442ae6]
+./hope(main+0x3d7)[0x437ea7]
+/lib64/libc.so.6(__libc_start_main+0xfd)[0x7f774c30fd5d]
+./hope[0x436c39]
+======= Memory map: ========
+00400000-004a4000 r-xp 00000000 00:14 2066613176                         /usr/LX/2084/
+006a4000-006a5000 rw-p 000a4000 00:14 2066613176                         /usr/LX/2084/
+006a5000-0071b000 rw-p 00000000 00:00 0
+01135000-01404000 rw-p 00000000 00:00 0                                  [heap]
+7f77432eb000-7f77434c0000 rw-p 00000000 00:00 0
+7f77434c0000-7f77434c1000 ---p 00000000 00:00 0
+7f77434c1000-7f7743ec1000 rw-p 00000000 00:00 0
+7f7743ec1000-7f7743eca000 r-xp 00000000 fd:00 9856169                    /usr/lib64/libXcursor.so.1.0.2
+7f7743eca000-7f77440ca000 ---p 00009000 fd:00 9856169                    /usr/lib64/libXcursor.so.1.0.2
+<!--7f77440ca000-7f77440cb000 rw-p 00009000 fd:00 9856169                    /usr/lib64/libXcursor.so.1.0.2
+7f77440cb000-7f774413f000 rw-p 00000000 00:00 0
+7f774413f000-7f7749fd0000 r--p 00000000 fd:00 9850996                    /usr/lib/locale/locale-archive
+7f7749fd0000-7f7749fda000 r-xp 00000000 fd:00 9833413                    /usr/lib64/libXrandr.so.2.2.0
+7f7749fda000-7f774a1d9000 ---p 0000a000 fd:00 9833413                    /usr/lib64/libXrandr.so.2.2.0
+7f774a1d9000-7f774a1da000 rw-p 00009000 fd:00 9833413                    /usr/lib64/libXrandr.so.2.2.0
+7f774a1da000-7f774a1e3000 r-xp 00000000 fd:00 9833411                    /usr/lib64/libXrender.so.1.3.0
+7f774a1e3000-7f774a3e3000 ---p 00009000 fd:00 9833411                    /usr/lib64/libXrender.so.1.3.0
+7f774a3e3000-7f774a3e4000 rw-p 00009000 fd:00 9833411                    /usr/lib64/libXrender.so.1.3.0
+7f774a3e4000-7f774a3e6000 r-xp 00000000 fd:00 9833109                    /usr/lib64/libXau.so.6.0.0
+7f774a3e6000-7f774a5e6000 ---p 00002000 fd:00 9833109                    /usr/lib64/libXau.so.6.0.0
+7f774a5e6000-7f774a5e7000 rw-p 00002000 fd:00 9833109                    /usr/lib64/libXau.so.6.0.0
+7f774a5e7000-7f774a5ee000 r-xp 00000000 fd:00 14167866                   /lib64/librt-2.12.so
+7f774a5ee000-7f774a7ed000 ---p 00007000 fd:00 14167866                   /lib64/librt-2.12.so
+7f774a7ed000-7f774a7ee000 r--p 00006000 fd:00 14167866                   /lib64/librt-2.12.so
+7f774a7ee000-7f774a7ef000 rw-p 00007000 fd:00 14167866                   /lib64/librt-2.12.so
+7f774a7ef000-7f774a84e000 r-xp 00000000 fd:00 9833459                    /usr/lib64/libXt.so.6.0.0
+7f774a84e000-7f774aa4d000 ---p 0005f000 fd:00 9833459                    /usr/lib64/libXt.so.6.0.0
+7f774aa4d000-7f774aa53000 rw-p 0005e000 fd:00 9833459                    /usr/lib64/libXt.so.6.0.0
+7f774aa53000-7f774aa54000 rw-p 00000000 00:00 0
+7f774aa54000-7f774aa58000 r-xp 00000000 fd:00 14155860                   /lib64/libuuid.so.1.3.0
+7f774aa58000-7f774ac57000 ---p 00004000 fd:00 14155860                   /lib64/libuuid.so.1.3.0
+7f774ac57000-7f774ac58000 rw-p 00003000 fd:00 14155860                   /lib64/libuuid.so.1.3.0
+7f774ac58000-7f774ac75000 r-xp 00000000 fd:00 14155885                   /lib64/libselinux.so.1
+7f774ac75000-7f774ae74000 ---p 0001d000 fd:00 14155885                   /lib64/libselinux.so.1
+7f774ae74000-7f774ae75000 r--p 0001c000 fd:00 14155885                   /lib64/libselinux.so.1
+7f774ae75000-7f774ae76000 rw-p 0001d000 fd:00 14155885                   /lib64/libselinux.so.1
+7f774ae76000-7f774ae77000 rw-p 00000000 00:00 0
+7f774ae77000-7f774ae81000 r-xp 00000000 fd:00 9842959                    /usr/lib64/libdrm.so.2.4.0
+7f774ae81000-7f774b081000 ---p 0000a000 fd:00 9842959                    /usr/lib64/libdrm.so.2.4.0
+7f774b081000-7f774b082000 rw-p 0000a000 fd:00 9842959                    /usr/lib64/libdrm.so.2.4.0
+7f774b082000-7f774b087000 r-xp 00000000 fd:00 9833471                    /usr/lib64/libXxf86vm.so.1.0.0
+7f774b087000-7f774b286000 ---p 00005000 fd:00 9833471                    /usr/lib64/libXxf86vm.so.1.0.0
+7f774b286000-7f774b287000 rw-p 00004000 fd:00 9833471                    /usr/lib64/libXxf86vm.so.1.0.0
+7f774b287000-7f774b2a4000 r-xp 00000000 fd:00 9833403                    /usr/lib64/libxcb.so.1.1.0
+7f774b2a4000-7f774b4a4000 ---p 0001d000 fd:00 9833403                    /usr/lib64/libxcb.so.1.1.0
+7f774b4a4000-7f774b4a5000 rw-p 0001d000 fd:00 9833403                    /usr/lib64/libxcb.so.1.1.0
+7f774b4a5000-7f774b4a8000 r-xp 00000000 fd:00 9833367                    /usr/lib64/libxcb-dri2.so.0.0.0
+7f774b4a8000-7f774b6a8000 ---p 00003000 fd:00 9833367                    /usr/lib64/libxcb-dri2.so.0.0.0
+7f774b6a8000-7f774b6a9000 rw-p 00003000 fd:00 9833367                    /usr/lib64/libxcb-dri2.so.0.0.0
+7f774b6a9000-7f774b6be000 r-xp 00000000 fd:00 9833369                    /usr/lib64/libxcb-glx.so.0.0.0
+7f774b6be000-7f774b8bd000 ---p 00015000 fd:00 9833369                    /usr/lib64/libxcb-glx.so.0.0.0
+7f774b8bd000-7f774b8bf000 rw-p 00014000 fd:00 9833369                    /usr/lib64/libxcb-glx.so.0.0.0
+7f774b8bf000-7f774b8c0000 r-xp 00000000 fd:00 9833405                    /usr/lib64/libX11-xcb.so.1.0.0
+7f774b8c0000-7f774babf000 ---p 00001000 fd:00 9833405                    /usr/lib64/libX11-xcb.so.1.0.0
+7f774babf000-7f774bac0000 rw-p 00000000 fd:00 9833405                    /usr/lib64/libX11-xcb.so.1.0.0
+7f774bac0000-7f774bac5000 r-xp 00000000 fd:00 9833419                    /usr/lib64/libXfixes.so.3.1.0
+7f774bac5000-7f774bcc5000 ---p 00005000 fd:00 9833419                    /usr/lib64/libXfixes.so.3.1.0
+7f774bcc5000-7f774bcc6000 rw-p 00005000 fd:00 9833419                    /usr/lib64/libXfixes.so.3.1.0
+7f774bcc6000-7f774bcc8000 r-xp 00000000 fd:00 9833469                    /usr/lib64/libXdamage.so.1.1.0
+7f774bcc8000-7f774bec7000 ---p 00002000 fd:00 9833469                    /usr/lib64/libXdamage.so.1.1.0A-->
+</pre>

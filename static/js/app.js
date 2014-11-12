@@ -2,7 +2,7 @@
 // TODO: save into local storage
 var System = {
     debug: $app.DEBUG,
-    version: '0.0.1',
+    version: '0.0.2',
     dirTree: {},
     directory: {},
     path: '/home',

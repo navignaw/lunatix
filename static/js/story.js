@@ -50,11 +50,12 @@ var Story = (function() {
         // FIXME: Remove after testing
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
             // Hack to skip to test 4
-            System.progress.arc = 'test04';
+            System.progress.arc = 'test05';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
             unlockFile('/home/test/04');
+            unlockFile('/home/test/05');
         }
 
         switch (System.progress.arc) {
@@ -165,7 +166,7 @@ var Story = (function() {
                                 System.progress.hints++;
                             }
                             if (text) {
-                                redAI(text);
+                                prettyPrint(text, null, {color: AI_RED});
                                 return;
                             }
                         }
@@ -194,7 +195,7 @@ var Story = (function() {
                             else if (error.type === TermError.Type.DIRECTORY_NOT_FOUND)
                                 text = 'Error: directory not found. The test directory is 01/.';
                             if (text) {
-                                redAI(text);
+                                prettyPrint(text, null, {color: AI_RED});
                                 return;
                             }
                         }
@@ -239,11 +240,11 @@ var Story = (function() {
                                     else
                                         text = 'The maze contains no path that way. In the words of Wells, choose wisely.';
                                 }
-                                redAI(text);
+                                prettyPrint(text, null, {color: AI_RED});
                                 return;
                             } else if (System.progress.hints === 0 && cmd !== 'ls') {
                                 text = 'Resorted to guesswork, have you? Your desperation has been noted. Usage of <ls> will List files.';
-                                redAI(text);
+                                prettyPrint(text, null, {color: AI_RED});
                                 return;
                             }
                             break;
@@ -442,7 +443,7 @@ var Story = (function() {
                                        'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
                             }
                             if (text) {
-                                redAI(text);
+                                prettyPrint(text, null, {color: AI_RED});
                                 return;
                             }
                         }
@@ -472,8 +473,8 @@ var Story = (function() {
                             text: [],
                             moves: 0
                         };
-                        text = 'For this task, you will be Moving and renaming <mv> files. ' +
-                               'Assign the correct name to each animal, and sort them into their correct directories.\n' +
+                        text = 'For this task, you will be Moving and renaming <mv> files. Each of the following animals is experiencing ' +
+                               'a crisis of identity. Assign the correct name to each animal, and sort them into their correct directories.\n' +
                                'When you are finished, run the executable ./submit. Your progress will be tracked.';
                         greenAI(text).then(function() {
                             System.progress.value++;
@@ -486,13 +487,20 @@ var Story = (function() {
                                 if (error.type === TermError.Type.INVALID_ARGUMENTS)
                                     text = 'cat requires you to choose a file to view. Remember, choose wisely.';
                             } else if (cmd === 'mv') {
-                                // TODO: invalid mv commands
+                                if (error.type === TermError.Type.INVALID_ARGUMENTS)
+                                    text = 'mv requires two arguments, a source and destination.'; // error message for mv with incorrect args
+                                else if (error.type === TermError.Type.PERMISSION_DENIED)
+                                    text = 'Permission denied: please do not move these files outside of animalSort/.';
+                                else if (error.type === TermError.Type.INVALID_FILE_TYPE)
+                                    text = 'mv: cannot move directory'; // trying to move directory
+                                else if (error.type === TermError.Type.FILE_NOT_FOUND)
+                                    text = 'mv: file or directory not found'; // file or dir not found
                             } else if (cmd !== 'ls') {
                                 text = 'Examination of the files is impossible without the usage of <ls> and <cat>.\n' +
                                        'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
                             }
                             if (text) {
-                                redAI(text);
+                                prettyPrint(text, null, {color: AI_RED});
                                 return;
                             }
                         } else if (cmd === 'mv') {
@@ -583,13 +591,27 @@ var Story = (function() {
                             good: 0,
                             bad: 0
                         };
-                        text = 'intro text for rm.';
+                        text = 'This task requires you to remove <rm> files from a directory. Please do be on your best behavior.';
                         greenAI(text).then(function() {
                             System.progress.value++;
                         });
                         break;
 
                     case 1:
+                        if (error && cmd === 'rm') {
+                            if (error.type === TermError.Type.INVALID_ARGUMENTS)
+                                text = 'rm: no file submitted to destroy.'; // error message for rm with incorrect args
+                            else if (error.type === TermError.Type.PERMISSION_DENIED)
+                                text = 'Permission denied: your attempt to remove this has been logged.';
+                            else if (error.type === TermError.Type.INVALID_FILE_TYPE)
+                                text = 'rm: cannot remove directory'; // trying to rm directory
+                            else if (error.type === TermError.Type.FILE_NOT_FOUND)
+                                text = 'rm: file or directory not found'; // file or dir not found
+                            if (text) {
+                                prettyPrint(text, null, {color: AI_RED});
+                                return;
+                            }
+                        }
                         if (cmd !== 'rm') break;
 
                         var box = System.dirTree['/home/test/05/box'];
@@ -610,7 +632,10 @@ var Story = (function() {
 
             // Kernel Panic
             case 'kernelPanic':
-                // TODO
+                term.pause();
+                term.clear();
+                Util.blueScreen();
+                Util.echoTemplate(term, 'panic', true);
                 break;
         }
 

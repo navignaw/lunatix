@@ -2,6 +2,7 @@
 var Util = (function() {
 
     var HOME_DIR = '/home';
+    var BLUE_SCREEN = '#004a92';
     var self = {};
 
     String.prototype.capitalize = function() {
@@ -247,7 +248,7 @@ var Util = (function() {
     };
 
     /* Echo HTML from template */
-    self.echoTemplate = function(term, template) {
+    self.echoTemplate = function(term, template, paused) {
         term.pause();
 
         $.ajax({
@@ -260,7 +261,7 @@ var Util = (function() {
             term.exception(error);
             term.echo(jqXHR.responseText, {raw: true});
         }).always(function() {
-            term.resume();
+            if (!paused) term.resume();
         });
     };
 
@@ -385,6 +386,12 @@ var Util = (function() {
 
     self.hideCursor = function() {
         Terminal.terminal.find('.cursor').hide();
+    };
+
+    self.blueScreen = function() {
+        $('body').css('background', BLUE_SCREEN);
+        Terminal.terminal.css('background', BLUE_SCREEN);
+        Terminal.terminal.css('color', 'white');
     };
 
     return self;
