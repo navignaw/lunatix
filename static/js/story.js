@@ -50,12 +50,12 @@ var Story = (function() {
         // FIXME: Remove after testing
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
             // Hack to skip to test 4
-            System.progress.arc = 'test05';
+            System.progress.arc = 'test03';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
-            unlockFile('/home/test/04');
-            unlockFile('/home/test/05');
+            //unlockFile('/home/test/04');
+            //unlockFile('/home/test/05');
         }
 
         switch (System.progress.arc) {
@@ -473,7 +473,7 @@ var Story = (function() {
                             text: [],
                             moves: 0
                         };
-                        text = 'For this task, you will be Moving and renaming <mv> files. Each of the following animals is experiencing ' +
+                        text = 'For this task, you will be moving and renaming <mv> files. Each of the following animals is experiencing ' +
                                'a crisis of identity. Assign the correct name to each animal, and sort them into their correct directories.\n' +
                                'When you are finished, run the executable ./submit. Your progress will be tracked.';
                         greenAI(text).then(function() {

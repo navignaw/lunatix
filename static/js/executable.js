@@ -66,15 +66,17 @@ var Executable = (function() {
                 } else if (System.progress.arc === 'test03' && System.progress.value === 1) {
                     // Test 03: animalSort
                     var animalSort = '/home/test/03/animalSort/';
-                    var pronouns = ['you', 'me', 'him', 'her', 'it', 'they'];
-                    var animals = ['sheep', 'pig', 'dog', 'cat', 'platypus', 'unicorn'];
+                    var locations = ['coop', 'kennel', 'pen', 'rainbow', 'river'];
+                    var animals = [['chicken'], ['dog'], ['sheep', 'pig'], ['unicorn'], ['platypus']];
                     // For each pronoun, check if directory contains correct animal type and name
-                    var correct = _.map(pronouns, function(pronoun, index) {
-                        var animalDir = animalSort + pronoun;
-                        var animalPath = [animalDir, animals[index]].join('/');
-                        return _.contains(System.dirTree[animalDir].children, animals[index]) &&
-                               System.dirTree[animalPath] &&
-                               System.dirTree[animalPath].name === System.dirTree[animalPath].type;
+                    var correct = _.map(locations, function(location, index) {
+                        var animalDir = animalSort + location;
+                        return _.every(animals[index], function(animal) {
+                            var animalPath = [animalDir, animal].join('/');
+                            var animalFile = System.dirTree[animalPath];
+                            return _.contains(System.dirTree[animalDir].children, animal) && animalFile &&
+                                        animalFile.name === animalFile.type;
+                        });
                     });
                     if (_.every(correct)) {
                         text = 'You’re very good with animals. Congratulations, you’ve put them in their places.';

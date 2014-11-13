@@ -186,76 +186,70 @@
             "name": "animalSort",
             "type": "dir",
             "movable": true,
-            "children": ["monkey", "sheep", "pig", "dog", "platypus", "cat", "you", "me", "him", "her", "it", "they", "submit"]
+            "children": ["cat", "dog", "monkey", "pig", "sheep", "platypus", "coop", "kennel", "pen", "rainbow", "river", "submit"]
         },
             "/home/test/03/animalSort/monkey": {
                 "name": "monkey",
                 "type": "sheep",
                 "movable": true,
-                "text": "\n           __  _\n       .-.'  `; `-._  __  _\n      (_,         .-:'  `; `-._\n    ,'o\"(        (_,           )\n   (__,-'      ,'o\"(            )>\n      (       (__,-'            )\n       `-'._.--._(             )\n          |||  |||`-'._.--._.-'\n                     |||  |||\n\n                YOU\n"
+                "text": "\n           __  _\n       .-.'  `; `-._  __  _\n      (_,         .-:'  `; `-._\n    ,'o\"(        (_,           )\n   (__,-'      ,'o\"(            )>\n      (       (__,-'            )\n       `-'._.--._(             )\n          |||  |||`-'._.--._.-'\n                     |||  |||\n"
             },
             "/home/test/03/animalSort/sheep": {
                 "name": "sheep",
                 "type": "pig",
                 "movable": true,
-                "text": "\n             _\n          <`--'\\>______\n          /. .  `'     \\\n         (`')  ,        @\n          `-._,        /\n             )-)_/--( >\n            ''''  ''''\n\n                ME\n"
+                "text": "\n             _\n          <`--'\\>______\n          /. .  `'     \\\n         (`')  ,        @\n          `-._,        /\n             )-)_/--( >\n            ''''  ''''\n"
             },
             "/home/test/03/animalSort/pig": {
                 "name": "pig",
                 "type": "dog",
                 "movable": true,
-                "text": "\n                          ,     ,\n                          |\\---/|\n                         /  , , |\n                    __.-'|  / \\ /\n           __ ___.-'        ._O|\n        .-'  '        :      _/\n       / ,    .        .     |\n      :  ;    :        :   _/\n      |  |   .'     __:   /\n      |  :   /'----'| \\  |\n      \\  |\\  |      | /| |\n       '.'| /       || \\ |\n       | /|.'       '.l \\\\_\n       || ||             '-'\n       '-''-'\n\n                HIM\n"
+                "text": "\n                          ,     ,\n                          |\\---/|\n                         /  , , |\n                    __.-'|  / \\ /\n           __ ___.-'        ._O|\n        .-'  '        :      _/\n       / ,    .        .     |\n      :  ;    :        :   _/\n      |  |   .'     __:   /\n      |  :   /'----'| \\  |\n      \\  |\\  |      | /| |\n       '.'| /       || \\ |\n       | /|.'       '.l \\\\_\n       || ||             '-'\n       '-''-'\n"
             },
             "/home/test/03/animalSort/dog": {
                 "name": "dog",
-                "type": "cat",
+                "type": "chicken",
                 "movable": true,
-                "text": "\n                             / )\n              (\\__/)         ( (\n              )    (          ) )\n            ={      }=       / /\n              )     `-------/ /\n             (               /\n              \\              |\n             ,'\\       ,    ,'\n             `-'\\  ,---\\   | \\\n                _) )    `. \\ /\n               (__/       ) )\n                         (_/\n\n                HER\n"
+                "text": "\n              ,~.\n           ,-'__ `-,\n          {,-'  `. }              ,')\n         ,( a )   `-.__         ,',')~,\n        <=.) (         `-.__,==' ' ' '}\n          (   )                      /\n           `-'\\   ,                  )\n              |  \\        `~.      /\n               \\   `._        \\    /\n                \\     `._____,'   /\n                 `-.            ,'\n                    `-.      ,-'\n                       `~~~~'\n                       //_||\n                    __//--'/`\n                  ,--'/`  '\n                     '"
             },
             "/home/test/03/animalSort/platypus": {
                 "name": "platypus",
                 "type": "platypus",
                 "movable": true,
-                "text": "\n                            ,=.\n              ,=\"\"\"\"==.__.=\"  o\".___\n        ,=.==\"                  ___/\n  ,==.,\"    ,          , \\,===\"\"\n <     ,==)  \\\"'\"=._.==)  \\\n  `==''    `\"           `\"\n\n                IT\n"
+                "text": "\n                            ,=.\n              ,=\"\"\"\"==.__.=\"  o\".___\n        ,=.==\"                  ___/\n  ,==.,\"    ,          , \\,===\"\"\n <     ,==)  \\\"'\"=._.==)  \\\n  `==''    `\"           `\"\n"
             },
             "/home/test/03/animalSort/cat": {
                 "name": "cat",
                 "type": "unicorn",
                 "movable": true,
-                "text": "\n                  .\n                 /'\n                //\n            .  //\n            |\//7\n           /' \" \\\n          .   . .\n          | (    \\     '._\n          |  '._  '    '. '\n          /    \\'-'_---. ) )\n         .              :.'\n         |               \\\n         | .    .   .     .\n         ' .    |  |      |\n          \\^   /_-':     /\n          / | |    '\\  .'\n         / /| |     \\\\  |\n         \\ \\( )     // /\n          \\ | |    // /\n           L! !   // /\n            [_]  L[_|\n\n                THEY\n"
+                "text": "\n                  .\n                 /'\n                //\n            .  //\n            |\//7\n           /' \" \\\n          .   . .\n          | (    \\     '._\n          |  '._  '    '. '\n          /    \\'-'_---. ) )\n         .              :.'\n         |               \\\n         | .    .   .     .\n         ' .    |  |      |\n          \\^   /_-':     /\n          / | |    '\\  .'\n         / /| |     \\\\  |\n         \\ \\( )     // /\n          \\ | |    // /\n           L! !   // /\n            [_]  L[_|\n"
             },
-            "/home/test/03/animalSort/you": {
-                "name": "you",
+            "/home/test/03/animalSort/coop": {
+                "name": "coop",
                 "type": "dir",
                 "movable": true,
                 "children": []
             },
-            "/home/test/03/animalSort/me": {
-                "name": "me",
+            "/home/test/03/animalSort/kennel": {
+                "name": "kennel",
                 "type": "dir",
                 "movable": true,
                 "children": []
             },
-            "/home/test/03/animalSort/him": {
-                "name": "him",
+            "/home/test/03/animalSort/pen": {
+                "name": "pen",
                 "type": "dir",
                 "movable": true,
                 "children": []
             },
-            "/home/test/03/animalSort/her": {
-                "name": "her",
+            "/home/test/03/animalSort/rainbow": {
+                "name": "rainbow",
                 "type": "dir",
                 "movable": true,
                 "children": []
             },
-            "/home/test/03/animalSort/it": {
-                "name": "it",
-                "type": "dir",
-                "movable": true,
-                "children": []
-            },
-            "/home/test/03/animalSort/they": {
-                "name": "they",
+            "/home/test/03/animalSort/river": {
+                "name": "river",
                 "type": "dir",
                 "movable": true,
                 "children": []
