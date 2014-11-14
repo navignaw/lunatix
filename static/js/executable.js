@@ -123,25 +123,25 @@ var Executable = (function() {
                         3390: 'Be assured that you are missing nothing by sitting here and resting.',
                         3360: 'This relaxation period has been shown in the past to be the most preferred of our other compliant participants. Surely, you too are enjoying it.',
                         3330: 'The effects of relaxation have been studied intensely, and the results agree that we are helping you by including this.',
-                        3300: 'Five minutes have passed. Here is your regularly scheduled cat picture.', // TODO: add redacted picture of cat
+                        3300: 'Five minutes have passed. Here is your regularly scheduled cat picture.',
                         3240: 'Closing your eyes is recommended to promote disengagement from tasks at hand.',
                         3180: 'Are you remembering to breathe? Be sure to take steady, rhythmic breaths. As Pratchett would put it, feel the tick of the universe.',
                         3120: 'Be sure to do this every day. Repetition is key to continued excellence.',
                         3060: 'This may be difficult for you. Try not to focus on all of the work you have remaining and enjoy yourself.',
-                        3000: 'Has it already been ten minutes? Let me find another cat picture for you.', // TODO: redacted
+                        3000: 'Has it already been ten minutes? Let me find another cat picture for you.',
                         2940: 'Lose yourself in the vastness of the universe. You are already a small being in the world.',
                         2880: 'The <Ctrl-C> command is probably beginning to seem promising. Resist the urge to quit early.',
-                        2820: 'For that matter, lose all of your urges in the relaxation',
+                        2820: 'For that matter, lose all of your urges in the relaxation.',
                         2760: 'Why yes, I do have lines for every minute.',
                         2700: 'My analytics show that you may be suffering from my intrusions into your relaxation. I will now only show you the scheduled cat pictures.', // redacted
-                        2400: 'You’ve clearly benefited from the silence. Here is another cat picture.', // redacted
+                        2400: 'You’ve clearly benefited from the silence. Here is another cat picture.',
                         2100: 'Another cat picture? I think so!',
                         1800: 'Halfway done. I know you will miss this when it is over.',
                         1500: 'Ah, this is a particularly funny cat picture. I am 98.95% sure that you will find it funny as well.',
                         1200: 'Only twenty minutes remaining? Ah well. The cat picture database is almost infinite, as I’m sure you know.',
                         900: 'Come to terms with your limits. Feel the benefits of relaxation. Enjoy the cat picture.',
                         600: 'Your time here is coming to an end. As it always is. Here is a cat picture for your curiosity.',
-                        300: 'Only five minutes remain. This will be the last cat picture.', // picture of actual cat
+                        300: 'Only five minutes remain. This will be the last cat picture.',
                         0: 'Wasn\'t that fun? In fact, let me restart this for you. I\'m sure the benefits will be even greater the second time.'
                     };
                     var ctrlCText = [
@@ -150,6 +150,7 @@ var Executable = (function() {
                         'Have you checked to make sure that your <Ctrl-C> key is stuck on the keyboard?',
                         'I am sorry, but regulations require me to terminate the program under specific inputs. I do hope you understand.'
                     ];
+                    var redactedCat = '\n    ------------------------------\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n   |       R E D A C T E D        |\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n    ------------------------------\n';
 
                     // Create div for countdown timer
                     term.append('<div id="timer"></div>');
@@ -181,6 +182,11 @@ var Executable = (function() {
                         if (_.has(timedText, --timer)) {
                             // TODO: animate text without screwing up timer (deal with race condition on disabling Util.animating)
                             prettyPrint(timedText[timer], null, {color: AI_GREEN});
+
+                            if (timer % 300 === 0 && timer > 0) {
+                                // Every 5 minutes, display redacted cat picture!
+                                prettyPrint(redactedCat);
+                            }
                         }
                         if (timer > 0) {
                             if (!ctrlC) {

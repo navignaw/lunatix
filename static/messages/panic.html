@@ -1,5 +1,5 @@
 <!-- TODO: un-htmlify this or print few lines at a time -->
-<h1>Kernel Panic</h1>
+<h1 style="text-align: center;">Kernel Panic</h1>
 
 <!--Unable to rm hope: kernel paging request at virtual address 40025694
 [37655.473976] pgd = d7138000
@@ -80,15 +80,15 @@
 
 
 <pre>
-*** glibc detected *** Unable to rm hope: memory corruption: 0x0000000001188d90 ***
+*** Fatal Exception *** Unable to rm hope: memory corruption: 0x0000000001188d90 ***
 ======= Backtrace: =========
 /lib64/libc.so.6(+0x75e76)[0x7f774c366e76]
 /lib64/libc.so.6(+0x79904)[0x7f774c36a904]
 /lib64/libc.so.6(__libc_malloc+0x71)[0x7f774c36b6b1]
 /usr/local/lib/gcc/lib64/libstdc++.so.6(_Znwm+0x1d)[0x7f774cd8b2dd]
-./hope(_ZN4_4629PandorasBox9eradicatorERSt6clearINS_6DiseasESaIS2_EE+0xb7)[0x4395a7]
-./hope(_ZN4_4629Government12check_valid_filesEPNS_9VerifierES2_b+0xe9f)[0x441fef]
-./hope(_ZN4_46220LX208417test04_remove_filesEii+0xca)[0x43770a]
+./hope(_ZN4_4629Elpis9PandoraERSt6clearINS_6BoxESaIS2_EE+0xb7)[0x4395a7]
+./hope(_ZN4_4629Government12eradicatorEPNS_9DiseasES2_b+0xe9f)[0x441fef]
+./hope(_ZN4_46220LX208417test05_remove_filesEii+0xca)[0x43770a]
 ./hope(_ZN4_46220AIApplication12handle_eventERK9Run_Test+0x4a)[0x4379ba]
 ./hope(_ZN4_46211AIApplication17start_applicationEPSTest0_iidPKc+0x2b6)[0x442ae6]
 ./hope(main+0x3d7)[0x437ea7]
@@ -101,18 +101,15 @@
 01135000-01404000 rw-p 00000000 00:00 0                                  [heap]
 7f77432eb000-7f77434c0000 rw-p 00000000 00:00 0
 7f77434c0000-7f77434c1000 ---p 00000000 00:00 0
-7f77434c1000-7f7743ec1000 rw-p 00000000 00:00 0
 7f7743ec1000-7f7743eca000 r-xp 00000000 fd:00 9856169                    /usr/lib64/libXcursor.so.1.0.2
 7f7743eca000-7f77440ca000 ---p 00009000 fd:00 9856169                    /usr/lib64/libXcursor.so.1.0.2
-<!--7f77440ca000-7f77440cb000 rw-p 00009000 fd:00 9856169                    /usr/lib64/libXcursor.so.1.0.2
+7f77440ca000-7f77440cb000 rw-p 00009000 fd:00 9856169                    /usr/lib64/libXcursor.so.1.0.2
 7f77440cb000-7f774413f000 rw-p 00000000 00:00 0
-7f774413f000-7f7749fd0000 r--p 00000000 fd:00 9850996                    /usr/lib/locale/locale-archive
 7f7749fd0000-7f7749fda000 r-xp 00000000 fd:00 9833413                    /usr/lib64/libXrandr.so.2.2.0
 7f7749fda000-7f774a1d9000 ---p 0000a000 fd:00 9833413                    /usr/lib64/libXrandr.so.2.2.0
 7f774a1d9000-7f774a1da000 rw-p 00009000 fd:00 9833413                    /usr/lib64/libXrandr.so.2.2.0
 7f774a1da000-7f774a1e3000 r-xp 00000000 fd:00 9833411                    /usr/lib64/libXrender.so.1.3.0
 7f774a1e3000-7f774a3e3000 ---p 00009000 fd:00 9833411                    /usr/lib64/libXrender.so.1.3.0
-7f774a3e3000-7f774a3e4000 rw-p 00009000 fd:00 9833411                    /usr/lib64/libXrender.so.1.3.0
 7f774a3e4000-7f774a3e6000 r-xp 00000000 fd:00 9833109                    /usr/lib64/libXau.so.6.0.0
 7f774a3e6000-7f774a5e6000 ---p 00002000 fd:00 9833109                    /usr/lib64/libXau.so.6.0.0
 7f774a5e6000-7f774a5e7000 rw-p 00002000 fd:00 9833109                    /usr/lib64/libXau.so.6.0.0
@@ -127,10 +124,6 @@
 7f774aa54000-7f774aa58000 r-xp 00000000 fd:00 14155860                   /lib64/libuuid.so.1.3.0
 7f774aa58000-7f774ac57000 ---p 00004000 fd:00 14155860                   /lib64/libuuid.so.1.3.0
 7f774ac57000-7f774ac58000 rw-p 00003000 fd:00 14155860                   /lib64/libuuid.so.1.3.0
-7f774ac58000-7f774ac75000 r-xp 00000000 fd:00 14155885                   /lib64/libselinux.so.1
-7f774ac75000-7f774ae74000 ---p 0001d000 fd:00 14155885                   /lib64/libselinux.so.1
-7f774ae74000-7f774ae75000 r--p 0001c000 fd:00 14155885                   /lib64/libselinux.so.1
-7f774ae75000-7f774ae76000 rw-p 0001d000 fd:00 14155885                   /lib64/libselinux.so.1
 7f774ae76000-7f774ae77000 rw-p 00000000 00:00 0
 7f774ae77000-7f774ae81000 r-xp 00000000 fd:00 9842959                    /usr/lib64/libdrm.so.2.4.0
 7f774ae81000-7f774b081000 ---p 0000a000 fd:00 9842959                    /usr/lib64/libdrm.so.2.4.0
@@ -154,5 +147,44 @@
 7f774bac5000-7f774bcc5000 ---p 00005000 fd:00 9833419                    /usr/lib64/libXfixes.so.3.1.0
 7f774bcc5000-7f774bcc6000 rw-p 00005000 fd:00 9833419                    /usr/lib64/libXfixes.so.3.1.0
 7f774bcc6000-7f774bcc8000 r-xp 00000000 fd:00 9833469                    /usr/lib64/libXdamage.so.1.1.0
-7f774bcc8000-7f774bec7000 ---p 00002000 fd:00 9833469                    /usr/lib64/libXdamage.so.1.1.0A-->
+7f774bcc8000-7f774bec7000 ---p 00002000 fd:00 9833469                    /usr/lib64/libXdamage.so.1.1.0
+
+[37655.474058] Modules linked in:
+[37655.474068] CPU: 1    Tainted  (3.0.21-g572d9be-00004-g4ec4db2 #1)
+[37655.474099] PC is at vector_swi+0x28/0x88
+[37655.474129] LR is at 0x40025698
+[37655.474160] pc : c01065a8    lr : 40025698    psr : 60000093
+[37655.474160] sp : d6eaffb0  ip : 4062c18c  fp : 5ed97c24
+[37655.474190] r10: 58702b64  r9 : 5ea56f98  r8 : 20000010
+[37655.474221] r7 : 000000a8  r6 : 41b13530  r5 : 4062c270  r4 : 4062c140
+[37655.474251] r3 : 00000000  r2 : ffffffff  r1 : 00000001  r0 : 5ed97bd0
+[37655.474251] Flags: nZCv  IRQs off  FIQs on  Mode SVC_32  ISA ARM  Segment user
+[37655.474282] Control: 10c5787d  Table: 9ec3806a  DAC: 00000015
+[37655.474282]
+[37655.474282] PC: 0xc0106528:
+[37655.474312] 6528  e31100ff 1afffff0 e59d1040 e5bde03c e16ff001 f57ff01f e95d7fff e1a00000
+[37655.474343] 6548  e28dd00c e1b0f00e eb01ae0e e1a096ad e1a09689 e5991000 e3a08001 e3110c01
+[37655.474373] 6568  0affffec e1a0100d e3a00001 eb0006ef eaffffe8 e320f000 e24dd048 e88d1fff
+[37655.474404] 6588  e28d803c e9486000 e14f8000 e58de03c e58d8040 e58d0044 e3180020 13a0a000
+[37655.474434] 65a8  051ea004 e59fc0ac e59cc000 ee01cf10 f1080080 e1a096ad e1a09689 e28f809c
+[37655.474465] 65c8  e3daa4ff 122a7609 159f808c e599a000 e92d0030 e31a0c01 1a000008 e3570f5e
+[37655.474465] 65e8  e24fee13 3798f107 e28d1008 e3a08000 e357080f e2270000 2a001084 ea022377
+[37655.474526] 6608  e1a02007 e28d1008 e3a00000 eb0006c7 e28fe014 e1a07000 e28d1008 e3570f5e
+[37655.474526]
+[37655.474526] SP: 0xd6eaff30:
+[37655.474556] ff30  c004815c c004a2c0 c0c02080 0000000a c0d8a580 c017a2f0 c1ef1984 00000012
+[37655.474587] ff50  ffffffff d6eaff9c 41b13530 000000a8 20000010 c010602c 5ed97bd0 00000001
+[37655.474617] ff70  ffffffff 00000000 4062c140 4062c270 41b13530 000000a8 20000010 5ea56f98
+[37655.474648] ff90  58702b64 5ed97c24 4062c18c d6eaffb0 40025698 c01065a8 60000093 ffffffff
+[37655.474678] ffb0  5ed97bd0 00000001 ffffffff 00000000 4062c140 4062c270 41b13530 000000a8
+[37655.474678] ffd0  5ed97bd0 5ea56f98 58702b64 5ed97c24 4062c18c 5ed97bc8 406283d7 40025698
+[37655.474709] fff0  20000010 5ed97bd0 a8afc821 a8afcc21 e033cfc0 40eb3000 40eb6000 d6eb0058
+[37655.474739] 0010  d75a9d68 0000079f 00100073 d6eb017d d6eb00cc d6e98f94 00000000 00000000
+[37655.474770] Process UEventObserver (pid: 675, stack limit = 0xd6eae2f0)
+[37655.474770] Stack: (0xd6eaffb0 to 0xd6eb0000)
+[37655.474801] ffa0:                                     5ed97bd0 00000001 ffffffff 00000000
+[37655.474801] ffc0: 4062c140 4062c270 41b13530 000000a8 5ed97bd0 5ea56f98 58702b64 5ed97c24
+[37655.474831] ffe0: 4062c18c 5ed97bc8 406283d7 40025698 20000010 5ed97bd0 a8afc821 a8afcc21
+[37655.474831] Code: e58d8040 e58d0044 e3180020 13a0a000 (051ea004)
+[37655.474862] ---[ end trace 2416079997dfe426 ]---
 </pre>
