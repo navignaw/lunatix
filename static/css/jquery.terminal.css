@@ -33,7 +33,7 @@
 .cmd .mask, .cmd .clipboard {
     position: absolute;
     bottom: 0;
-    height: 16px;
+    height: 18px;
     left: -10px;
 }
 /* the only way I found to hide textarea on Android */
@@ -119,21 +119,21 @@
 }
 .terminal .terminal-output div div, .cmd .prompt {
     display: block;
-    line-height: 16px;
+    line-height: 18px;
     height: auto;
 }
 .cmd .prompt {
     float: left;
 }
 .terminal, .cmd {
-    font-family: monospace; /* TODO: find better monospace font */
+    font-family: monospace;
     color: #ccc;
     background-color: #080808;
-    font-size: 14px;
-    line-height: 16px;
+    font-size: 16px;
+    line-height: 18px;
 }
 .terminal-output > div {
-    min-height: 16px;
+    min-height: 18px;
 }
 .terminal .terminal-output div span {
     display: inline-block;

@@ -4,7 +4,7 @@
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: Prime;
+    font-family: Prime, "Ubuntu Mono", monospace;
 }
 
 body {
@@ -21,9 +21,13 @@ body {
     color: #ccc;
 }
 
+.terminal, .cmd {
+    font-family: "Ubuntu Mono", monospace;
+}
+
 pre {
     background-color: #004a92;
     color: white;
-    font-size: 14px;
+    font-size: 16px;
     border: none;
 }
