@@ -361,14 +361,27 @@ var Util = (function() {
 
     // Audio
     var audio = null;
-    self.playMusic = function(music) {
+    self.playMusic = function(music, loop) {
         audio = new Audio([$app.SCRIPT_ROOT, '/static/sound/', music].join(''));
+
+        // Cross-browser looping of music
+        if (loop) {
+            if (_.isBoolean(audio.loop)) {
+                audio.loop = true;
+            } else {
+                audio.addEventListener('ended', function() {
+                    this.currentTime = 0;
+                    this.play();
+                }, false);
+            }
+        }
         audio.play();
     };
 
     self.stopMusic = function() {
         audio.pause();
         audio.currentTime = 0;
+        audio.removeEventListener('ended');
     };
 
     // Parsing times and dates

@@ -107,7 +107,7 @@ var Executable = (function() {
                        'Initializing relaxation station.`200`.`400`.`500`\n' +
                        'Starting relaxing music.`500`.`400`.`500`\n';
                 greenAI(text).then(function() {
-                    Util.playMusic('refreshing.mp3'); // Play elevator music
+                    Util.playMusic('refreshing.mp3', true); // Play elevator music
 
                     var ctrlC = false;
                     var timer = 3600;
@@ -151,19 +151,24 @@ var Executable = (function() {
                         'I am sorry, but regulations require me to terminate the program under specific inputs. I do hope you understand.'
                     ];
 
+                    // Create div for countdown timer
+                    term.append('<div id="timer"></div>');
+                    var timerElem = $('#timer');
+
                     // On Ctrl-C, pause timer and print text
                     Util.hideCursor();
                     Terminal.countdown(term, function() {
                         if (ctrlC) return;
                         ctrlC = true;
                         Util.animating = false; // disable current animating text
-                        greenAI(ctrlCText[System.progress.hints++]).then(function() {
+                        redAI(ctrlCText[System.progress.hints++]).then(function() {
                             ctrlC = false;
                             if (System.progress.hints === 4) {
                                 log.waitTime = log.ranToCompletion ? 3600 : (3600 - timer);
                                 System.progress.value = 2;
                                 Util.stopMusic();
                                 Util.showCursor();
+                                timerElem.remove();
                                 term.pop();
                                 Story.checkStory(term, null);
                             }
@@ -174,12 +179,12 @@ var Executable = (function() {
                         if (System.progress.value !== 1) return;
 
                         if (_.has(timedText, --timer)) {
-                            // TODO: animate text without screwing up timer
+                            // TODO: animate text without screwing up timer (deal with race condition on disabling Util.animating)
                             prettyPrint(timedText[timer], null, {color: AI_GREEN});
                         }
                         if (timer > 0) {
                             if (!ctrlC) {
-                                term.set_prompt(Util.parseTime(timer));
+                                timerElem.text(Util.parseTime(timer));
                             }
                             _.delay(runTimer, 1000);
                         } else {

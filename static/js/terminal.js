@@ -559,7 +559,7 @@ var Terminal = (function() {
 
             countdown: function(callback) {
                 return {
-                    prompt: '60:00',
+                    prompt: ' ',
                     keydown: function(e, term) {
                         // Check for Ctrl-C
                         if (e.which === 67 && e.ctrlKey) {
