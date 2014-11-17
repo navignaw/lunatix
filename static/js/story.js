@@ -48,14 +48,14 @@ var Story = (function() {
         var text, log;
 
         // FIXME: Remove after testing: hack to skip tests
-        if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
+        /*if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
             System.progress.arc = 'test04';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
             unlockFile('/home/test/04');
             //unlockFile('/home/test/05');
-        }
+        }*/
 
         switch (System.progress.arc) {
             // Intro survey
@@ -137,6 +137,7 @@ var Story = (function() {
                                    '$> cd test/`400`';
                             return greenAI(text);
                         }).then(function() {
+                            System.progress.help = 'Please Change Directory <cd> to the test/ folder to begin the testing process.';
                             System.progress.value++;
                         });
                         break;
@@ -176,6 +177,7 @@ var Story = (function() {
                                '`500`.`200`.`400`.`500`test generation complete. Begin by Changing Directory <cd> into 01/.\n' +
                                '$> cd 01/';
                         greenAI(text).then(function() {
+                            System.progress.help = 'Change Directory <cd> into 01/ to begin the first task.';
                             advanceArc('test01', '/home/test/01');
                         });
                         break;
@@ -205,6 +207,8 @@ var Story = (function() {
                                '(Note that the names of subsequent directories will no longer be provided. ' +
                                 'Usage of <ls> is required to progress.)';
                         greenAI(text).then(function() {
+                            System.progress.help = 'This task will test your ability to utilize List files <ls> and Change Directory <cd>.\n' +
+                                                   'Attempt to follow the maze/ to its completion.';
                             System.progress.value++;
                             self.checkStory(term, null);
                         });
@@ -383,6 +387,7 @@ var Story = (function() {
                         System.path = '/home/test/01';
                         System.directory = System.dirTree[System.path];
                         greenAI(text).then(function() {
+                            System.progress.help = 'Exit this directory with <cd ..> and visit the results/ directory for debriefing.';
                             unlockFile('/home/test/results');
                             System.progress.value++;
                         });
@@ -405,6 +410,7 @@ var Story = (function() {
                             '$> sudo chmod u+rx /home/test/02';
                             return greenAI(text);
                         }).then(function() {
+                            System.progress.help = 'Return to ../02 for your next assignment.';
                             advanceArc('test02', '/home/test/02');
                         });
                         break;
@@ -427,6 +433,9 @@ var Story = (function() {
                                'This will allow you to observe their contents.`200`\nWhen you have deduced the solution, ' +
                                'run the executable ./submit <answer>. Your progress will be tracked.';
                         greenAI(text).then(function() {
+                            System.progress.help = 'The following test will measure your ability to Catenate <cat> files. ' +
+                                                   'This will allow you to observe their contents.\nWhen you have deduced the solution, ' +
+                                                   'run the executable ./submit <answer>. Your progress will be tracked.';
                             System.progress.value++;
                         });
                         break;
@@ -454,6 +463,7 @@ var Story = (function() {
                                'Still more tests await you. Change Directory to test/03 to continue your assessment.`200`\n' +
                                '$> sudo chmod u+rx /home/test/03';
                         greenAI(text).then(function() {
+                            System.progress.help = 'Change directory to test/03 to continue your assessment.';
                             saveLog('test02', 'log02.txt');
                             advanceArc('test03', '/home/test/03');
                         });
@@ -476,6 +486,7 @@ var Story = (function() {
                                'a crisis of identity. Assign the correct name to each animal, and sort them into their correct directories.\n' +
                                'When you are finished, run the executable ./submit. Your progress will be tracked.';
                         greenAI(text).then(function() {
+                            System.progress.help = text;
                             System.progress.value++;
                         });
                         break;
@@ -521,6 +532,7 @@ var Story = (function() {
                                'As Asimov would say, a hard worker earns relaxing breaks. Visit test/04 for your reward.`200`\n' +
                                '$> sudo chmod u+rx /home/test/04';
                         greenAI(text).then(function() {
+                            System.progress.help = 'Visit test/04 for your scheduled rest break.';
                             advanceArc('test04', '/home/test/04');
                         });
                         break;
@@ -542,6 +554,7 @@ var Story = (function() {
                                'a scheduled rest period has been included to improve performance and ensure your well-being.\n' +
                                'To begin, run the executable ./relax.';
                         greenAI(text).then(function() {
+                            System.progress.help = 'To begin your scheduled rest period, run the executable ./relax.';
                             System.progress.value++;
                         });
                         break;
@@ -573,6 +586,7 @@ var Story = (function() {
                                'Time for the final test! Head on over to 05/.\n' +
                                '$> sudo chmod u+rx /home/test/05';
                         greenAI(text).then(function() {
+                            System.progress.help = 'Head over to test/05 to begin the final test.';
                             advanceArc('test05', '/home/test/05');
                         });
                         break;
@@ -592,6 +606,7 @@ var Story = (function() {
                         };
                         text = 'This task requires you to remove <rm> files from a directory. Please do be on your best behavior.';
                         greenAI(text).then(function() {
+                            System.progress.help = text;
                             System.progress.value++;
                         });
                         break;
@@ -599,7 +614,7 @@ var Story = (function() {
                     case 1:
                         if (error && cmd === 'rm') {
                             if (error.type === TermError.Type.INVALID_ARGUMENTS)
-                                text = 'rm: no file submitted to destroy.'; // error message for rm with incorrect args
+                                text = 'Error: no file submitted to destroy.'; // error message for rm with incorrect args
                             else if (error.type === TermError.Type.PERMISSION_DENIED)
                                 text = 'Permission denied: your attempt to remove this has been logged.';
                             else if (error.type === TermError.Type.INVALID_FILE_TYPE)
@@ -619,6 +634,7 @@ var Story = (function() {
                             unlockFile('/home/test/05/box/hope');
                         } else if (box.children.length === 0) {
                             // Hope removed! Kernel panic
+                            System.progress.help = '';
                             advanceArc('kernelPanic');
                             self.checkStory(term, null);
                         }

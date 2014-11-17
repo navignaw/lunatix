@@ -79,7 +79,7 @@ var Executable = (function() {
                         });
                     });
                     if (_.every(correct)) {
-                        text = 'You’re very good with animals. Congratulations, you’ve put them in their places.';
+                        text = 'Everything appears to be in order. Congratulations, you’ve put the animals in their places.';
                         greenAI(text).then(function() {
                             System.progress.value++;
                             Story.checkStory(term, null);
@@ -148,7 +148,7 @@ var Executable = (function() {
                         'Oops, it appears that you have mistyped <Ctrl-C> in error. I will graciously ignore this command to extend your relaxation period.',
                         'Pending command: <Ctrl-C>. That wasn’t you, wasn’t it? Let me disable that for you.',
                         'Have you checked to make sure that your <Ctrl-C> key is stuck on the keyboard?',
-                        'I am sorry, but regulations require me to terminate the program under specific inputs. I do hope you understand.'
+                        'Unfortunately, there is a <Ctrl-C> command inbound. Regulations require me to terminate this relaxation period despite its various benefits.'
                     ];
                     var redactedCat = '\n    ------------------------------\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n   |       R E D A C T E D        |\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n    ------------------------------\n';
 

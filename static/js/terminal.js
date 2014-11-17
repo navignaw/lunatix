@@ -130,7 +130,10 @@ var Terminal = (function() {
             },
 
             help: function(cmd, term) {
-                return self.commands.man(cmd, term);
+                var text = System.progress.help ? 'Task: ' + System.progress.help : '';
+                prettyPrint(term, text, null, {color: AI_GREEN});
+                text = 'For a list of available commands, input `[[i;#fff;]man]`. To learn about an individual command, type `[[i;#fff;]man <cmd>]`.';
+                return text;
             },
 
             kill: function(cmd, term) {
@@ -185,12 +188,12 @@ var Terminal = (function() {
                         return;
                     } else {
                         return 'No manual entry found for `[[i;#fff;]' + command + ']`.\n' +
-                               'Type `[[i;#fff;]' + cmd.name + ']` to see a list of commands.';
+                               'Type `[[i;#fff;]man]` to see a list of commands.';
                     }
                 }
                 // TODO: be more helpful.
                 var text = 'To learn more about individual commands, type ' +
-                           '`[[i;#fff;]' + cmd.name + ' <cmd>]`.\n\n' +
+                           '`[[i;#fff;]man <cmd>]`.\n\n' +
                            'Available commands:\n' + System.user.commands.join('\t');
                 if (System.debug) {
                     text += '\nSuperuser commands:\n' +

@@ -7,7 +7,8 @@ var System = {
     directory: {},
     path: '/home',
     progress: {
-        arc: "intro",
+        arc: 'intro',
+        help: '',
         value: 0,
         hints: 0,
         logs: {}
