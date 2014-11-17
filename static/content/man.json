@@ -1,0 +1,21 @@
+{
+
+    "cd": {
+        "title": "cd(1)",
+        "name": "cd",
+        "description": "cd change directory",
+        "synopsis": ["dir"]
+    },
+    "ls": {
+        "title": "ls(1)",
+        "name": "ls",
+        "description": "ls lists files",
+        "synopsis": ["[dir]"]
+    },
+    "man": {
+        "title": "man(1)",
+        "name": "man",
+        "description": "man formats text",
+        "synopsis": ["cmd"]
+    }
+}

@@ -35,6 +35,16 @@ var Terminal = (function() {
                             term.greetings();
                             Story.checkStory(term, null);
                         });
+
+                        $.ajax({
+                            type: 'GET',
+                            url: [$app.SCRIPT_ROOT, '/static/content/man.json'].join(''),
+                            success: function(json) {
+                                self.manuals = _.isString(json) ? $.parseJSON(json) : json;
+                            },
+                        }).fail(function(jqXHR, textStatus, error) {
+                            console.error(error);
+                        });
                     }
                 }).fail(function() {
                     term.error("Login failed. Please try again.");
@@ -180,11 +190,17 @@ var Terminal = (function() {
             },
 
             man: function(cmd, term) {
+                var text;
                 if (cmd.args.length > 0) {
                     var command = cmd.args[0];
-                    if (_.contains(System.user.commands, command)) {
+                    if (_.contains(System.user.commands, command) && _.has(self.manuals, command)) {
                         // Load manual for command.
-                        echoTemplate(term, cmd.args[0]);
+                        var manual = self.manuals[command];
+                        text = [];
+                        text.push(manual.title);
+                        text.push('[[;#fff;]NAME]\n       ' + manual.name);
+                        text.push('[[;#fff;]DESCRIPTION]\n       ' + manual.description);
+                        prettyPrint(term, text.join('\n\n'));
                         return;
                     } else {
                         return 'No manual entry found for `[[i;#fff;]' + command + ']`.\n' +
@@ -192,9 +208,8 @@ var Terminal = (function() {
                     }
                 }
                 // TODO: be more helpful.
-                var text = 'To learn more about individual commands, type ' +
-                           '`[[i;#fff;]man <cmd>]`.\n\n' +
-                           'Available commands:\n' + System.user.commands.join('\t');
+                text = 'To learn more about individual commands, type `[[i;#fff;]man <cmd>]`.\n\n' +
+                       'Available commands:\n' + System.user.commands.join('\t');
                 if (System.debug) {
                     text += '\nSuperuser commands:\n' +
                             _.difference(_.keys(self.commands), System.user.commands).join('\t');
@@ -204,15 +219,6 @@ var Terminal = (function() {
 
             mkdir: function(cmd, term) {
                 // TODO: make directory
-            },
-
-            mute: function(cmd, term) {
-                // TODO: mute sound
-                if (self.muted) {
-                    return 'Sound unmuted.';
-                } else {
-                    return 'Sound muted.';
-                }
             },
 
             mv: function(cmd, term) {
@@ -576,7 +582,7 @@ var Terminal = (function() {
         },
 
         /* Additional settings */
-        muted: false,
+        manuals: {},
         terminal: null
     };
     return self;

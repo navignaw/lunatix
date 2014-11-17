@@ -253,7 +253,7 @@ var Util = (function() {
 
         $.ajax({
             type: 'GET',
-            url: [$app.SCRIPT_ROOT, '/static/messages/', template, '.html'].join(''),
+            url: [$app.SCRIPT_ROOT, '/static/content/', template, '.html'].join(''),
             success: function(html) {
                 term.echo(html, {raw: true});
             }
