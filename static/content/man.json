@@ -1,21 +1,53 @@
 {
 
     "cd": {
-        "title": "cd(1)",
-        "name": "cd",
-        "description": "cd change directory",
-        "synopsis": ["dir"]
+        "name": "Change Directory",
+        "examples": ["cd maze", "cd /home/test/01", "cd ..", "cd <path>"],
+        "description": "cd <path> moves you to the directory <path>, provided it is immediately visible to you. Usage of ls is recommended to see the directories immediately visible. If necessary, using cd .. will return you to the previous (parent) directory."
     },
     "ls": {
-        "title": "ls(1)",
-        "name": "ls",
-        "description": "ls lists files",
-        "synopsis": ["[dir]"]
+        "name": "List Files",
+        "examples": ["ls", "ls <path>"],
+        "description": "ls will show you all directories and files that are immediately visible in your current directory. If optional <path> is provided, children of directory <path> will be printed. Usage of cd will allow you to visit the listed directories."
+    },
+    "cat": {
+        "name": "Catenate",
+        "examples": ["cat food.txt", "cat <file>"],
+        "description": "cat <file> will print the contents of the file <file>, provided it is immediately visible to you. Usage of ls is recommended to see the files immediately visible."
+    },
+    "mv": {
+        "name": "Move",
+        "examples": ["mv <file> <dest>"],
+        "description": "mv <file> <dest> will, if <dest> is a directory, move <file> into <dest>. Otherwise, it will rename <file> to <dest>. In both cases, the first parameter must be a file that is immediately visible to you."
+    },
+    "rm": {
+        "name": "Remove",
+        "examples": ["rm junk", "rm <file>"],
+        "description": "rm <file> will destroy <file>, removing it from the current directory permanently. This must be a file that is immediately visible to you."
     },
     "man": {
-        "title": "man(1)",
-        "name": "man",
-        "description": "man formats text",
-        "synopsis": ["cmd"]
+        "name": "Manual",
+        "examples": ["man", "man <command>"],
+        "description": "man <command> displays the manual page for <command>. For example, man man will display the manual page that describes man, and the example man man."
+    },
+    "help": {
+        "name": "Help",
+        "examples": ["help"],
+        "description": "help provides assistance regarding your current task from your companion AI."
+    },
+    "pwd": {
+        "name": "Print Working Directory",
+        "examples": ["pwd"],
+        "description": "pwd prints the full path to where you are currently located. Usage of cd .. will return you to the folder immediately preceding the last folder, which is your current location."
+    },
+    "logout": {
+        "name": "Logout",
+        "examples": ["logout"],
+        "description": "logout exits the training program. You probably don’t want to do that."
+    },
+    "whoami": {
+        "name": "Who am I?",
+        "examples": ["whoami"],
+        "description": "whoami answers the philosophical question of your identity by printing your username."
     }
 }

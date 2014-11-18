@@ -192,17 +192,20 @@ var Terminal = (function() {
                         // Load manual for command.
                         var manual = self.manuals[command];
                         text = [];
-                        text.push(manual.title);
-                        text.push('[[;#fff;]NAME]\n       ' + manual.name);
-                        text.push('[[;#fff;]DESCRIPTION]\n       ' + manual.description);
+                        text.push('[[;#fff;]COMMAND]: ' + command + ' - ' + manual.name);
+                        text.push('[[;#fff;]EXAMPLE USAGE]: ' + manual.examples.join('\n               '));
+                        text.push('[[;#fff;]DESCRIPTION]: ' + manual.description + '\n');
                         prettyPrint(term, text.join('\n\n'));
                         return;
+                    } else if (_.has(self.commands, command)) {
+                        return 'While that is a legitimate command, you have not yet demonstrated sufficient mastery ' +
+                               'of more basic commands to use it.';
                     } else {
                         return 'No manual entry found for `[[i;#fff;]' + command + ']`.\n' +
                                'Type `[[i;#fff;]man]` to see a list of commands.';
                     }
                 }
-                // TODO: be more helpful.
+
                 text = 'To learn more about individual commands, type `[[i;#fff;]man <cmd>]`.\n\n' +
                        'Available commands:\n' + System.user.commands.join('\t');
                 if (System.debug) {
@@ -270,10 +273,6 @@ var Terminal = (function() {
                 Util.log(System.proc);
                 // TODO: list processes
                 return 'Processes: ';
-            },
-
-            quit: function(cmd, term) {
-                self.commands.logout(cmd, term);
             },
 
             rm: function(cmd, term) {
