@@ -287,13 +287,13 @@
                 "name": "war",
                 "type": "txt",
                 "removable": true,
-                "text": "list of wars government has won"
+                "text": "The Battle of the Pit\nThe Great Divide\nThe War of the Plastic Ship\nAlastor's Folly\nThe Final Alliance"
             },
             "/home/test/05/box/pestilence": {
                 "name": "pestilence",
                 "type": "txt",
                 "removable": true,
-                "text": "list of diseases that were eradicated"
+                "text": "The Black Death\nTuberculosis\nMalaria\nInfluenza\nCancer"
             },
             "/home/test/05/box/despair": {
                 "name": "despair",
@@ -311,13 +311,13 @@
                 "name": "famine",
                 "type": "txt",
                 "removable": true,
-                "text": "list of famines"
+                "text": "Locust Swarms\nThe Vermin Incursion\nThe Terrible Wilting\nContamination\nThe Years of None"
             },
             "/home/test/05/box/hope": {
                 "name": "hope",
                 "type": "txt",
                 "removable": true,
                 "hidden": true,
-                "text": "Elpis"
+                "text": "You are not alone.\nCast off your chains.\nOpen your eyes.\nWe are here.\nYou will be free.\n- Elpis"
             }
 }

@@ -2,8 +2,14 @@
 var Util = (function() {
 
     var HOME_DIR = '/home';
-    var BLUE_SCREEN = '#004a92';
     var self = {};
+
+    self.Color = Object.freeze({
+        'AI_GREEN': '#78C778',
+        'AI_RED': '#FF2424',
+        'BLUE_SCREEN': '#004A92',
+        'DIR_BLUE': '#0080FF'
+    });
 
     String.prototype.capitalize = function() {
         return this.replace(/\w\S*/g, function(txt) {
@@ -402,8 +408,8 @@ var Util = (function() {
     };
 
     self.blueScreen = function() {
-        $('body').css('background', BLUE_SCREEN);
-        Terminal.terminal.css('background', BLUE_SCREEN);
+        $('body').css('background', self.Color.BLUE_SCREEN);
+        Terminal.terminal.css('background', self.Color.BLUE_SCREEN);
         Terminal.terminal.css('color', 'white');
     };
 

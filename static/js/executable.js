@@ -1,8 +1,6 @@
 var Executable = (function() {
 
     /* Constants */
-    var AI_GREEN = '#78C778';
-    var AI_RED = '#FF2424';
     var LOG_DIR = 'test';
 
     var self = {};
@@ -11,8 +9,8 @@ var Executable = (function() {
     self.executeFile = function(term, file, cmd) {
         var prettyPrint = _.partial(Util.prettyPrint, term);
         var animateText = _.partial(Util.animateText, term);
-        var greenAI = _.partial(Util.animateAI, term, AI_GREEN);
-        var redAI = _.partial(Util.animateAI, term, AI_RED);
+        var greenAI = _.partial(Util.animateAI, term, Util.Color.AI_GREEN);
+        var redAI = _.partial(Util.animateAI, term, Util.Color.AI_RED);
         var confirm = _.partial(Util.confirm, term);
         var multichoice = _.partial(Util.multichoice, term);
         var input = _.partial(Util.input, term);
@@ -181,7 +179,7 @@ var Executable = (function() {
 
                         if (_.has(timedText, --timer)) {
                             // TODO: animate text without screwing up timer (deal with race condition on disabling Util.animating)
-                            prettyPrint(timedText[timer], null, {color: AI_GREEN});
+                            prettyPrint(timedText[timer], null, {color: Util.Color.AI_GREEN});
 
                             if (timer % 300 === 0 && timer > 0) {
                                 // Every 5 minutes, display redacted cat picture!

@@ -1,10 +1,6 @@
 var Story = (function() {
 
     /* Constants */
-    // TODO: refactor colors into Util?
-    var AI_GREEN = '#78C778';
-    var AI_RED = '#FF2424';
-    var DIR_BLUE = '#0080FF';
     var LOG_DIR = '/home/test/results';
 
     var self = {};
@@ -39,8 +35,8 @@ var Story = (function() {
     self.checkStory = function(term, cmd, error) {
         var prettyPrint = _.partial(Util.prettyPrint, term);
         var animateText = _.partial(Util.animateText, term);
-        var greenAI = _.partial(Util.animateAI, term, AI_GREEN);
-        var redAI = _.partial(Util.animateAI, term, AI_RED);
+        var greenAI = _.partial(Util.animateAI, term, Util.Color.AI_GREEN);
+        var redAI = _.partial(Util.animateAI, term, Util.Color.AI_RED);
         var confirm = _.partial(Util.confirm, term);
         var multichoice = _.partial(Util.multichoice, term);
         var input = _.partial(Util.input, term);
@@ -49,12 +45,12 @@ var Story = (function() {
 
         // FIXME: Remove after testing: hack to skip tests
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'test04';
+            System.progress.arc = 'test05';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
             unlockFile('/home/test/04');
-            //unlockFile('/home/test/05');
+            unlockFile('/home/test/05');
         }
 
         switch (System.progress.arc) {
@@ -90,9 +86,20 @@ var Story = (function() {
                                 if (command === '1') {
                                     text = 'Your response of "1" qualifies you for immediate disqualification. ' +
                                            'Provide a revised response.';
-                                    prettyPrint(text, null, {color: AI_RED});
+                                    prettyPrint(text, null, {color: Util.Color.AI_RED});
                                     return true;
-                                } // TODO: if command > 5, witty message
+                                }
+                                var number = parseInt(command, 10);
+                                if (_.isNaN(number)) {
+                                    text = 'You are required to input a number between 1 and 5. This should not be difficult.';
+                                    prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                    return true;
+                                } else if (number > 5 || number < 1) {
+                                    text = 'Your incapacity to notice that your answer should be between 1 and 5 ' +
+                                           'indicates a lower proficiency level than expected. Provide a revised response.';
+                                    prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                    return true;
+                                }
                                 return false;
                             });
                         }).then(function(result) {
@@ -166,7 +173,7 @@ var Story = (function() {
                                 System.progress.hints++;
                             }
                             if (text) {
-                                prettyPrint(text, null, {color: AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_RED});
                                 return;
                             }
                         }
@@ -196,7 +203,7 @@ var Story = (function() {
                             else if (error.type === TermError.Type.DIRECTORY_NOT_FOUND)
                                 text = 'Error: directory not found. The test directory is 01/.';
                             if (text) {
-                                prettyPrint(text, null, {color: AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_RED});
                                 return;
                             }
                         }
@@ -243,11 +250,11 @@ var Story = (function() {
                                     else
                                         text = 'The maze contains no path that way. In the words of Wells, choose wisely.';
                                 }
-                                prettyPrint(text, null, {color: AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_RED});
                                 return;
                             } else if (System.progress.hints === 0 && cmd !== 'ls') {
                                 text = 'Resorted to guesswork, have you? Your desperation has been noted. Usage of <ls> will List files.';
-                                prettyPrint(text, null, {color: AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_RED});
                                 return;
                             }
                             break;
@@ -451,7 +458,7 @@ var Story = (function() {
                                        'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
                             }
                             if (text) {
-                                prettyPrint(text, null, {color: AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_RED});
                                 return;
                             }
                         }
@@ -510,7 +517,7 @@ var Story = (function() {
                                        'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
                             }
                             if (text) {
-                                prettyPrint(text, null, {color: AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_RED});
                                 return;
                             }
                         } else if (cmd === 'mv') {
@@ -604,7 +611,10 @@ var Story = (function() {
                             good: 0,
                             bad: 0
                         };
-                        text = 'This task requires you to remove <rm> files from a directory. Please do be on your best behavior.';
+                        text = 'This task requires you to remove <rm> files from a directory.\n' +
+                               'In proper patriotic spirit, we have filled this directory with the evils of the old world. ' +
+                               'As you know, we have already removed them from this world. ' +
+                               'Reflect on the good we have done as you complete this task.';
                         greenAI(text).then(function() {
                             System.progress.help = text;
                             System.progress.value++;
@@ -618,11 +628,11 @@ var Story = (function() {
                             else if (error.type === TermError.Type.PERMISSION_DENIED)
                                 text = 'Permission denied: your attempt to remove this has been logged.';
                             else if (error.type === TermError.Type.INVALID_FILE_TYPE)
-                                text = 'rm: cannot remove directory'; // trying to rm directory
+                                text = 'Permission denied: your attempt to remove this has been logged.'; // trying to rm directory
                             else if (error.type === TermError.Type.FILE_NOT_FOUND)
-                                text = 'rm: file or directory not found'; // file or dir not found
+                                text = 'Error: file or directory not found.'; // file or dir not found
                             if (text) {
-                                prettyPrint(text, null, {color: AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_RED});
                                 return;
                             }
                         }
@@ -657,7 +667,7 @@ var Story = (function() {
         // If error is not handled in story text, print default message to terminal.
         if (error) {
             // TODO: animate text first, and print at once on subsequent errors
-            prettyPrint(error.message, null, {color: AI_RED});
+            prettyPrint(error.message, null, {color: Util.Color.AI_RED});
         }
     };
 

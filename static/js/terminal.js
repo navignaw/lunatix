@@ -5,11 +5,6 @@ var Terminal = (function() {
     var prettyPrint = Util.prettyPrint;
     var echoTemplate = Util.echoTemplate;
 
-    // TODO: refactor colors into Util
-    var DIR_BLUE = '#0080FF';
-    var AI_GREEN = '#78C778';
-    var AI_RED = '#FF2424';
-
     var self = {
 
         /* Login interpreter */
@@ -141,7 +136,7 @@ var Terminal = (function() {
 
             help: function(cmd, term) {
                 var text = System.progress.help ? 'Task: ' + System.progress.help : '';
-                prettyPrint(term, text, null, {color: AI_GREEN});
+                prettyPrint(term, text, null, {color: Util.Color.AI_GREEN});
                 text = 'For a list of available commands, input `[[i;#fff;]man]`. To learn about an individual command, type `[[i;#fff;]man <cmd>]`.';
                 return text;
             },
@@ -175,9 +170,9 @@ var Terminal = (function() {
                         return _.map(Util.getChildren(newPath), function(child) {
                             var fileOrDir = System.dirTree[child];
                             if (fileOrDir.type === 'dir') {
-                                return ['[[;', DIR_BLUE, ';]', fileOrDir.name, '/]'].join('');
+                                return ['[[;', Util.Color.DIR_BLUE, ';]', fileOrDir.name, '/]'].join('');
                             } else if (fileOrDir.type === 'exe') {
-                                return ['[[;', AI_GREEN, ';]', fileOrDir.name, ']'].join('');
+                                return ['[[;', Util.Color.AI_GREEN, ';]', fileOrDir.name, ']'].join('');
                             }
                             return fileOrDir.name;
                         }).join('\t');
