@@ -10,6 +10,7 @@ var Executable = (function() {
         var prettyPrint = _.partial(Util.prettyPrint, term);
         var animateText = _.partial(Util.animateText, term);
         var greenAI = _.partial(Util.animateAI, term, Util.Color.AI_GREEN);
+        var yellowAI = _.partial(Util.animateAI, term, Util.Color.AI_YELLOW);
         var redAI = _.partial(Util.animateAI, term, Util.Color.AI_RED);
         var confirm = _.partial(Util.confirm, term);
         var multichoice = _.partial(Util.multichoice, term);
@@ -51,11 +52,11 @@ var Executable = (function() {
                                 text = 'Subject continues to submit incorrect guesses.';
                             else
                                 text = 'Subject has either resorted to guesswork or is incapable of successfully analyzing presented files.';
-                            redAI('LOG: ' + text);
+                            yellowAI('LOG: ' + text);
                             System.progress.hints++;
                             return;
                     }
-                    redAI('LOG: ' + text).then(function() {
+                    yellowAI('LOG: ' + text).then(function() {
                         if (_.contains(['unchewable', 'untastable'], cmd.rest) && !_.has(log, cmd.rest)) {
                             log[cmd.rest] = true;
                             log.text.push(text);
@@ -86,15 +87,15 @@ var Executable = (function() {
                     }
 
                     // TODO: hint text depending on which ones are correct
-                    redAI('Incorrect. Please ensure the animals are correctly named and in the appropriate directories.');
+                    yellowAI('Incorrect. Please ensure the animals are correctly named and in the appropriate directories.');
                 } else {
-                    redAI('This test has already terminated.');
+                    yellowAI('This test has already terminated.');
                 }
                 break;
 
             case 'relax':
                 if (System.progress.arc !== 'test04') {
-                    redAI('The relaxation period has ended. Return to your current task immediately.');
+                    yellowAI('The relaxation period has ended. Return to your current task immediately.');
                     return;
                 }
 
@@ -160,7 +161,7 @@ var Executable = (function() {
                         if (ctrlC) return;
                         ctrlC = true;
                         Util.animating = false; // disable current animating text
-                        redAI(ctrlCText[System.progress.hints++]).then(function() {
+                        yellowAI(ctrlCText[System.progress.hints++]).then(function() {
                             ctrlC = false;
                             if (System.progress.hints === 4) {
                                 log.waitTime = log.ranToCompletion ? 3600 : (3600 - timer);

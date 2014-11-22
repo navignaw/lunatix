@@ -36,6 +36,7 @@ var Story = (function() {
         var prettyPrint = _.partial(Util.prettyPrint, term);
         var animateText = _.partial(Util.animateText, term);
         var greenAI = _.partial(Util.animateAI, term, Util.Color.AI_GREEN);
+        var yellowAI = _.partial(Util.animateAI, term, Util.Color.AI_YELLOW);
         var redAI = _.partial(Util.animateAI, term, Util.Color.AI_RED);
         var confirm = _.partial(Util.confirm, term);
         var multichoice = _.partial(Util.multichoice, term);
@@ -86,18 +87,18 @@ var Story = (function() {
                                 if (command === '1') {
                                     text = 'Your response of "1" qualifies you for immediate disqualification. ' +
                                            'Provide a revised response.';
-                                    prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                    prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                     return true;
                                 }
                                 var number = parseInt(command, 10);
                                 if (_.isNaN(number)) {
                                     text = 'You are required to input a number between 1 and 5. This should not be difficult.';
-                                    prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                    prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                     return true;
                                 } else if (number > 5 || number < 1) {
                                     text = 'Your incapacity to notice that your answer should be between 1 and 5 ' +
                                            'indicates a lower proficiency level than expected. Provide a revised response.';
-                                    prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                    prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                     return true;
                                 }
                                 return false;
@@ -173,7 +174,7 @@ var Story = (function() {
                                 System.progress.hints++;
                             }
                             if (text) {
-                                prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                 return;
                             }
                         }
@@ -203,7 +204,7 @@ var Story = (function() {
                             else if (error.type === TermError.Type.DIRECTORY_NOT_FOUND)
                                 text = 'Error: directory not found. The test directory is 01/.';
                             if (text) {
-                                prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                 return;
                             }
                         }
@@ -250,11 +251,11 @@ var Story = (function() {
                                     else
                                         text = 'The maze contains no path that way. In the words of Wells, choose wisely.';
                                 }
-                                prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                 return;
                             } else if (System.progress.hints === 0 && cmd !== 'ls') {
                                 text = 'Resorted to guesswork, have you? Your desperation has been noted. Usage of <ls> will List files.';
-                                prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                 return;
                             }
                             break;
@@ -271,7 +272,7 @@ var Story = (function() {
                         // Maze directory logs
                         if (cmd === 'ls' && _.contains(['wall', 'impossible', 'impractical', 'absurd', 'still_wrong', 'more_wrong'], System.directory.name)) {
                             text = 'You seem to have reached a dead end. To return to your previous point in the maze, input <cd ..>';
-                            redAI(text);
+                            yellowAI(text);
                             break;
                         }
                         if (cmd !== 'cd' || _.has(log, System.directory.name)) break;
@@ -458,7 +459,7 @@ var Story = (function() {
                                        'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
                             }
                             if (text) {
-                                prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                 return;
                             }
                         }
@@ -519,7 +520,7 @@ var Story = (function() {
                                        'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';
                             }
                             if (text) {
-                                prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                 return;
                             }
                         } else if (cmd === 'mv') {
@@ -571,7 +572,7 @@ var Story = (function() {
                     case 1:
                         if (error && cmd !== './relax') {
                             text = 'A break will help you on future tasks. Go ahead and ./relax. I insist.';
-                            redAI(text);
+                            yellowAI(text);
                             return;
                         }
                         break;
@@ -634,7 +635,7 @@ var Story = (function() {
                             else if (error.type === TermError.Type.FILE_NOT_FOUND)
                                 text = 'Error: file or directory not found.'; // file or dir not found
                             if (text) {
-                                prettyPrint(text, null, {color: Util.Color.AI_RED});
+                                prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                 return;
                             }
                         }
@@ -703,7 +704,7 @@ var Story = (function() {
         // If error is not handled in story text, print default message to terminal.
         if (error) {
             // TODO: animate text first, and print at once on subsequent errors
-            prettyPrint(error.message, null, {color: Util.Color.AI_RED});
+            prettyPrint(error.message, null, {color: Util.Color.AI_YELLOW});
         }
     };
 

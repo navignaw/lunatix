@@ -7,6 +7,7 @@ var Util = (function() {
     self.Color = Object.freeze({
         'AI_GREEN': '#78C778',
         'AI_RED': '#FF2424',
+        'AI_YELLOW': '#FF9B00',
         'BLUE_SCREEN': '#004A92',
         'BACKGROUND': '#080808',
         'DIR_BLUE': '#0080FF',
