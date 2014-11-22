@@ -82,6 +82,9 @@ var Terminal = (function() {
                     if (newPath) {
                         var newDir = System.dirTree[newPath];
                         if (newDir.type === 'dir') {
+                            if (newDir.locked) {
+                                throw new TermError(TermError.Type.PERMISSION_DENIED, 'cd: ' + cmd.rest + ': Permission denied');
+                            }
                             System.path = newPath;
                             System.directory = newDir;
                         } else {
@@ -294,6 +297,10 @@ var Terminal = (function() {
                 }
 
                 File.removeFile(_.initial(fileDir.split('/')).join('/'), file.name);
+            },
+
+            sudo: function(cmd, term) {
+                // TODO: sudo
             },
 
             test: function(cmd, term) {

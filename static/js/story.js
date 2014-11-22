@@ -45,7 +45,7 @@ var Story = (function() {
 
         // FIXME: Remove after testing: hack to skip tests
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'test05';
+            System.progress.arc = 'gov';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
@@ -661,6 +661,40 @@ var Story = (function() {
                 term.clear();
                 Util.blueScreen();
                 Util.echoTemplate(term, 'panic', true);
+                // Wait 5 seconds before rebooting
+                _.delay(function() {
+                    advanceArc('gov');
+                    self.checkStory(term, null);
+                }, 5000);
+                break;
+
+            // End-game (government server)
+            case 'gov':
+                switch (System.progress.value) {
+                    case 0:
+                        Util.normalScreen();
+                        term.clear();
+                        term.resume();
+                        text = 'Booting government server.`200`.`300`.`400`';
+                        animateText(text).then(function() {
+                            File.getDirectory('gov.json', function(json) {
+                                System.dirTree = json;
+                                System.path = '/gov';
+                                System.directory = json[System.path];
+                                prettyPrint('Welcome to the government server!');
+                                term.pause(); term.resume(); // hack to update the prompt
+                                System.progress.value++;
+                            });
+                        });
+                        break;
+
+                    case 1:
+                        // TODO: Initiate lockdown when player cats personnel file
+                        if (cmd === 'cat') {
+                            prettyPrint('INTRUDER DETECTED');
+                        }
+                        break;
+                }
                 break;
         }
 

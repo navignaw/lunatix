@@ -1,0 +1,42 @@
+{
+    "/gov": {
+        "name": "gov",
+        "type": "dir",
+        "children": ["data", "logs", "forgot_password.txt"]
+    },
+
+    "/gov/data": {
+        "name": "data",
+        "type": "dir",
+        "children": ["citizens", "infrastructure"]
+    },
+        "/gov/data/citizens": {
+            "name": "citizens",
+            "type": "dir",
+            "children": ["189491"]
+        },
+            "/gov/data/citizens/189491": {
+                "name": "189491",
+                "type": "txt",
+                "text": "Name: John Smith\nOccupation: Beta Tester\nAge: 27\nFederal ID: 1329583248572\nIP Address: 127.0.0.1\nThreat Level: Low"
+            },
+
+        "/gov/data/infrastructure": {
+            "name": "infrastructure",
+            "type": "dir",
+            "children": []
+        },
+
+    "/gov/forgot_password.txt": {
+        "name": "forgot_password.txt",
+        "type": "txt",
+        "hidden": true,
+        "text": "In case of a lockdown, use `[[;#fff;]sudo chmod u+r logs]` to gain access to logs/.\nThis week's password is the number of the mandatory Literacy Act."
+    },
+    "/gov/logs": {
+        "name": "logs",
+        "type": "dir",
+        "locked": true,
+        "children": []
+    }
+}

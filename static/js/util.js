@@ -8,7 +8,9 @@ var Util = (function() {
         'AI_GREEN': '#78C778',
         'AI_RED': '#FF2424',
         'BLUE_SCREEN': '#004A92',
-        'DIR_BLUE': '#0080FF'
+        'BACKGROUND': '#080808',
+        'DIR_BLUE': '#0080FF',
+        'TEXT': '#CCC'
     });
 
     String.prototype.capitalize = function() {
@@ -119,7 +121,6 @@ var Util = (function() {
      * If partial, returns last valid directory in string.
      */
     self.parseDirectory = function(path, partial) {
-        // TODO: check permissions?
         var dirs = _.compact(path.split('/'));
         var currentDir = System.directory;
         var currentPath = System.path;
@@ -147,6 +148,9 @@ var Util = (function() {
                 if (child) {
                     currentPath = child;
                     currentDir = System.dirTree[child];
+                    if (currentDir.locked) {
+                        break; // stop if the directory is locked (permission denied)
+                    }
                 } else if (partial && i === len - 1) {
                     break;
                 } else {
@@ -411,6 +415,12 @@ var Util = (function() {
         $('body').css('background', self.Color.BLUE_SCREEN);
         Terminal.terminal.css('background', self.Color.BLUE_SCREEN);
         Terminal.terminal.css('color', 'white');
+    };
+
+    self.normalScreen = function() {
+        $('body').css('background', self.Color.BACKGROUND);
+        Terminal.terminal.css('background', self.Color.BACKGROUND);
+        Terminal.terminal.css('color', self.Color.TEXT);
     };
 
     return self;
