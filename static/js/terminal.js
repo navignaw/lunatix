@@ -360,9 +360,15 @@ var Terminal = (function() {
                         });
                         break;
 
+                    case 'wait':
+                        Util.wait(term, 2000).then(function() {
+                            prettyPrint(term, 'waited 1 second');
+                        });
+                        break;
+
                     default:
                         prettyPrint(term, 'Invalid command. Options are: ' + [
-                            'chain', 'confirm', 'animateText', 'echoTemplate', 'panic', 'prettyPrint', 'command']
+                            'chain', 'confirm', 'animateText', 'echoTemplate', 'panic', 'prettyPrint', 'command', 'wait']
                             .join(', '));
                 }
             },

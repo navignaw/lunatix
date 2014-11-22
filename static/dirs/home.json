@@ -305,7 +305,7 @@
                 "name": "death",
                 "type": "txt",
                 "removable": true,
-                "text": "dead things"
+                "text": "Pride\nWrath\nGreed\nLust\nEnvy"
             },
             "/home/test/05/box/famine": {
                 "name": "famine",

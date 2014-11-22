@@ -505,13 +505,15 @@ var Story = (function() {
                                     text = 'cat requires you to choose a file to view. Remember, choose wisely.';
                             } else if (cmd === 'mv') {
                                 if (error.type === TermError.Type.INVALID_ARGUMENTS)
-                                    text = 'mv requires two arguments, a source and destination.'; // error message for mv with incorrect args
+                                    text = 'mv requires two arguments, a file and its destination or new name.';
                                 else if (error.type === TermError.Type.PERMISSION_DENIED)
                                     text = 'Permission denied: please do not move these files outside of animalSort/.';
                                 else if (error.type === TermError.Type.INVALID_FILE_TYPE)
-                                    text = 'mv: cannot move directory'; // trying to move directory
+                                    text = 'mv: cannot move directory';
+                                else if (error.type === TermError.Type.FILE_ALREADY_EXISTS)
+                                    text = 'As you already have a file with that name, you cannot rename another file to that name yet.';
                                 else if (error.type === TermError.Type.FILE_NOT_FOUND)
-                                    text = 'mv: file or directory not found'; // file or dir not found
+                                    text = 'Unfortunately, that file does not exist, and cannot be changed.';
                             } else if (cmd !== 'ls') {
                                 text = 'Examination of the files is impossible without the usage of <ls> and <cat>.\n' +
                                        'Per my calculations, your chances of succeeding at this task randomly is exactly .027 percent.';

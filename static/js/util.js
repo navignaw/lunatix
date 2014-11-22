@@ -369,6 +369,12 @@ var Util = (function() {
         return deferred.promise();
     };
 
+    self.wait = function(term, ms) {
+        var deferred = $.Deferred();
+        _.delay(deferred.resolve, ms);
+        return deferred.promise();
+    };
+
     // Audio
     var audio = null;
     self.playMusic = function(music, loop) {
