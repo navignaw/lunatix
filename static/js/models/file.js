@@ -14,13 +14,19 @@ File.getDirectory = function(name, callback) {
 };
 
 File.createFile = function(dir, name, file) {
-    Util.log('Creating ' + name + ' in ' + dir);
     System.dirTree[dir].children.push(name);
     System.dirTree[dir + '/' + name] = file;
 };
 
 File.removeFile = function(dir, name) {
-    Util.log('Removing ' + name + ' from ' + dir);
     _.pull(System.dirTree[dir].children, name);
     System.dirTree = _.omit(System.dirTree, dir + '/' + name);
+};
+
+File.createDir = function(dir, name) {
+    File.createFile(dir, name, {
+        'name': name,
+        'type': 'dir',
+        'children': []
+    });
 };

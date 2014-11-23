@@ -5,8 +5,12 @@ var Story = (function() {
 
     var self = {};
 
+    // Unhide or unlock directory
     function unlockFile(dir) {
-        System.dirTree[dir].hidden = false;
+        if (System.dirTree[dir].hidden)
+            System.dirTree[dir].hidden = false;
+        else
+            System.dirTree[dir].locked = false;
     }
 
     function advanceArc(newArc, newDir) {
@@ -96,7 +100,7 @@ var Story = (function() {
                                     prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                     return true;
                                 } else if (number > 5 || number < 1) {
-                                    text = 'Your incapacity to notice that your answer should be between 1 and 5 ' +
+                                    text = 'Your inability to notice that your answer should be between 1 and 5 ' +
                                            'indicates a lower proficiency level than expected. Provide a revised response.';
                                     prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                     return true;
@@ -490,8 +494,10 @@ var Story = (function() {
                             text: [],
                             moves: 0
                         };
-                        text = 'For this task, you will be moving and renaming <mv> files. Each of the following animals is experiencing ' +
-                               'a crisis of identity. Assign the correct name to each animal, and sort them into their correct directories.\n' +
+                        text = 'For this task, you will be moving and renaming <mv> files. ' +
+                               '(Remember to consult man if you are unsure how to use this command.)\n' +
+                               'Each of the following animals is experiencing a crisis of identity. ' +
+                               'Assign the correct name to each animal, and sort them into their correct directories.\n' +
                                'When you are finished, run the executable ./submit. Your progress will be tracked.';
                         greenAI(text).then(function() {
                             System.progress.help = text;
@@ -684,6 +690,7 @@ var Story = (function() {
                                 System.dirTree = json;
                                 System.path = '/gov';
                                 System.directory = json[System.path];
+                                Util.setHome('/gov');
                                 prettyPrint('Welcome to the government server!');
                                 term.pause(); term.resume(); // hack to update the prompt
 
@@ -704,11 +711,42 @@ var Story = (function() {
                         break;
 
                     case 1:
-                        // TODO: Initiate lockdown when player cats personnel file
-                        if (error) break;
-                        if (cmd === 'cat') {
-                            prettyPrint('INTRUDER DETECTED');
-                        }
+                        // Initiate lockdown when player cats personnel file
+                        if (error || cmd !== 'cat') break;
+
+                        // Generate directories for month/date/time/log file
+                        Util.generateTimeLogs('/gov/logs');
+                        var date = new Date(),
+                            month = Util.getMonth(date.getMonth()),
+                            day = Util.padZeroes(date.getDate()),
+                            time = _.map([date.getHours(), date.getMinutes(), date.getSeconds()], Util.padZeroes).join('');
+                        var logDir = ['/gov/logs', month, day].join('/'),
+                            logName = time + '.log';
+                        console.log(logDir, logName);
+                        File.createFile(logDir, logName, {
+                            'name': logName,
+                            'type': 'txt',
+                            'text': 'Error: log in process. Please do not modify or remove this file.'
+                        });
+
+                        text = 'Intruder detected! Lockdown initiated.`300`\n' +
+                               'Logging report will be saved in ' + logDir + '/' + logName +
+                               '. This file must not be modified or removed until logging is complete.';
+                        redAI(text).then(function() {
+                            unlockFile('/gov/forgot_password.txt');
+                            System.progress.value++;
+                        });
+                        break;
+
+                    case 2:
+                        if (cmd !== 'sudo' || System.directory.name !== 'gov') break;
+
+                        // TODO: Allow access to logs if sudo chmod
+                        unlockFile('/gov/logs');
+                        System.progress.value++;
+                        break;
+
+                    case 3:
                         break;
                 }
                 break;

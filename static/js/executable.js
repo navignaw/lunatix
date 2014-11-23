@@ -38,7 +38,7 @@ var Executable = (function() {
                             break;
 
                         case 'unsolvable':
-                            text = 'Subject passes minimum qualifications for the second module.';
+                            text = 'Subject passes the minimum qualifications for the second module.';
                             greenAI(text).then(function() {
                                 System.progress.value++;
                                 Story.checkStory(term, null);

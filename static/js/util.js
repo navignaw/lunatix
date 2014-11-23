@@ -47,6 +47,10 @@ var Util = (function() {
         });
     };
 
+    self.setHome = function(home) {
+        HOME_DIR = home;
+    };
+
     /* Debug-specific logging utility function. Also echoes in terminal. */
     self.log = function(args) {
         if (!System.debug) {
@@ -169,7 +173,9 @@ var Util = (function() {
         if (fullHome) {
             return currentPath;
         }
-        currentPath = currentPath.replace(new RegExp('^' + HOME_DIR), '~');
+        if (HOME_DIR === '/home') {
+            currentPath = currentPath.replace(new RegExp('^' + HOME_DIR), '~');
+        }
 
         // Extra hack to hide path while in maze
         if ((/01\/maze\/.+/).test(currentPath)) {
@@ -402,11 +408,11 @@ var Util = (function() {
     };
 
     // Parsing times and dates
+    self.padZeroes = function(num) {
+        return (num < 10 ? '0' : '') + num.toString();
+    };
     self.parseTime = function(time) {
-        function padZeroes(num) {
-            return (num < 10 ? '0' : '') + num.toString();
-        }
-        return [padZeroes(Math.floor(time / 60)), padZeroes(time % 60)].join(':');
+        return [self.padZeroes(Math.floor(time / 60)), self.padZeroes(time % 60)].join(':');
     };
 
     // Cursor and aesthetics
@@ -428,6 +434,20 @@ var Util = (function() {
         $('body').css('background', self.Color.BACKGROUND);
         Terminal.terminal.css('background', self.Color.BACKGROUND);
         Terminal.terminal.css('color', self.Color.TEXT);
+    };
+
+    var months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sept', 'oct', 'nov', 'dec'];
+    self.getMonth = function(month) {
+        return months[month];
+    };
+
+    self.generateTimeLogs = function(path) {
+        _.forEach(months, function(month) {
+            File.createDir(path, month);
+            for (var i = 1; i < 32; i++) {
+                File.createDir([path, month].join('/'), self.padZeroes(i));
+            }
+        });
     };
 
     // Generate profiles
