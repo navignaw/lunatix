@@ -665,19 +665,23 @@ var Story = (function() {
 
                 // Print lines from the kernel panic file at random intervals
                 $.get('/static/content/panic.txt', function (data) {
-                	var lines = data.split("\n");
-                	lines.forEach(function (line) {
-                		window.setTimeout(function () {
-                			prettyPrint(line);
-                		}, 50 * Math.random() + 50);
-                	});
-                });
+                	var dataLines = data.split("\n");
 
-                // Wait 5 seconds before rebooting
-                _.delay(function() {
-                    advanceArc('gov');
-                    self.checkStory(term, null);
-                }, 5000);
+                	var printLines = function (lines) {
+                		if (_.isEmpty(lines)) {
+                    		advanceArc('gov');
+                    		self.checkStory(term, null);
+                		} else {
+                			_delay(function () {
+                				prettyPrint(lines.shift());
+                				printLines(lines);
+                			}, 50 * Math.random() + 50);
+                		}
+                	}
+
+                	printLines(dataLines);
+                });
+                
                 break;
 
             // End-game (government server)
