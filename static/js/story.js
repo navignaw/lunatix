@@ -664,11 +664,12 @@ var Story = (function() {
                 Util.blueScreen();
 
                 // Print lines from the kernel panic file at random intervals
-                _.get('../content/panic.txt', function (data) {
+                $.get('/static/content/panic.txt', function (data) {
                 	var lines = data.split("\n");
                 	lines.forEach(function (line) {
-                		prettyPrint(line);
-                		Util.wait(term, 50 + Math.random() * 50);
+                		window.setTimeout(function () {
+                			prettyPrint(line);
+                		}, 50 * Math.random() + 50);
                 	});
                 });
 
