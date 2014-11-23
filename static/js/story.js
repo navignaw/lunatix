@@ -662,7 +662,16 @@ var Story = (function() {
                 term.pause();
                 term.clear();
                 Util.blueScreen();
-                Util.echoTemplate(term, 'panic', true);
+
+                // Print lines from the kernel panic file at random intervals
+                _.get('../content/panic.txt', function (data) {
+                	var lines = data.split("\n");
+                	lines.forEach(function (line) {
+                		prettyPrint(line);
+                		Util.wait(term, 50 + Math.random() * 50);
+                	});
+                });
+
                 // Wait 5 seconds before rebooting
                 _.delay(function() {
                     advanceArc('gov');
