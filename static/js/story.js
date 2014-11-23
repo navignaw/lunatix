@@ -80,7 +80,7 @@ var Story = (function() {
                         }).then(function() {
                             return multichoice(['employment', 'promotion', 'compliance', 'none']);
                         }).then(function(result) {
-                            System.user.answers.previous = result;
+                            System.user.answers.occupation = result;
                             return redAI('\nQuantify your proficiency.`200` [1-5]');
                         }).then(function() {
                             return multichoice(['1', '2', '3', '4', '5'], null, function(command) {
@@ -686,6 +686,18 @@ var Story = (function() {
                                 System.directory = json[System.path];
                                 prettyPrint('Welcome to the government server!');
                                 term.pause(); term.resume(); // hack to update the prompt
+
+                                // Generate a bunch of random profiles
+                                // TODO: make the first file you cat always the user's profile
+                                for (var i = 46200; i < 46298; i++) {
+                                    var uid = i.toString();
+                                    var file = {
+                                        'name': uid,
+                                        'type': 'txt',
+                                        'text': Util.generateProfile(uid)
+                                    };
+                                    File.createFile('/gov/data/citizens', uid, file);
+                                }
                                 System.progress.value++;
                             });
                         });
@@ -693,6 +705,7 @@ var Story = (function() {
 
                     case 1:
                         // TODO: Initiate lockdown when player cats personnel file
+                        if (error) break;
                         if (cmd === 'cat') {
                             prettyPrint('INTRUDER DETECTED');
                         }

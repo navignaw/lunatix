@@ -8,21 +8,16 @@
     "/gov/data": {
         "name": "data",
         "type": "dir",
-        "children": ["citizens", "infrastructure"]
+        "children": ["citizens", "archive"]
     },
         "/gov/data/citizens": {
             "name": "citizens",
             "type": "dir",
-            "children": ["189491"]
+            "children": []
         },
-            "/gov/data/citizens/189491": {
-                "name": "189491",
-                "type": "txt",
-                "text": "Name: John Smith\nOccupation: Beta Tester\nAge: 27\nFederal ID: 1329583248572\nIP Address: 127.0.0.1\nThreat Level: Low"
-            },
 
-        "/gov/data/infrastructure": {
-            "name": "infrastructure",
+        "/gov/data/archive": {
+            "name": "archive",
             "type": "dir",
             "children": []
         },

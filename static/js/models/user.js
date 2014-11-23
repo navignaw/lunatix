@@ -1,5 +1,7 @@
 function User(name) {
     this.name = name || '';
+    this.age = 20; // default, set during survey
+    this.gender = 'M'; // default, set during survey
 
     // List of unlocked commands
     this.commands = ['cat', 'cd', 'help', 'logout', 'ls', 'man', 'mv', 'rm', 'pwd', 'whoami'];

@@ -515,10 +515,9 @@ var Terminal = (function() {
             login: {
                 name: 'login',
                 greetings: function() {
-                    var randomId = (Math.floor(Math.random() * 90000) + 10000).toString();
                     return 'LX2084 Server Literacy Training Course\n' +
                            'v' + System.version + '\n\n' +
-                           'Greetings, USER #' + randomId + '\n' +
+                           'Greetings, USER #' + _.random(10000, 99999).toString() + '\n' +
                            'Please enter your official government identifier.';
                 },
                 prompt: '$> ',

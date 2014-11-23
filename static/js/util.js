@@ -430,5 +430,28 @@ var Util = (function() {
         Terminal.terminal.css('color', self.Color.TEXT);
     };
 
+    // Generate profiles
+    self.generateProfile = function(uid, user) {
+        var name, age, gender, occupation, ip, threat;
+        if (user) {
+            name = user.name;
+            age = user.age;
+            gender = user.gender;
+            occupation = user.answers.occupation;
+            ip = user.ip;
+            threat = 'Low';
+        } else {
+            // TODO: randomly generate this
+            name = 'John Smith';
+            age = _.random(17, 36).toString();
+            gender = _.sample(['M', 'F']);
+            occupation = _.sample(['Giver']);
+            ip = '127.0.0.1';
+            threat = _.sample(['Low', 'Low', 'Low', 'Low', 'Suspected involvement with Elpis', 'High']);
+        }
+        return ['Name: ' + name, 'Age :' + age, 'Gender: ' + gender, 'Occupation: ' + occupation,
+                'Federal ID: ' + uid, 'IP Address: ' + ip, 'Threat Level: ' + threat].join('\n');
+    };
+
     return self;
 })();
