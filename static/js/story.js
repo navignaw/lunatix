@@ -46,7 +46,7 @@ var Story = (function() {
 
         // FIXME: Remove after testing: hack to skip tests
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'gov';
+            System.progress.arc = 'kernelPanic';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
@@ -663,12 +663,25 @@ var Story = (function() {
                 term.pause();
                 term.clear();
                 Util.blueScreen();
-                Util.echoTemplate(term, 'panic', true);
-                // Wait 5 seconds before rebooting
-                _.delay(function() {
-                    advanceArc('gov');
-                    self.checkStory(term, null);
-                }, 5000);
+                // Print lines from the kernel panic file at random intervals
+                $.get('/static/content/panic.txt', function (data) {
+                    var lines = data.split("\n");
+
+                    var printLines = function () {
+                        if (_.isEmpty(lines)) {
+                            _.delay(function () {
+                                advanceArc('gov');
+                                self.checkStory(term, null); 
+                            }, 5000);
+                        } else {
+                            prettyPrint(lines.shift());
+                            var longWait = Math.random() < 0.05 ? 1000 * Math.random() : 0;
+                            _.delay(printLines, 50 * Math.random() + longWait);
+                        }
+                    }
+
+                    printLines();
+                });
                 break;
 
             // End-game (government server)
