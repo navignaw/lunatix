@@ -405,7 +405,8 @@ var Terminal = (function() {
                                 break;
                             }
                         } else {
-                            throw new TermError(TermError.Type.PERMISSION_DENIED, cmd.name + ': permission denied');
+                            throw new TermError(TermError.Type.COMMAND_LOCKED,
+                                'While that is a legitimate command, you have not yet demonstrated sufficient mastery of more basic commands to use it.');
                         }
                     } else if ((/^\.\/\w+/).test(cmd.name)) {
                         // Run executable if file exists and user has valid permissions.

@@ -49,14 +49,14 @@ var Story = (function() {
         var text, log;
 
         // FIXME: Remove after testing: hack to skip tests
-        if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
+        /*if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
             System.progress.arc = 'kernelPanic';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
             unlockFile('/home/test/04');
             unlockFile('/home/test/05');
-        }
+        }*/
 
         switch (System.progress.arc) {
             // Intro survey
@@ -185,7 +185,9 @@ var Story = (function() {
 
                         // Entering test directory
                         if (cmd !== 'cd' || System.directory.name !== 'test') break;
-                        text = '$> sudo tar -xvf *.tar && sudo chmod u+r 01\n' +
+                        text = 'If at any future point you find yourself uncertain what a command is or does, ' +
+                               'usage of the <help> or <man> command will provide clarification.\n' +
+                               '$> sudo tar -xvf *.tar && sudo chmod u+r 01\n' +
                                '`500`.`200`.`400`.`500`test generation complete. Begin by Changing Directory <cd> into 01/.\n' +
                                '$> cd 01/';
                         greenAI(text).then(function() {
@@ -408,6 +410,7 @@ var Story = (function() {
                     case 4:
                         if (cmd !== 'cd' || System.directory.name !== 'results') break;
 
+                        System.user.commands.push('cat');
                         text = 'Your results are organized by test, and by examining them you can see exactly where your deficiencies lie.`300`\n' +
                                '$> cat log01.txt`500`';
                         greenAI(text).then(function() {
@@ -490,6 +493,7 @@ var Story = (function() {
                     case 0:
                         if (cmd !== 'cd' || System.directory.name !== 'animalSort') break;
 
+                        System.user.commands.push('mv');
                         System.progress.logs['test03'] = {
                             text: [],
                             moves: 0
@@ -615,6 +619,7 @@ var Story = (function() {
                     case 0:
                         if (cmd !== 'cd' || System.directory.name !== 'box') break;
 
+                        System.user.commands.push('rm');
                         System.progress.logs['test05'] = {
                             text: [],
                             good: 0,
@@ -669,22 +674,23 @@ var Story = (function() {
                 term.pause();
                 term.clear();
                 Util.blueScreen();
+                prettyPrint('<h1>Kernel Panic</h1>', {raw: true});
                 // Print lines from the kernel panic file at random intervals
-                $.get('/static/content/panic.txt', function (data) {
-                    var lines = data.split("\n");
+                $.get('/static/content/panic.txt', function(data) {
+                    var lines = data.split('\n');
 
-                    var printLines = function () {
+                    var printLines = function() {
                         if (_.isEmpty(lines)) {
-                            _.delay(function () {
+                            _.delay(function() {
                                 advanceArc('gov');
-                                self.checkStory(term, null); 
+                                self.checkStory(term, null);
                             }, 5000);
                         } else {
                             prettyPrint(lines.shift());
                             var longWait = Math.random() < 0.05 ? 1000 * Math.random() : 0;
                             _.delay(printLines, 50 * Math.random() + longWait);
                         }
-                    }
+                    };
 
                     printLines();
                 });
@@ -706,6 +712,7 @@ var Story = (function() {
                                 Util.setHome('/gov');
                                 prettyPrint('Welcome to the government server!');
                                 term.pause(); term.resume(); // hack to update the prompt
+                                System.user.commands.push('sudo');
 
                                 // Generate a bunch of random profiles
                                 // TODO: make the first file you cat always the user's profile
@@ -735,7 +742,6 @@ var Story = (function() {
                             time = _.map([date.getHours(), date.getMinutes(), date.getSeconds()], Util.padZeroes).join('');
                         var logDir = ['/gov/logs', month, day].join('/'),
                             logName = time + '.log';
-                        console.log(logDir, logName);
                         File.createFile(logDir, logName, {
                             'name': logName,
                             'type': 'txt',

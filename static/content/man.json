@@ -2,7 +2,7 @@
 
     "cd": {
         "name": "Change Directory",
-        "examples": ["cd maze", "cd /home/test/01", "cd ..", "cd <path>"],
+        "examples": ["cd logs", "cd /home/test/01", "cd ..", "cd <path>"],
         "description": "cd <path> moves you to the directory <path>, provided it is immediately visible to you. Usage of ls is recommended to see the directories immediately visible. If necessary, using cd .. will return you to the previous (parent) directory."
     },
     "ls": {
@@ -12,12 +12,12 @@
     },
     "cat": {
         "name": "Catenate",
-        "examples": ["cat food.txt", "cat <file>"],
+        "examples": ["cat history.txt", "cat <file>"],
         "description": "cat <file> will print the contents of the file <file>, provided it is immediately visible to you. Usage of ls is recommended to see the files immediately visible."
     },
     "mv": {
         "name": "Move",
-        "examples": ["mv <file> <dest>"],
+        "examples": ["mv history.txt documents/", "mv untitled.txt jobs.txt", "mv <file> <dest>"],
         "description": "mv <file> <dest> will, if <dest> is a directory, move <file> into <dest>. Otherwise, it will rename <file> to <dest>. In both cases, the first parameter must be a file that is immediately visible to you."
     },
     "rm": {

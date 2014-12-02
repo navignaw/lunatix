@@ -4,7 +4,7 @@ function User(name) {
     this.gender = 'M'; // default, set during survey
 
     // List of unlocked commands
-    this.commands = ['cat', 'cd', 'help', 'logout', 'ls', 'man', 'mv', 'rm', 'pwd', 'whoami'];
+    this.commands = ['cd', 'help', 'logout', 'ls', 'man', 'pwd', 'whoami'];
 
     // Creepy government tracking information
     this.ip = '';
