@@ -30,3 +30,10 @@ File.createDir = function(dir, name) {
         'children': []
     });
 };
+
+File.unlockFile = function(dir) {
+    if (System.dirTree[dir].hidden)
+        System.dirTree[dir].hidden = false;
+    else
+        System.dirTree[dir].locked = false;
+};
