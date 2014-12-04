@@ -19,32 +19,43 @@
         "/gov/data/archive": {
             "name": "archive",
             "type": "dir",
-            "children": ["overview", "objective", "literacy_act", "technology", "testing"]
+            "children": ["outbreak", "resolution", "transcription", "literacy_act", "technology", "testing"]
         },
-            "/gov/data/archive/overview": {
-                "name": "overview",
-                "type": "txt",
-                "text": "In 2124, an insurgency comprising a small subsection of the population made the ludicrous claim that the administration of the internet as per the Standards of Practice Act was oppressive and took up arms in rebellion against a legitimate entity. Holding the internet hostage, these insurgents made use of guerrilla warfare and other actions that lost them the sympathy of the citizenry. After the insurgency was quickly handled, it was determined that proper instruction would be required to ensure compliance and proficiency and prevent another similar insurgency. This would eventually pave the way for the Literacy Act."
+            "/gov/data/archive/outbreak": {
+                "name": "outbreak",
+                "type": "html",
+                "style": {"padding-left": "25px"},
+                "text": "<p>DATE: November 5th, 2124<br/>LOCATION: Various (Cyber)</p><p>[05:00:00] Insurgency circulates major complaint citing the Standards of Practice Act 3967 as \"oppressive\", \"shattering net neutrality.\"</p><br/><p>[10:31:32] Insurgency targets North American DNS servers; foreign cells of the same organization take control of various nation server networks. 76% of global traffic is halted.</p><br/><p>[10:36:21] 85% of global internet traffic is halted.</p><br/><p>[10:39:54] 97% of global internet traffic is halted. Law Enforcement agencies begin briefings.</p><br/><p>[10:40:00] Global internet traffic is halted. ISPs nationwide begin contact through liaisons.</p><br/><p>[11:40:03] Law Enforcement agencies mobilize. EUROPOL  Emergency Conferences begin. Rioting begins as outages are blamed on the Federal Government.</p><br/><p>[12:37:45] Conflicts escalate globally, death toll at 57. Insurgencies begin to dig in.</p>"
             },
-            "/gov/data/archive/objective": {
-                "name": "objective",
-                "type": "txt",
-                "text": "blah"
+            "/gov/data/archive/resolution": {
+                "name": "resolution",
+                "type": "html",
+                "style": {"padding-left": "25px"},
+                "text": "<p>DATE: November 9th, 2124<br/>LOCATION: Various (Cyber)</p><p>[06:47:12] Death toll at 214. News and media outlets globally report disruption of essential services. Stocks fluctuate as EURONEXT, NIKKEI and the NYSE desynchronize.</p><br/><p>[07:11:01] Death toll at 221. Media reports public opinion does not favor the actions of the Insurgency. Legislative bodies in conjunction with the EUROPOL conferences move to ratify a reactive doctrine to prevent a similar conflict in the future.</p><br/><p>[10:00:00] Small pockets of Insurgency remain, all major outlets are dissolved. Internet traffic resumes globally.</p>"
+            },
+            "/gov/data/archive/transcription": {
+                "name": "transcription",
+                "type": "html",
+                "style": {"padding-left": "25px"},
+                "text": "<p>11/10/24 TRANSCRIPT:<br/>CONCORD Global Legislation Appointed Spokesperson<br/>Eric Luo</p><p>The insurgents' actions were regrettable, and it was determined that they stemmed from ignorance over the benevolent maintenance of the internet. As such, it was critical that the citizenry be instructed in proper usage of computers and networks. A set of proper practice was defined, and is codified in the Literacy Act. This Act extends its reach over all of the citizenry, and their progress is monitored closely. The initial success of the Literacy Act made its adoption much easier, and the tests are now being used in screening at all stages of citizen life."
             },
             "/gov/data/archive/literacy_act": {
                 "name": "literacy_act",
-                "type": "txt",
-                "text": "Literacy Act 3249\nWHEREAS the ignorance of the general citizenry led to a small armed insurgency that threatened the stability of livelihood; and\nWHEREAS the continued spread of the ignorance will result in larger and larger insurgencies based on a misunderstood application of benevolent practice; and\nWHEREAS the continued spread of insurgency threatens the general peace and prevents development of citizens in the realms of networks; now, therefore, be it\nRESOLVED, that the citizenry will be made to undergo mandatory training modules in the description and use of proper computer and network practice whose specifications are described in the Literacy Testing Act; and, be it\nFURTHER RESOLVED, that the systems of this practice and training will be mandated and controlled by MOTHER, whose specifications are described in the Maintenance and Administration Act."
+                "type": "html",
+                "style": {"text-align": "center"},
+                "text": "<h3>Literacy Act 3249</h3>WHEREAS the ignorance of the general citizenry led to a small armed insurgency that threatened the stability of livelihood; and<br/>WHEREAS the continued spread of the ignorance will result in larger and larger insurgencies based on a misunderstood application of benevolent practice; and<br/>WHEREAS the continued spread of insurgency threatens the general peace and prevents development of citizens in the realms of networks; now, therefore, be it<br/>RESOLVED, that the citizenry will be made to undergo mandatory training modules in the description and use of proper computer and network practice whose specifications are described in the Literacy Testing Act; and, be it<br/>FURTHER RESOLVED, that the systems of this practice and training will be mandated and controlled by MOTHER, whose specifications are described in the Maintenance and Administration Act."
             },
             "/gov/data/archive/technology": {
                 "name": "technology",
-                "type": "txt",
-                "text": "MOTHER has been expanded in conjunction with the Literacy Act. MOTHER is now capable of, through analysis of biometrics, citizenship, and a simple survey, generating a testing suite that is tailored to the individual citizen. In addition, MOTHER's ability to spawn unlimited copies of specialized fragments of its functionality is being utilized in order to generate “companion AI” that are fully capable of administrating the testing procedure. These companion AI are constantly monitored by MOTHER’s subroutines, and any companion AI can be subsumed by MOTHER if maintenance or inspection is required. AI subsumed in this way retain full functionality, and are capable of being recreated by MOTHER once practice is complete."
+                "type": "html",
+                "style": {"padding-left": "25px"},
+                "text": "<p>MOTHER has been expanded in conjunction with the Literacy Act. MOTHER is now capable of, through analysis of biometrics, citizenship, and a simple survey, generating a testing suite that is tailored to the individual citizen. In addition, MOTHER's ability to spawn unlimited copies of specialized fragments of its functionality is being utilized in order to generate \"companion AI\" that are fully capable of administering the testing procedure. These companion AI are constantly monitored by MOTHER's subroutines, and any companion AI can be subsumed by MOTHER if maintenance or inspection is required. AI subsumed in this way retain full functionality, and are capable of being recreated by MOTHER once practice is complete."
             },
             "/gov/data/archive/testing": {
                 "name": "testing",
-                "type": "txt",
-                "text": "The testing procedure has been scrutinized, developed, and refined through constant monitoring of practice and requirements for standard network procedure. While these tests are all critical, certain citizens may already have a measure of familiarity with certain commands. As such, the order of presentation and complexity of tasks has to be carefully monitored in order to tailor the tests to each citizen. As such, “companion AI” spawned from MOTHER will be tasked with administration. The tests are also scored by these AI, who use the results in conjunction with routine monitoring to update the testing procedure. Each test focuses on a specific goal, and by passing these tests, citizens and administrators can be assured that the set of minimum qualifications are satisfied."
+                "type": "html",
+                "style": {"padding-left": "25px"},
+                "text": "<p>The testing procedure has been scrutinized, developed, and refined through constant monitoring of practice and requirements for standard network procedure. While these tests are all critical, certain citizens may already have a measure of familiarity with certain commands. As such, the order of presentation and complexity of tasks has to be carefully monitored in order to tailor the tests to each citizen. As such, \"companion AI\" spawned from MOTHER will be tasked with administration. The tests are also scored by these AI, who use the results in conjunction with routine monitoring to update the testing procedure. Each test focuses on a specific goal, and by passing these tests, citizens and administrators can be assured that the set of minimum qualifications are satisfied.</p>"
             },
 
     "/gov/forgot_password.txt": {

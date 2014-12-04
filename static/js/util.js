@@ -302,7 +302,8 @@ var Util = (function() {
          * When all characters are inserted, echo to terminal and replace prompt. */
         var readCharacter = function() {
             if (!self.animating || c === message.length) {
-                self.prettyPrint(term, prompt + term.get_command(), null, style);
+                var remaining = message.substring(c).replace(/`[0-9]+`/g, '');
+                self.prettyPrint(term, prompt + term.get_command() + remaining, null, style);
                 term.set_command('');
                 term.set_prompt(old_prompt);
                 self.animating = false;
@@ -469,7 +470,7 @@ var Util = (function() {
             ip = '127.0.0.1';
             threat = _.sample(['Low', 'Low', 'Low', 'Low', 'Suspected involvement with Elpis', 'High']);
         }
-        return ['Name: ' + name, 'Age :' + age, 'Gender: ' + gender, 'Occupation: ' + occupation,
+        return ['Name: ' + name, 'Age: ' + age, 'Gender: ' + gender, 'Occupation: ' + occupation,
                 'Federal ID: ' + uid, 'IP Address: ' + ip, 'Threat Level: ' + threat].join('\n');
     };
 

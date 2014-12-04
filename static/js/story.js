@@ -50,7 +50,7 @@ var Story = (function() {
 
         // FIXME: Remove after testing: hack to skip tests
         /*if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'kernelPanic';
+            System.progress.arc = 'gov';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
@@ -64,11 +64,19 @@ var Story = (function() {
                 switch (System.progress.value) {
                     case 0:
                         // Initializing app
-                        text = 'Searching for user profile...`500` None found!\n' +
-                               'Creating profile for user ' + System.user.name + '...`400`\n\n' +
-                               'Updating logs...`500`\n' +
-                               'Initializing survey.`400`.`500`.`1200`\n\n`200`';
+                        text = 'Searching for user profile...`500` None found!';
                         animateText(text).then(function() {
+                            text = 'Creating profile for user ' + System.user.name + '...`400`';
+                            return animateText(text);
+                        }).then(function() {
+                            text = 'Updating logs...`500`';
+                            return animateText(text);
+                        }).then(function() {
+                            text = 'Initializing survey.`400`.`500`.`1200`\n\n';
+                            return animateText(text);
+                        }).then(function() {
+                            return animateText('`600`');
+                        }).then(function() {
                             term.clear();
                             text = 'We need to learn a little bit more about you.`500`\n\n' +
                                    'In which department are you most interested?`200`\n' +
@@ -117,8 +125,10 @@ var Story = (function() {
                         }).then(function(result) {
                             System.user.answers.color = result;
                             text = '\nYour companion AI is being generated based on your responses.`200`.`300`.`800`\n' +
-                                   'Generation complete!`500`';
+                                   'Generation complete!';
                             return redAI(text);
+                        }).then(function() {
+                            return redAI('`500`');
                         }).then(function() {
                             System.progress.value++;
                             term.clear();
@@ -185,12 +195,14 @@ var Story = (function() {
 
                         // Entering test directory
                         if (cmd !== 'cd' || System.directory.name !== 'test') break;
-                        text = 'If at any future point you find yourself uncertain what a command is or does, ' +
-                               'usage of the <help> or <man> command will provide clarification.\n' +
-                               '$> sudo tar -xvf *.tar && sudo chmod u+r 01\n' +
-                               '`500`.`200`.`400`.`500`test generation complete. Begin by Changing Directory <cd> into 01/.\n' +
-                               '$> cd 01/';
+                        text = 'If at any point you find yourself uncertain what a command is or does, ' +
+                               'usage of the <help> or <man> command will provide clarification.';
                         greenAI(text).then(function() {
+                            text = '$> sudo tar -xvf *.tar && sudo chmod u+r 01\n' +
+                                   '`500`.`200`.`400`.`500`test generation complete. Begin by Changing Directory <cd> into 01/.\n' +
+                                   '$> cd 01/';
+                            return greenAI(text);
+                        }).then(function() {
                             System.progress.help = 'Change Directory <cd> into 01/ to begin the first task.';
                             advanceArc('test01', '/home/test/01');
                         });
@@ -732,7 +744,7 @@ var Story = (function() {
 
                     case 1:
                         // Initiate lockdown when player cats personnel file
-                        if (error || cmd !== 'cat') break;
+                        if (error || cmd !== 'cat' || System.directory.name !== 'citizens') break;
 
                         // Generate directories for month/date/time/log file
                         Util.generateTimeLogs('/gov/logs');
@@ -766,6 +778,7 @@ var Story = (function() {
                         break;
 
                     case 3:
+                        if (System.directory.name === 'logs') break;
                         break;
                 }
                 break;

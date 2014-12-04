@@ -62,15 +62,17 @@ var Terminal = (function() {
                     throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cat without arguments');
                 }
                 var newPath = parseDirectory(dir);
-                if (newPath) {
-                    var newFile = System.dirTree[newPath];
-                    if (newFile.type !== 'dir') {
-                        return newFile.text;
-                    } else {
-                        throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cat: ' + cmd.rest + ' is a directory');
-                    }
-                } else {
+                if (!newPath) {
                     throw new TermError(TermError.Type.FILE_NOT_FOUND, 'cat: ' + cmd.rest + ': No such file');
+                }
+
+                var newFile = System.dirTree[newPath];
+                if (newFile.type === 'dir') {
+                    throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cat: ' + cmd.rest + ' is a directory');
+                } else if (newFile.type === 'html') {
+                    prettyPrint(term, newFile.text, {raw: true}, {css: newFile.style || {}});
+                } else {
+                    return newFile.text;
                 }
             },
 
@@ -300,7 +302,10 @@ var Terminal = (function() {
             },
 
             sudo: function(cmd, term) {
-                // TODO: sudo
+                self.input(term, 'Password: ', function(input) {
+                    // TODO: sudo
+                    prettyPrint(term, 'Incorrect. sudo not yet implemented');
+                }, true);
             },
 
             test: function(cmd, term) {
@@ -465,7 +470,10 @@ var Terminal = (function() {
         },
 
         /* Input terminal: prints prompt and calls callback with input */
-        input: function(term, prompt, callback) {
+        input: function(term, prompt, callback, password) {
+            if (password) {
+                // TODO: hide password
+            }
             term.push(function(command) {
                 term.pop();
                 callback($.trim(command));
@@ -500,8 +508,8 @@ var Terminal = (function() {
                 keydown: function(e) {
                     // Disable keypresses while animating text.
                     if (Util.animating) {
-                        // Ctrl+C: skip animating text (in debug mode only)
-                        if (System.debug && System.exe !== 'relax' && e.which === 67 && e.ctrlKey) {
+                        // Skip animating text on Ctrl+C or Enter
+                        if (System.exe !== 'relax' && ((e.which === 67 && e.ctrlKey) || e.which === 13)) {
                             Util.animating = false;
                         }
                         return false;
