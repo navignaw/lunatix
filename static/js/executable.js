@@ -65,8 +65,8 @@ var Executable = (function() {
                 } else if (System.progress.arc === 'test03' && System.progress.value === 1) {
                     // Test 03: animalSort
                     var animalSort = '/home/test/03/animalSort/';
-                    var locations = ['coop', 'kennel', 'pen', 'rainbow', 'river'];
-                    var animals = [['chicken'], ['dog'], ['sheep', 'pig'], ['unicorn'], ['platypus']];
+                    var locations = ['river', 'rainbow', 'coop', 'kennel', 'pen'];
+                    var animals = [['platypus'], ['unicorn'], ['chicken'], ['dog'], ['sheep', 'pig']];
                     // For each pronoun, check if directory contains correct animal type and name
                     var correct = _.map(locations, function(location, index) {
                         var animalDir = animalSort + location;
@@ -77,8 +77,18 @@ var Executable = (function() {
                                         animalFile.name === animalFile.type;
                         });
                     });
-                    if (_.every(correct)) {
-                        text = 'Everything appears to be in order. Congratulations, you’ve put the animals in their places.';
+                    if (!correct[0]) {
+                        text = 'Oddly enough, the river is incorrect.';
+                    } else if (!correct[1]) {
+                        text = 'The reality is, the rainbow isn\'t quite right.';
+                    } else if (!correct[2]) {
+                        text = 'The coop has the wrong contents. Try again.';
+                    } else if (!correct[3]) {
+                        text = 'I\'ll throw you a bone-- the kennel is wrong.';
+                    } else if (!correct[4]) {
+                        text = 'The pen is missing some animals. More than one animal is housed here.';
+                    } else { // All correct
+                        text = 'Everything appears to be in order. Congratulations, you\'ve put the animals in their places.';
                         greenAI(text).then(function() {
                             System.progress.value++;
                             Story.checkStory(term, null);
@@ -86,8 +96,8 @@ var Executable = (function() {
                         return;
                     }
 
-                    // TODO: hint text depending on which ones are correct
-                    yellowAI('Incorrect. Please ensure the animals are correctly named and in the appropriate directories.');
+                    // Hint text depending on which ones are correct
+                    yellowAI(text);
                 } else {
                     yellowAI('This test has already terminated.');
                 }
@@ -102,12 +112,18 @@ var Executable = (function() {
                 log = System.progress.logs['test04'];
                 term.clear();
                 System.exe = 'relax';
-                text = 'NOTE: To opt out of this rest break, you may terminate the program with <Ctrl-C> at any time.`300`\n' +
-                       'Initializing relaxation station.`200`.`400`.`500`\n' +
-                       'Starting relaxing music.`500`.`400`.`500`\n';
+                text = 'NOTE: To opt out of this rest break, you may terminate the program with <Ctrl-C> at any time.`300`';
                 greenAI(text).then(function() {
+                    text = 'Initializing relaxation station.`200`.`400`.`500`';
+                    return greenAI(text);
+                }).then(function() {
+                    text = 'Starting relaxing music.`500`.`400`.`500`';
+                    return greenAI(text);
+                }).then(function() {
                     Util.playMusic('refreshing.mp3', true); // Play elevator music
-
+                    text = 'Initialization complete. Sit back and relax.\n';
+                    return greenAI(text);
+                }).then(function() {
                     var ctrlC = false;
                     var timer = 3600;
                     var timedText = {

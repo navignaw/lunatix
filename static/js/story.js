@@ -49,14 +49,14 @@ var Story = (function() {
         var text, log;
 
         // FIXME: Remove after testing: hack to skip tests
-        /*if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'gov';
+        if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
+            System.progress.arc = 'test03';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
-            unlockFile('/home/test/04');
-            unlockFile('/home/test/05');
-        }*/
+            //unlockFile('/home/test/04');
+            //unlockFile('/home/test/05');
+        }
 
         switch (System.progress.arc) {
             // Intro survey
@@ -553,8 +553,8 @@ var Story = (function() {
                     case 2:
                         // Correct sorting submitted
                         var score = log.moves <= 6 ?  'O(log n) - efficient' :
-                                    log.moves <= 10 ? 'O(n) - relatively efficient' :
-                                    log.moves <= 15 ? 'O(n^2) - inefficient' :
+                                    log.moves <= 12 ? 'O(n) - relatively efficient' :
+                                    log.moves <= 18 ? 'O(n^2) - inefficient' :
                                                       'O(2^n) - horribly inefficient';
                         log.text.push('Number of moves: ' + log.moves);
                         log.text.push(score);
