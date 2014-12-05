@@ -46,7 +46,7 @@ var Story = (function() {
         var text, log;
 
         // FIXME: Remove after testing: hack to skip tests
-        if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
+        /*if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
             System.progress.arc = 'credits';
             File.unlockFile('/home/test/01');
             File.unlockFile('/home/test/02');
@@ -54,7 +54,7 @@ var Story = (function() {
             File.unlockFile('/home/test/04');
             File.unlockFile('/home/test/05');
             System.user.commands.push('mv', 'cat', 'rm');
-        }
+        }*/
 
         switch (System.progress.arc) {
             // Intro survey
@@ -73,7 +73,7 @@ var Story = (function() {
                             text = 'Initializing survey.`400`.`500`.`1200`\n\n';
                             return animateText(text);
                         }).then(function() {
-                            return animateText('`600`');
+                            return animateText('`1000`');
                         }).then(function() {
                             term.clear();
                             text = 'We need to learn a little bit more about you.`500`\n\n' +
@@ -101,7 +101,7 @@ var Story = (function() {
                                    '[Innovation, Enforcement, Infrastructure, None]';
                             return redAI(text);
                         }).then(function() {
-                            return multichoice(['employment', 'promotion', 'compliance', 'none']);
+                            return multichoice(['innovation', 'enforcement', 'infrastructure', 'none']);
                         }).then(function(result) {
                             System.user.answers.occupation = result;
                             return redAI('\nQuantify your proficiency.`200` [1-5]');

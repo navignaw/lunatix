@@ -5,12 +5,16 @@ var Terminal = (function() {
     var prettyPrint = Util.prettyPrint;
     var echoTemplate = Util.echoTemplate;
 
+    var USERNAME_MAX_LENGTH = 15;
     var self = {
 
         /* Login interpreter */
         login: function(command, term) {
             var username = $.trim(command);
-            // TODO: Check for max character limit.
+
+            if (username.length > USERNAME_MAX_LENGTH) {
+                username = 'dissident';
+            }
             if (username !== '') {
                 term.pause();
 
@@ -26,6 +30,9 @@ var Terminal = (function() {
                             term.push(self.interpreter, self.options.main);
                             term.clear();
                             term.greetings();
+                            if (username === 'dissident') {
+                                prettyPrint(term, 'As your username exceeds the character limit, we have truncated it accordingly.');
+                            }
                             Story.checkStory(term, null);
                         });
 
