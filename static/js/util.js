@@ -344,7 +344,7 @@ var Util = (function() {
     /* Promises! Allow chaining of multiple asynchronous requests via then and fail */
     self.animateText = function(term, message, prompt, delay, style) {
         var deferred = $.Deferred();
-        self.animateTextAsync(term, message, prompt, deferred.resolve, delay);
+        self.animateTextAsync(term, message, prompt, deferred.resolve, delay, style);
         return deferred.promise();
     };
 
@@ -359,6 +359,21 @@ var Util = (function() {
         };
         cmd.css('color', color);
         self.animateTextAsync(term, message, prompt, resolve, 40, {color: color});
+        return deferred.promise();
+    };
+
+    self.printLines = function(term, lines, delay, style) {
+        delay = delay || 40;
+        var deferred = $.Deferred();
+        var printLines = function() {
+            if (_.isEmpty(lines)) {
+                _.delay(deferred.resolve, delay);
+            } else {
+                self.prettyPrint(term, lines.shift(), null, style);
+                _.delay(printLines, delay);
+            }
+        };
+        printLines();
         return deferred.promise();
     };
 

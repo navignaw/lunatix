@@ -38,6 +38,7 @@ var Story = (function() {
         var greenAI = _.partial(Util.animateAI, term, Util.Color.AI_GREEN);
         var yellowAI = _.partial(Util.animateAI, term, Util.Color.AI_YELLOW);
         var redAI = _.partial(Util.animateAI, term, Util.Color.AI_RED);
+        var printLines = _.partial(Util.printLines, term);
         var confirm = _.partial(Util.confirm, term);
         var multichoice = _.partial(Util.multichoice, term);
         var input = _.partial(Util.input, term);
@@ -46,7 +47,7 @@ var Story = (function() {
 
         // FIXME: Remove after testing: hack to skip tests
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'gov';
+            System.progress.arc = 'credits';
             File.unlockFile('/home/test/01');
             File.unlockFile('/home/test/02');
             File.unlockFile('/home/test/03');
@@ -97,7 +98,7 @@ var Story = (function() {
                             });
                         }).then(function(result) {
                             text = '\nHow have you served us before?`200`\n' +
-                                   '[Employment, Promotion, Compliance, None]';
+                                   '[Innovation, Enforcement, Infrastructure, None]';
                             return redAI(text);
                         }).then(function() {
                             return multichoice(['employment', 'promotion', 'compliance', 'none']);
@@ -326,10 +327,11 @@ var Story = (function() {
                             case 'uncertain':
                                 text = 'Subject is willing to follow hunches.';
                                 log.good++;
+                                log['dubious'] = true; // disable other log
                                 break;
 
                             case 'vague':
-                                text = 'Subject persists in precipitating events that do not generate results.';
+                                text = 'Subject persists in actions that do not generate results.';
                                 log.bad++;
                                 break;
 
@@ -359,8 +361,9 @@ var Story = (function() {
                                 break;
 
                             case 'dubious':
-                                text = 'Subject is bold but reckless.';
+                                text = 'Subject is willing to follow hunches.';
                                 log.bad++;
+                                log['uncertain'] = true; // disable other log
                                 break;
 
                             case 'impractical':
@@ -544,7 +547,7 @@ var Story = (function() {
                                 else if (error.type === TermError.Type.PERMISSION_DENIED)
                                     text = 'Permission denied: please do not move these files outside of animalSort/.';
                                 else if (error.type === TermError.Type.INVALID_FILE_TYPE)
-                                    text = 'mv: cannot move directory';
+                                    text = 'Your ability to move directories has been disabled.';
                                 else if (error.type === TermError.Type.FILE_ALREADY_EXISTS)
                                     text = 'As you already have a file with that name, you cannot rename another file to that name yet.';
                                 else if (error.type === TermError.Type.FILE_NOT_FOUND)
@@ -573,7 +576,7 @@ var Story = (function() {
                         text = saveLog('test03', 'log03.txt');
                         prettyPrint(text);
                         text = '\nLog saved to results/.`400`\n' +
-                               'As Asimov would say, a hard worker hardly earns breaks. Visit test/04 for your reward.`200`\n' +
+                               'As Asimov would say, success is equal parts work and break. Visit test/04 for your reward.`200`\n' +
                                '$> sudo chmod u+rx /home/test/04';
                         greenAI(text).then(function() {
                             System.progress.help = 'Visit test/04 for your scheduled rest break.';
@@ -715,7 +718,6 @@ var Story = (function() {
                             _.delay(printLines, 50 * Math.random() + longWait);
                         }
                     };
-
                     printLines();
                 });
                 break;
@@ -888,7 +890,74 @@ var Story = (function() {
                 break;
 
             case 'credits':
-                animateText('Credits');
+                term.set_prompt('');
+                animateText('$> cd credits/`400`').then(function() {
+                    text = '$> cat 52612*`300`\n';
+                    return animateText(text);
+                }).then(function() {
+                    term.pause();
+                    text = ['Name: Ivan Wang', 'Gender: M', 'Occupation: Project Lead, Programming',
+                            'Federal ID: 526123', 'IP Address: 10.36.221.228', 'Threat Level: Medium'];
+                    return printLines(text, 100, {css: {'text-align': 'center'}});
+                }).then(function() {
+                    return animateText('`2000`');
+                }).then(function() {
+                    text = ['\nName: Archit Amal Sahay', 'Gender: M', 'Occupation: Story, Design',
+                            'Federal ID: 526124', 'IP Address: 10.83.191.83', 'Threat Level: Low'];
+                    return printLines(text, 100, {css: {'text-align': 'center'}});
+                }).then(function() {
+                    return animateText('`2000`');
+                }).then(function() {
+                    text = ['\nName: Gabie Gagnon', 'Gender: F', 'Occupation: Story, Design',
+                            'Federal ID: 526125', 'IP Address: 10.40.33.228', 'Threat Level: Low'];
+                    return printLines(text, 100, {css: {'text-align': 'center'}});
+                }).then(function() {
+                    return animateText('`2000`');
+                }).then(function() {
+                    text = ['\nName: Domenic Dipasquale', 'Gender: M', 'Occupation: Story, Design', 'Federal ID: 526126',
+                            'IP Address: 10.197.104.35', 'Threat Level: Suspected Involvement with Elpis'];
+                    return printLines(text, 100, {css: {'text-align': 'center'}});
+                }).then(function() {
+                    return animateText('`2000`');
+                }).then(function() {
+                    text = ['\nName: Justin Gallagher', 'Gender: M', 'Occupation: Programming',
+                            'Federal ID: 526126', 'IP Address: 10.51.115.76', 'Threat Level: Low'];
+                    return printLines(text, 100, {css: {'text-align': 'center'}});
+                }).then(function() {
+                    term.resume();
+                    text = '`2000`\n$> cat testers`400`';
+                    return animateText(text);
+                }).then(function() {
+                    term.pause();
+                    text = ['Jamie Zhan', 'Michael Liang', 'Chris Jones', 'Ralph Vituccio'];
+                    return printLines(text, 100, {css: {'text-align': 'center'}});
+                }).then(function() {
+                    term.resume();
+                    text = '`1000`$> cat resources`400`';
+                    return animateText(text);
+                }).then(function() {
+                    term.pause();
+                    text = ['jQuery Terminal (Jakub Jankiewicz)', 'jQuery', 'Lo-Dash', 'Flask', '',
+                            'Refreshing Elevator Music', 'ASCII Animals', 'JSON Generator'];
+                    return printLines(text, 100, {css: {'text-align': 'center'}});
+                }).then(function() {
+                    return animateText('`5000`');
+                }).then(function() {
+                    term.clear();
+                    text = '<br/><br/><br/><br/><h2>LUNATIX</h2><h4>GAME CREATION SOCIETY, FALL 2014</h4><br/>';
+                    prettyPrint(text, {raw: true}, {css: {'text-align': 'center'}});
+                    return animateText('`2000`');
+                }).then(function() {
+                    text = 'THANK YOU FOR PLAYING, CITIZEN.\n\n\n\n';
+                    prettyPrint(text, null, {css: {'text-align': 'center'}});
+                    term.resume();
+                    text = '`1200`[Type any key to restart.]';
+                    return animateText(text);
+                }).then(function() {
+                    return input();
+                }).then(function(result) {
+                    term.pop();
+                });
                 break;
         }
 

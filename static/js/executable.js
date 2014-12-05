@@ -78,15 +78,15 @@ var Executable = (function() {
                         });
                     });
                     if (!correct[0]) {
-                        text = 'Oddly enough, the river is incorrect.';
+                        text = 'Incorrect. The current river inhabitant cannot swim.';
                     } else if (!correct[1]) {
-                        text = 'The reality is, the rainbow isn\'t quite right.';
+                        text = 'Incorrect. The animal native to the rainbow is not presented.';
                     } else if (!correct[2]) {
-                        text = 'The coop has the wrong contents. Try again.';
+                        text = 'Incorrect. The missing animal has flown the coop.';
                     } else if (!correct[3]) {
-                        text = 'I\'ll throw you a bone-- the kennel is wrong.';
+                        text = 'Incorrect. I\'ll throw you a bone-- the kennel is wrong.';
                     } else if (!correct[4]) {
-                        text = 'The pen is missing some animals. More than one animal is housed here.';
+                        text = 'Incorrect. The pen is missing some animals. More than one animal is housed here.';
                     } else { // All correct
                         text = 'Everything appears to be in order. Subject passes the minimum qualifications for the third test.';
                         greenAI(text).then(function() {
@@ -160,9 +160,9 @@ var Executable = (function() {
                         0: 'Wasn\'t that fun? In fact, let me restart this for you. I\'m sure the benefits will be even greater the second time.'
                     };
                     var ctrlCText = [
-                        'You appear to have mistyped <Ctrl-C> in error. I will graciously ignore this command; thank me later.',
-                        'Pending command: <Ctrl-C>. That wasn\'t you, was it? Relaxation is important. Let us continue.',
-                        'Have you checked to make sure that your <Ctrl-C> key is stuck on the keyboard?',
+                        'Pending command: <Ctrl-C>. That wasn\'t you, was it? I will graciously ignore this command; thank me later.',
+                        'You appear to have mistyped <Ctrl-C> in error. Relaxation is important. Let us continue.',
+                        'Have you checked your <Ctrl-C> key? It may be stuck.',
                         'Unfortunately, there is a <Ctrl-C> command inbound. Regulations require me to terminate this relaxation period despite its benefits.'
                     ];
                     var redactedCat = '\n    ------------------------------\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n   |       R E D A C T E D        |\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n    ------------------------------\n';
