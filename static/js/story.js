@@ -573,7 +573,7 @@ var Story = (function() {
                         text = saveLog('test03', 'log03.txt');
                         prettyPrint(text);
                         text = '\nLog saved to results/.`400`\n' +
-                               'As Asimov would say, a hard worker earns relaxing breaks. Visit test/04 for your reward.`200`\n' +
+                               'As Asimov would say, a hard worker hardly earns breaks. Visit test/04 for your reward.`200`\n' +
                                '$> sudo chmod u+rx /home/test/04';
                         greenAI(text).then(function() {
                             System.progress.help = 'Visit test/04 for your scheduled rest break.';

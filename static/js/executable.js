@@ -88,7 +88,7 @@ var Executable = (function() {
                     } else if (!correct[4]) {
                         text = 'The pen is missing some animals. More than one animal is housed here.';
                     } else { // All correct
-                        text = 'Everything appears to be in order. Congratulations, you\'ve put the animals in their places.';
+                        text = 'Everything appears to be in order. Subject passes the minimum qualifications for the third test.';
                         greenAI(text).then(function() {
                             System.progress.value++;
                             Story.checkStory(term, null);
@@ -143,17 +143,17 @@ var Executable = (function() {
                         3180: 'Are you remembering to breathe? Be sure to take steady, rhythmic breaths. As Pratchett would put it, feel the tick of the universe.',
                         3120: 'Be sure to do this every day. Repetition is key to continued excellence.',
                         3060: 'This may be difficult for you. Try not to focus on all of the work you have remaining and enjoy yourself.',
-                        3000: 'Has it already been ten minutes? Let me find another cat picture for you.',
+                        3000: 'Has it already been ten minutes? Let me find another cat picture for you. My program tells me it is very "cute."',
                         2940: 'Lose yourself in the vastness of the universe. You are already a small being in the world.',
                         2880: 'The <Ctrl-C> command is probably beginning to seem promising. Resist the urge to quit early.',
                         2820: 'For that matter, lose all of your urges in the relaxation.',
                         2760: 'Why yes, I do have lines for every minute.',
                         2700: 'My analytics show that you may be suffering from my intrusions into your relaxation. I will now only show you the scheduled cat pictures.', // redacted
                         2400: 'You’ve clearly benefited from the silence. Here is another cat picture.',
-                        2100: 'Another cat picture? I think so!',
+                        2100: 'Another cat picture? I think so! Look at its tiny paws.',
                         1800: 'Halfway done. I know you will miss this when it is over.',
                         1500: 'Ah, this is a particularly funny cat picture. I am 98.95% sure that you will find it funny as well.',
-                        1200: 'Only twenty minutes remaining? Ah well. The cat picture database is almost infinite, as I’m sure you know.',
+                        1200: 'Only twenty minutes remaining? Ah well. The cat picture database is almost infinite, as I\'m sure you know.',
                         900: 'Come to terms with your limits. Feel the benefits of relaxation. Enjoy the cat picture.',
                         600: 'Your time here is coming to an end. As it always is. Here is a cat picture for your curiosity.',
                         300: 'Only five minutes remain. This will be the last cat picture.',
@@ -177,27 +177,31 @@ var Executable = (function() {
                         if (ctrlC) return;
                         ctrlC = true;
                         Util.animating = false; // disable current animating text
-                        yellowAI(ctrlCText[System.progress.hints++]).then(function() {
-                            ctrlC = false;
-                            if (System.progress.hints === 4) {
-                                log.waitTime = log.ranToCompletion ? 3600 : (3600 - timer);
-                                System.progress.value = 2;
-                                Util.stopMusic();
-                                Util.showCursor();
-                                timerElem.remove();
-                                term.pop();
-                                Story.checkStory(term, null);
-                            }
-                        });
+                        _.delay(function() {
+                            yellowAI(ctrlCText[System.progress.hints++]).then(function() {
+                                ctrlC = false;
+                                if (System.progress.hints === 4) {
+                                    log.waitTime = log.ranToCompletion ? 3600 : (3600 - timer);
+                                    System.progress.value = 2;
+                                    Util.stopMusic();
+                                    Util.showCursor();
+                                    timerElem.remove();
+                                    term.pop();
+                                    Story.checkStory(term, null);
+                                }
+                            });
+                        }, 500);
                     });
 
                     var runTimer = function() {
                         if (System.progress.value !== 1) return;
 
                         if (_.has(timedText, --timer)) {
-                            // TODO: animate text without screwing up timer (deal with race condition on disabling Util.animating)
-                            prettyPrint(timedText[timer], null, {color: Util.Color.AI_GREEN});
-
+                            if (ctrlC) {
+                                prettyPrint(timedText[timer], null, {color: Util.Color.AI_GREEN});
+                            } else {
+                                greenAI(timedText[timer]);
+                            }
                             if (timer % 300 === 0 && timer > 0) {
                                 prettyPrint(redactedCat); // Every 5 minutes, display redacted cat picture!
                             }

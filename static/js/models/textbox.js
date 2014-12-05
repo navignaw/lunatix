@@ -5,6 +5,7 @@ function Textbox(parent, x, y, style) {
 
     // Update style
     var TEXT_HEIGHT = 84;
+    style.width = '100%';
     self.children('.cmd').css(style);
     parent.prepend(self);
 
@@ -15,6 +16,14 @@ function Textbox(parent, x, y, style) {
     });
     self.animate({
         'max-height': TEXT_HEIGHT.toString() + 'px'
+    });
+
+    self.mousewheel(function(event, delta) {
+        if (delta > 0) {
+            self.animate({ scrollTop: parseInt(self.scrollTop(), 10) - 15 }, 10);
+        } else {
+            self.animate({ scrollTop: parseInt(self.scrollTop(), 10) + 15 }, 10);
+        }
     });
 
     this.destroy = function() {
