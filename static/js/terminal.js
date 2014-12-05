@@ -10,6 +10,7 @@ var Terminal = (function() {
         /* Login interpreter */
         login: function(command, term) {
             var username = $.trim(command);
+            // TODO: Check for max character limit.
             if (username !== '') {
                 term.pause();
 
@@ -18,7 +19,6 @@ var Terminal = (function() {
                     url: $app.SCRIPT_ROOT + '/login',
                     data: {username: username},
                     success: function(data) {
-                        // TODO: If username already exists, prompt for password.
                         System.user = new User(username);
                         File.getDirectory('home.json', function(json) {
                             System.dirTree = json;
@@ -56,16 +56,16 @@ var Terminal = (function() {
             cat: function(cmd, term) {
                 var dir = _.first(cmd.args);
                 if (!dir) {
-                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cat without arguments');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cat: No arguments provided.');
                 }
                 var newPath = parseDirectory(dir);
                 if (!newPath) {
-                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'cat: ' + cmd.rest + ': No such file');
+                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'cat: ' + cmd.rest + ': No such file.');
                 }
 
                 var newFile = System.dirTree[newPath];
                 if (newFile.type === 'dir') {
-                    throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cat: ' + cmd.rest + ' is a directory');
+                    throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cat: ' + cmd.rest + ' is a directory.');
                 } else {
                     if (System.progress.arc === 'gov' && System.progress.value === 1 && (/gov\/data\/citizens/).test(newPath)) {
                         // FIXME: Hackily hardcoded
@@ -74,6 +74,8 @@ var Terminal = (function() {
                     }
                     if (newFile.type === 'html') {
                         prettyPrint(term, newFile.text, {raw: true}, {css: newFile.style || {}});
+                    } else if (newFile.style) {
+                        prettyPrint(term, newFile.text, null, {css: newFile.style});
                     } else {
                         return newFile.text;
                     }
@@ -81,7 +83,6 @@ var Terminal = (function() {
             },
 
             cd: function(cmd, term) {
-                // TODO: Improve error messages
                 var dir = _.first(cmd.args);
                 if (dir) {
                     var newPath = parseDirectory(dir);
@@ -89,29 +90,29 @@ var Terminal = (function() {
                         var newDir = System.dirTree[newPath];
                         if (newDir.type === 'dir') {
                             if (newDir.locked) {
-                                throw new TermError(TermError.Type.PERMISSION_DENIED, 'cd: ' + cmd.rest + ': Permission denied');
+                                throw new TermError(TermError.Type.PERMISSION_DENIED, 'cd: ' + cmd.rest + ': Permission denied. Superuser permission required.');
                             }
                             System.path = newPath;
                             System.directory = newDir;
                         } else {
-                            throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cd: ' + cmd.rest + ' is not a directory');
+                            throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cd: ' + cmd.rest + ' is not a directory.');
                         }
                     } else {
-                        throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'cd: ' + cmd.rest + ': No such file or directory');
+                        throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'cd: ' + cmd.rest + ': No such file or directory.');
                     }
                 } else {
                     // Handle case with no arguments
-                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot cd without arguments');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cd: No arguments provided.');
                 }
             },
 
             chmod: function(cmd, term, sudo) {
                 if (!sudo) {
-                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'chmod: Permission denied');
+                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'chmod: Permission denied.');
                 }
                 var chmod_match = (/^[u,g,o,a]+[\+,\=][w,r,x]+ (\w+)/).exec(cmd.rest);
                 if (!chmod_match) {
-                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'chmod: invalid arguments');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'chmod: invalid arguments.');
                 }
 
                 var file = chmod_match[1];
@@ -119,13 +120,11 @@ var Terminal = (function() {
                 if (file) {
                     File.unlockFile(file);
                 } else {
-                    throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'chmod: No such file or directory');
+                    throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'chmod: No such file or directory.');
                 }
             },
 
-            cp: function(cmd, term) {
-                // TODO: copy files
-            },
+            cp: function(cmd, term) {},
 
             credits: function(cmd, term) {
                 echoTemplate(term, 'credits');
@@ -135,27 +134,9 @@ var Terminal = (function() {
                 return cmd.rest;
             },
 
-            eval: function(cmd, term) {
-                // Only available to debuggers or console hackers!
-                // Lying is bad, but we don't want to get their hopes up.
-                if (!System.debug) {
-                    throw new TermError(TermError.Type.COMMAND_NOT_FOUND, 'eval: command not found');
-                } else if (cmd.rest === '') {
-                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'please enter script to eval.');
-                }
-                try {
-                    var result = window.eval(cmd.rest);
-                    if (!_.isUndefined(result)) {
-                        Util.log(result);
-                    }
-                } catch(e) {
-                    Util.log(e.toString());
-                }
-            },
+            emacs: function(cmd, term) {},
 
-            grep: function(cmd, term) {
-                // TODO: grep
-            },
+            grep: function(cmd, term) {},
 
             help: function(cmd, term) {
                 if (System.progress.help) {
@@ -169,9 +150,7 @@ var Terminal = (function() {
                 return text;
             },
 
-            kill: function(cmd, term) {
-                // TODO: kill process
-            },
+            kill: function(cmd, term) {},
 
             logout: function(cmd, term) {
                 prettyPrint(term, 'Are you sure you wish to exit? ' +
@@ -208,7 +187,7 @@ var Terminal = (function() {
                         return dir;
                     }
                 } else {
-                    throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'ls: ' + cmd.rest + ': directory not found');
+                    throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'ls: ' + cmd.rest + ': directory not found.');
                 }
             },
 
@@ -243,13 +222,11 @@ var Terminal = (function() {
                 return text;
             },
 
-            mkdir: function(cmd, term) {
-                // TODO: make directory
-            },
+            mkdir: function(cmd, term) {},
 
             mv: function(cmd, term) {
                 if (cmd.args.length < 2) {
-                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'cannot mv without 2 arguments');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'mv requires 2 arguments, a destination and target.');
                 }
                 var file, target, targetName;
                 var fileDir = parseDirectory(cmd.args[0]);
@@ -260,14 +237,14 @@ var Terminal = (function() {
                     file = System.dirTree[fileDir];
                     targetName = file.name;
                     if (file.type === 'dir') {
-                        throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'mv: ' + cmd.args[0] + ': cannot move directory');
+                        throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'mv: ' + cmd.args[0] + ': cannot move directory.');
                     }
                 } else {
-                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[0] + ': No such file');
+                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[0] + ': No such file.');
                 }
                 // Check permissions
                 if (!file.movable) {
-                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'mv: ' + cmd.args[0] + ': Permission denied');
+                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'mv: ' + cmd.args[0] + ': Permission denied.');
                 }
 
                 // If target does not exist, check one directory above.
@@ -278,13 +255,13 @@ var Terminal = (function() {
                 if (targetDir) {
                     target = System.dirTree[targetDir];
                     if (target.type !== 'dir') {
-                        throw new TermError(TermError.Type.FILE_ALREADY_EXISTS, 'mv: ' + cmd.args[1] + ': target already exists');
+                        throw new TermError(TermError.Type.FILE_ALREADY_EXISTS, 'mv: ' + cmd.args[1] + ': target already exists.');
                     }
                     if (!target.movable) {
-                        throw new TermError(TermError.Type.PERMISSION_DENIED, 'mv: ' + cmd.args[0] + ': Permission denied');
+                        throw new TermError(TermError.Type.PERMISSION_DENIED, 'mv: ' + cmd.args[0] + ': Permission denied.');
                     }
                 } else {
-                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[1] + ': No such file or directory');
+                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[1] + ': No such file or directory.');
                 }
 
                 var newFile = _.clone(file);
@@ -297,28 +274,24 @@ var Terminal = (function() {
                 return Util.getFullPath(null, true);
             },
 
-            ps: function(cmd, term) {
-                Util.log(System.proc);
-                // TODO: list processes
-                return 'Processes: ';
-            },
+            ps: function(cmd, term) {},
 
             rm: function(cmd, term) {
                 if (!cmd.args) {
-                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'rm: needs an argument');
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'rm: No argument provided.');
                 }
                 var fileDir = parseDirectory(cmd.args[0]);
                 if (!fileDir) {
-                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'rm: ' + cmd.args[0] + ': No such file');
+                    throw new TermError(TermError.Type.FILE_NOT_FOUND, 'rm: ' + cmd.args[0] + ': No such file.');
                 }
                 var file = System.dirTree[fileDir];
                 if (file.type === 'dir') {
-                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied! cannot rm directory');
+                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied! Cannot remove directory.');
                 }
 
                 // Check permissions
                 if (!file.removable) {
-                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied');
+                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'rm: ' + cmd.args[0] + ': Permission denied.');
                 }
 
                 File.removeFile(_.initial(fileDir.split('/')).join('/'), file.name);
@@ -357,75 +330,7 @@ var Terminal = (function() {
                 });
             },
 
-            test: function(cmd, term) {
-                // Only available to debuggers or console hackers!
-                // Lying is bad, but we don't want to get their hopes up.
-                if (!System.debug) {
-                    throw new TermError(TermError.Type.COMMAND_NOT_FOUND, 'test: command not found');
-                }
-                switch (cmd.args[0]) {
-                    case 'confirm':
-                        self.confirm(term, 'hello? [y/n] ', function() {
-                            prettyPrint(term, 'whee');
-                        });
-                        break;
-
-                    case 'animateText':
-                        var text = 'i am typing`2000`\nwatch me ``escape``';
-                        Util.animateText(term, text, '%> ').then(function() {
-                            prettyPrint(term, 'all done');
-                        });
-                        break;
-
-                    case 'command':
-                        Util.log(cmd);
-                        break;
-
-                    case 'echoTemplate':
-                        echoTemplate(term, 'doesNotExist');
-                        break;
-
-                    case 'panic':
-                        echoTemplate(term, 'panic');
-                        break;
-
-                    case 'prettyPrint':
-                        prettyPrint(term, 'this is red text', null, {color: 'red'});
-                        prettyPrint(term, 'this is slick', null, {css: {'font-style': 'italic'}});
-                        prettyPrint(term, 'i am class death', null, {class: 'death'});
-                        prettyPrint(term, '<em>italicized html</em>', {raw: true});
-                        break;
-
-                    case 'chain':
-                        Util.animateText(term, 'Testing a chain of commands').then(function() {
-                            return Util.confirm(term, 'DOES IT WORK? [y/n] ').fail(function() {
-                                prettyPrint(term, 'you failed!');
-                            });
-                        }).then(function() {
-                            prettyPrint(term, 'What is your favorite color?');
-                            return Util.input(term);
-                        }).then(function(result) {
-                            prettyPrint(term, 'you typed: ' + result);
-                            prettyPrint(term, 'What is your favorite thing to rm? (cheese, milk, puppies)');
-                            return Util.multichoice(term, ['cheese', 'milk', 'puppies']);
-                        }).then(function(result) {
-                            prettyPrint(term, 'you typed: ' + result);
-                            prettyPrint(term, 'YOU HAVE ADVANCED THE STORY');
-                        });
-                        break;
-
-                    case 'wait':
-                        Util.wait(term, 2000).then(function() {
-                            prettyPrint(term, 'waited 1 second');
-                        });
-                        break;
-
-                    default:
-                        prettyPrint(term, 'Invalid command. Options are: ' + [
-                            'chain', 'confirm', 'animateText', 'echoTemplate', 'panic', 'prettyPrint', 'command', 'wait']
-                            .join(', '));
-                }
-            },
+            vim: function(cmd, term) {},
 
             whoami: function(cmd, term) {
                 return System.user.name;

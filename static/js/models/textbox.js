@@ -1,21 +1,33 @@
 function Textbox(parent, x, y, style) {
-    this.div = $('<div class="textbox terminal">' +
-                    '<div class="cmd"><span class="cursor blink">&nbsp;</span></div>' +
-                 '</div>');
+    var self = this.div = $('<div class="textbox terminal">' +
+                            '<div class="cmd"><span class="cursor blink">&nbsp;</span></div>' +
+                            '</div>');
 
     // Update style
     var TEXT_HEIGHT = 84;
-    this.div.children('.cmd').css(style);
-    parent.prepend(this.div);
+    self.children('.cmd').css(style);
+    parent.prepend(self);
 
     Terminal.offset += TEXT_HEIGHT;
     $('#terminal').animate({
         'margin-top': '20px',
         'height': '-=' + (TEXT_HEIGHT + 12).toString()
     });
-    this.div.animate({
-        'height': TEXT_HEIGHT.toString() + 'px'
+    self.animate({
+        'max-height': TEXT_HEIGHT.toString() + 'px'
     });
+
+    this.destroy = function() {
+        self.animate({
+            'height': 0
+        }, 400, function() {
+            self.remove();
+        });
+        $('#terminal').animate({
+            'margin-top': '30px',
+            'height': '+=' + (TEXT_HEIGHT + 12).toString()
+        });
+    };
 
     /* Animate text */
     var animating = false;
@@ -36,8 +48,8 @@ function Textbox(parent, x, y, style) {
         var $text = $('<span></span>');
         var textNode = document.createTextNode('');
         $text.append(textNode);
-        this.div.find('.cursor').before($text);
-        this.div.animate({ scrollTop: this.div.prop('scrollHeight') });
+        self.find('.cursor').before($text);
+        self.animate({ scrollTop: self.prop('scrollHeight') });
 
         /* Every delay ms, insert a new character into the command line.
          * When all characters are inserted, echo to terminal and replace prompt. */

@@ -199,8 +199,7 @@ var Executable = (function() {
                             prettyPrint(timedText[timer], null, {color: Util.Color.AI_GREEN});
 
                             if (timer % 300 === 0 && timer > 0) {
-                                // Every 5 minutes, display redacted cat picture!
-                                prettyPrint(redactedCat);
+                                prettyPrint(redactedCat); // Every 5 minutes, display redacted cat picture!
                             }
                         }
                         if (timer > 0) {

@@ -473,8 +473,8 @@ var Util = (function() {
             ip = profile.ip;
             threat = profile.threat;
         }
-        return ['Name: ' + name, 'Date of Birth: ' + dob, 'Gender: ' + gender, 'Occupation: ' + occupation,
-                'Federal ID: ' + uid, 'IP Address: ' + ip, 'Threat Level: ' + threat].join('\n');
+        return ['\nName: ' + name, 'Date of Birth: ' + dob, 'Gender: ' + gender, 'Occupation: ' + occupation,
+                'Federal ID: ' + uid, 'IP Address: ' + ip, 'Threat Level: ' + threat, ''].join('\n');
     };
 
     return self;

@@ -31,7 +31,7 @@
                 "name": "resolution",
                 "type": "html",
                 "style": {"padding-left": "25px"},
-                "text": "<p>DATE: November 9th, 2124<br/>LOCATION: Various (Cyber)</p><p>[06:47:12] Death toll at 214. News and media outlets globally report disruption of essential services. Stocks fluctuate as EURONEXT, NIKKEI and the NYSE desynchronize.</p><br/><p>[07:11:01] Death toll at 221. Media reports public opinion does not favor the actions of the Insurgency. Legislative bodies in conjunction with the EUROPOL conferences move to ratify a reactive doctrine to prevent a similar conflict in the future.</p><br/><p>[10:00:00] Small pockets of Insurgency remain, all major outlets are dissolved. Internet traffic resumes globally.</p>"
+                "text": "<p>DATE: November 9th, 2124<br/>LOCATION: Various (Cyber)</p><p>[06:47:12] DEATH TOLL: 214. News and media outlets globally report disruption of essential services. Stocks fluctuate as EURONEXT, NIKKEI and the NYSE desynchronize.</p><br/><p>[07:11:01] Death toll at 221. Media reports public opinion does not favor the actions of the Insurgency. Legislative bodies in conjunction with the EUROPOL conferences move to ratify a reactive doctrine to prevent a similar conflict in the future.</p><br/><p>[10:00:00] Small pockets of Insurgency remain, all major outlets are dissolved. Internet traffic resumes globally.</p>"
             },
             "/gov/data/archive/transcription": {
                 "name": "transcription",

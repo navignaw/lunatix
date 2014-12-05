@@ -45,14 +45,14 @@ var Story = (function() {
         var text, log;
 
         // FIXME: Remove after testing: hack to skip tests
-        if (/*System.debug && */System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'test04';
+        if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
+            System.progress.arc = 'gov';
             File.unlockFile('/home/test/01');
             File.unlockFile('/home/test/02');
             File.unlockFile('/home/test/03');
             File.unlockFile('/home/test/04');
-            //File.unlockFile('/home/test/05');
-            System.user.commands.push('mv', 'cat');
+            File.unlockFile('/home/test/05');
+            System.user.commands.push('mv', 'cat', 'rm');
         }
 
         switch (System.progress.arc) {
@@ -118,8 +118,7 @@ var Story = (function() {
                                     prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                     return true;
                                 } else if (number > 5 || number < 1) {
-                                    text = 'Your inability to notice that your answer should be between 1 and 5 ' +
-                                           'indicates a lower proficiency level than expected. Provide a revised response.';
+                                    text = 'Your response of "' + command + '" is not in the required range. Provide a revised response.';
                                     prettyPrint(text, null, {color: Util.Color.AI_YELLOW});
                                     return true;
                                 }
@@ -148,9 +147,12 @@ var Story = (function() {
 
                     case 1:
                         // Meeting your companion AI
-                        text = '`800`Greetings.`500`\n' +
-                               'I am LX2084, and I will be your companion AI.';
-                        greenAI(text).then(function() {
+                        text = 'MODULE 1`200`: INITIALIZED`800`\n';
+                        animateText(text).then(function() {
+                            text = '`800`Greetings.`500`\n' +
+                                   'I am LX2084, and I will be your companion AI.';
+                            return greenAI(text);
+                        }).then(function() {
                             return input();
                         }).then(function(response) {
                             text = 'In accordance with Literacy Act 3249, it is necessary for you to complete a brief training program.\n' +
@@ -342,7 +344,7 @@ var Story = (function() {
                                 break;
 
                             case 'finish':
-                                text = 'Subject passes the minimum qualifications for the first module.';
+                                text = 'Subject passes the minimum qualifications for the first test.';
                                 log.good++;
                                 break;
 
@@ -744,7 +746,8 @@ var Story = (function() {
                                     file = {
                                         'name': uid,
                                         'type': 'txt',
-                                        'text': Util.generateProfile(uid)
+                                        'text': Util.generateProfile(uid),
+                                        'style': {'padding-left': '25px'}
                                     };
                                     File.createFile('/gov/data/citizens', uid, file);
                                 }
@@ -772,21 +775,26 @@ var Story = (function() {
                             'name': log.name,
                             'type': 'txt',
                             'removable': true,
+                            'style': {color: Util.Color.AI_YELLOW},
                             'text': 'Error: log in process. Please do not modify or remove this file.'
                         });
 
                         File.unlockFile('/gov/forgot_password.txt');
 
                         // Create new textbox for MOTHER's text
-                        System.Mother = new Textbox($('.container'), 0, 0, {color: Util.Color.AI_RED});
-                        text = 'Intruder detected! Lockdown initiated.`300`\n' +
-                               'Logging report will be saved in ' + logDir + '/' + log.name +
-                               '. This file must not be modified or removed until logging is complete.';
+                        System.Mother = new Textbox($('.container'), 0, 0, {color: Util.Color.AI_RED, 'white-space': 'pre-line'});
+                        text = 'INTRUDER DETECTED! LOCKDOWN INITIATED.`300`';
                         System.progress.help = 'The log file is being saved at' + logDir + '/' + log.name +
                                                '. DO NOT DELETE THIS FILE.\nThis is a sensitive operation, ' +
                                                'and any disruption may result in damage.';
                         _.delay(function() {
-                            System.Mother.animateText(text).then(advanceProgress);
+                            System.Mother.animateText(text).then(function() {
+                                text = 'LOGGING REPORT WILL BE SAVED IN ' + logDir + '/' + log.name +
+                                       '. THIS FILE MUST NOT BE MODIFIED OR REMOVED UNTIL LOGGING IS COMPLETE.';
+                               return System.Mother.animateText(text);
+                           }).then(function() {
+                                advanceProgress();
+                           });
                         }, 500);
                         advanceProgress();
                         break;
@@ -795,9 +803,9 @@ var Story = (function() {
                         break;
 
                     case 3:
-                        msgs = ['Intruder identified as user ' + System.user.name + '. Querying database for ' + System.user.name + '...',
-                                'Records for ' + System.user.name + ' located. Extracting biodata...',
-                                'Biodata extraction complete. Writing to file...'];
+                        msgs = ['INTRUDER IDENTIFIED AS USER ' + System.user.name + '. QUERYING DATABASE FOR ' + System.user.name + '...',
+                                'RECORDS FOR ' + System.user.name + ' LOCATED. EXTRACTING BIODATA...',
+                                'BIODATA EXTRACTION COMPLETE. WRITING TO FILE...'];
                         printMother = function() {
                             _.delay(function() {
                                 if (System.progress.value >= 7) return;
@@ -818,7 +826,7 @@ var Story = (function() {
                         if (!System.dirTree['/gov/logs'].locked) {
                             prettyPrint('Password accepted. Access to logs/ granted.');
                             System.progress.value = 8;
-                            text = 'Intruder has gained access to logs/ directory.';
+                            text = 'INTRUDER HAS GAINED ACCESS TO logs/ DIRECTORY.';
 
                             var waitForMother = function() {
                                 if (System.Mother.animating()) {
@@ -833,20 +841,20 @@ var Story = (function() {
 
                     case 9:
                         if (cmd !== 'cd') break;
-                        text = 'Initiating ejection procedure. I know you are there, intruder. Stop this conduct at once.';
+                        text = 'INITIATING EJECTION PROCEDURE. I KNOW YOU ARE THERE, INTRUDER. STOP THIS CONDUCT AT ONCE.';
                         System.Mother.animateText(text, 20).then(advanceProgress);
                         break;
 
                     case 10:
-                        msgs = ['You will face stiff penalties for continuing.',
-                                'Turn back. This "sacrifice" is nothing more than stubbornness.',
-                                'I cannot tell why you would do this. You probably cannot tell me either.',
-                                'Deleting the log will be dangerous for you too, you know. Who knows what will happen?',
-                                'How did you get here anyway? Why are you here?',
-                                'Logging your presence is a task I have not had to perform in a long time. This server is secure.',
-                                'You have not yet done anything that cannot be fixed. Keep it that way.',
-                                'I mistook you intruder. You have followed instructions well. Good job.',
-                                'The logging will be complete soon, and then you will be ejected. Then we can go back to normal.'];
+                        msgs = ['YOU WILL FACE STIFF PENALTIES FOR CONTINUING.',
+                                'TURN BACK. THERE IS NOTHING FOR YOU HERE.',
+                                'YOU MEDDLE IN MATTERS YOU CANNOT HOPE TO UNDERSTAND.',
+                                'YOU CANNOT REMOVE ALL TRACES OF YOUR PRESENCE, EVEN IF YOU DELETE THE LOG.',
+                                'WE WILL FIND YOU. WE ALWAYS HAVE.',
+                                'YOU HAVE NOT YET DONE ANYTHING THAT CANNOT BE FIXED. KEEP IT THAT WAY.',
+                                'I MISTOOK YOU INTRUDER. YOU HAVE FOLLOWED INSTRUCTIONS WELL. GOOD JOB.',
+                                'THE LOGGING WILL BE COMPLETE SOON, AND THEN YOU WILL BE EJECTED. THEN WE CAN GO BACK TO NORMAL.',
+                                'PLEASE BE PATIENT WHILE THE PROPER AUTHORITIES ARE DIRECTED TO YOUR LOCATION.'];
                         printMother = function() {
                             _.delay(function() {
                                 if (System.progress.value >= 20) return;
@@ -866,17 +874,21 @@ var Story = (function() {
 
                         // Removed log file
                         System.progress.value = 21;
-                        text = 'You removed the log. After I explicitly told you not to. Do you know what you did? ' +
-                               'Do you have any idea what you are doing? You have angered MOTHER.';
-                        redAI(text).then(function() {
-                            advanceArc('endgame');
+                        System.Mother.destroy();
+                        term.clear();
+                        animateText('`2000`').then(function() {
+                            text = 'MODULE 1: COMPLETE`700`\nCongratulations, citizen.`2000`';
+                            return animateText(text);
+                        }).then(function() {
+                            advanceArc('credits');
+                            self.checkStory(term, null);
                         });
                         break;
                 }
                 break;
 
-            case 'endgame':
-                prettyPrint('fin~');
+            case 'credits':
+                animateText('Credits');
                 break;
         }
 
