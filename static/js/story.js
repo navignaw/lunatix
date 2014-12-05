@@ -50,7 +50,7 @@ var Story = (function() {
 
         // FIXME: Remove after testing: hack to skip tests
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'test03';
+            System.progress.arc = 'gov';
             unlockFile('/home/test/01');
             unlockFile('/home/test/02');
             unlockFile('/home/test/03');
@@ -726,9 +726,16 @@ var Story = (function() {
                                 term.pause(); term.resume(); // hack to update the prompt
                                 System.user.commands.push('sudo');
 
+                                // Generate user profile
+                                var file = {
+                                    'name': '46200',
+                                    'type': 'txt',
+                                    'text': Util.generateProfile('46200', true)
+                                };
+                                File.createFile('/gov/data/citizens', '46200', file);
+
                                 // Generate a bunch of random profiles
-                                // TODO: make the first file you cat always the user's profile
-                                for (var i = 46200; i < 46298; i++) {
+                                for (var i = 46201; i < 46298; i++) {
                                     var uid = i.toString();
                                     var file = {
                                         'name': uid,

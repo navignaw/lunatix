@@ -1,7 +1,7 @@
 function User(name) {
     this.name = name || '';
-    this.age = 20; // default, set during survey
-    this.gender = 'M'; // default, set during survey
+    this.dob = "2120-02-19"; // default, set during survey
+    this.gender = 'male'; // default, set during survey
 
     // List of unlocked commands
     this.commands = ['cd', 'help', 'logout', 'ls', 'man', 'pwd', 'whoami'];
@@ -10,7 +10,9 @@ function User(name) {
     this.ip = '';
 
     // Survey answers
-    this.answers = {};
+    this.answers = {
+        occupation: 'Citizen'
+    };
 
     $.ajax({
         type: 'GET',
