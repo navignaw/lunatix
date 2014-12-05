@@ -267,6 +267,9 @@ var Terminal = (function() {
                     if (!target.movable) {
                         throw new TermError(TermError.Type.PERMISSION_DENIED, 'mv: ' + cmd.args[0] + ': Permission denied.');
                     }
+                    if (_.contains(target.children, targetName)) {
+                        throw new TermError(TermError.Type.FILE_ALREADY_EXISTS, 'mv: ' + cmd.args[1] + ': target already exists.');
+                    }
                 } else {
                     throw new TermError(TermError.Type.FILE_NOT_FOUND, 'mv: ' + cmd.args[1] + ': No such file or directory.');
                 }

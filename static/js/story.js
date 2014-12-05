@@ -47,7 +47,7 @@ var Story = (function() {
 
         // FIXME: Remove after testing: hack to skip tests
         /*if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
-            System.progress.arc = 'credits';
+            System.progress.arc = 'test03';
             File.unlockFile('/home/test/01');
             File.unlockFile('/home/test/02');
             File.unlockFile('/home/test/03');
