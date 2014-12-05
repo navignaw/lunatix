@@ -5,11 +5,19 @@ var Terminal = (function() {
     var prettyPrint = Util.prettyPrint;
     var echoTemplate = Util.echoTemplate;
 
+    var unameminlen = 4;
+    var unamemaxlen = 20;
+
     var self = {
 
         /* Login interpreter */
         login: function(command, term) {
             var username = $.trim(command);
+
+            if (username.length < unameminlen || unamemaxlen < username.length) {
+                username = 'dissident';
+            }
+
             if (username !== '') {
                 term.pause();
 
