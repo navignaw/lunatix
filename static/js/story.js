@@ -5,12 +5,8 @@ var Story = (function() {
 
     var self = {};
 
-    // Unhide or unlock directory
-    function unlockFile(dir) {
-        if (System.dirTree[dir].hidden)
-            System.dirTree[dir].hidden = false;
-        else
-            System.dirTree[dir].locked = false;
+    function advanceProgress() {
+        System.progress.value++;
     }
 
     function advanceArc(newArc, newDir) {
@@ -19,7 +15,7 @@ var Story = (function() {
         System.progress.hints = 0;
 
         if (newDir) {
-            unlockFile(newDir);
+            File.unlockFile(newDir);
         }
     }
 
@@ -51,11 +47,11 @@ var Story = (function() {
         // FIXME: Remove after testing: hack to skip tests
         if (System.debug && System.progress.arc === 'intro' && System.progress.value === 0) {
             System.progress.arc = 'gov';
-            unlockFile('/home/test/01');
-            unlockFile('/home/test/02');
-            unlockFile('/home/test/03');
-            //unlockFile('/home/test/04');
-            //unlockFile('/home/test/05');
+            File.unlockFile('/home/test/01');
+            File.unlockFile('/home/test/02');
+            File.unlockFile('/home/test/03');
+            File.unlockFile('/home/test/04');
+            File.unlockFile('/home/test/05');
         }
 
         switch (System.progress.arc) {
@@ -130,7 +126,7 @@ var Story = (function() {
                         }).then(function() {
                             return redAI('`500`');
                         }).then(function() {
-                            System.progress.value++;
+                            advanceProgress();
                             term.clear();
                             self.checkStory(term, null);
                         });
@@ -160,7 +156,7 @@ var Story = (function() {
                             return greenAI(text);
                         }).then(function() {
                             System.progress.help = 'Please Change Directory <cd> to the test/ folder to begin the testing process.';
-                            System.progress.value++;
+                            advanceProgress();
                         });
                         break;
 
@@ -235,14 +231,14 @@ var Story = (function() {
                         greenAI(text).then(function() {
                             System.progress.help = 'This task will test your ability to utilize List files <ls> and Change Directory <cd>.\n' +
                                                    'Attempt to follow the maze/ to its completion.';
-                            System.progress.value++;
+                            advanceProgress();
                             self.checkStory(term, null);
                         });
                         break;
 
                     case 1:
                         // Create logs and custom directories
-                        unlockFile('/home/test/01/maze');
+                        File.unlockFile('/home/test/01/maze');
                         var COLOR_PARENT_DIR = '/home/test/01/maze/hall/right/uncertain/probable/definite/';
                         System.dirTree[COLOR_PARENT_DIR + System.user.answers.color].children = ['finish', 'start'];
                         var finish = System.dirTree['COLOR/finish'];
@@ -254,7 +250,7 @@ var Story = (function() {
                             good: 0, // total of 7
                             bad: 0   // total of 23
                         };
-                        System.progress.value++;
+                        advanceProgress();
                         break;
 
                     case 2:
@@ -395,7 +391,7 @@ var Story = (function() {
                                 log.text.push(text);
 
                                 if (System.directory.name === 'finish') {
-                                    System.progress.value++;
+                                    advanceProgress();
                                     self.checkStory(term, null);
                                 }
                             });
@@ -414,8 +410,8 @@ var Story = (function() {
                         System.directory = System.dirTree[System.path];
                         greenAI(text).then(function() {
                             System.progress.help = 'Exit this directory with <cd ..> and visit the results/ directory for debriefing.';
-                            unlockFile('/home/test/results');
-                            System.progress.value++;
+                            File.unlockFile('/home/test/results');
+                            advanceProgress();
                         });
                         break;
 
@@ -463,7 +459,7 @@ var Story = (function() {
                             System.progress.help = 'The following test will measure your ability to Catenate <cat> files. ' +
                                                    'This will allow you to observe their contents.\nWhen you have deduced the solution, ' +
                                                    'run the executable ./submit <answer>. Your progress will be tracked.';
-                            System.progress.value++;
+                            advanceProgress();
                         });
                         break;
 
@@ -517,7 +513,7 @@ var Story = (function() {
                                'When you are finished, run the executable ./submit. Your progress will be tracked.';
                         greenAI(text).then(function() {
                             System.progress.help = text;
-                            System.progress.value++;
+                            advanceProgress();
                         });
                         break;
 
@@ -587,7 +583,7 @@ var Story = (function() {
                                'To begin, run the executable ./relax.';
                         greenAI(text).then(function() {
                             System.progress.help = 'To begin your scheduled rest period, run the executable ./relax.';
-                            System.progress.value++;
+                            advanceProgress();
                         });
                         break;
 
@@ -643,7 +639,7 @@ var Story = (function() {
                                'Reflect on the good we have done as you complete this task.';
                         greenAI(text).then(function() {
                             System.progress.help = text;
-                            System.progress.value++;
+                            advanceProgress();
                         });
                         break;
 
@@ -667,7 +663,7 @@ var Story = (function() {
                         var box = System.dirTree['/home/test/05/box'];
                         if (box.children.length === 1) {
                             // Removed all files except hope
-                            unlockFile('/home/test/05/box/hope');
+                            File.unlockFile('/home/test/05/box/hope');
                         } else if (box.children.length === 0) {
                             // Hope removed! Kernel panic
                             System.progress.help = '';
@@ -710,6 +706,7 @@ var Story = (function() {
 
             // End-game (government server)
             case 'gov':
+                log = System.progress.logs['gov'];
                 switch (System.progress.value) {
                     case 0:
                         Util.normalScreen();
@@ -724,7 +721,7 @@ var Story = (function() {
                                 Util.setHome('/gov');
                                 prettyPrint('Welcome to the government server!');
                                 term.pause(); term.resume(); // hack to update the prompt
-                                System.user.commands.push('sudo');
+                                System.user.commands.push('sudo', 'chmod');
 
                                 // Generate user profile
                                 var file = {
@@ -744,7 +741,7 @@ var Story = (function() {
                                     };
                                     File.createFile('/gov/data/citizens', uid, file);
                                 }
-                                System.progress.value++;
+                                advanceProgress();
                             });
                         });
                         break;
@@ -756,36 +753,73 @@ var Story = (function() {
                         // Generate directories for month/date/time/log file
                         Util.generateTimeLogs('/gov/logs');
                         var date = new Date(),
-                            month = Util.getMonth(date.getMonth()),
-                            day = Util.padZeroes(date.getDate()),
                             time = _.map([date.getHours(), date.getMinutes(), date.getSeconds()], Util.padZeroes).join('');
-                        var logDir = ['/gov/logs', month, day].join('/'),
-                            logName = time + '.log';
-                        File.createFile(logDir, logName, {
-                            'name': logName,
+                        System.progress.logs['gov'] = {
+                            month: Util.getMonth(date.getMonth()),
+                            day: Util.padZeroes(date.getDate()),
+                            name: time + '.log'
+                        };
+                        log = System.progress.logs['gov'];
+                        var logDir = ['/gov/logs', log.month, log.day].join('/');
+                        File.createFile(logDir, log.name, {
+                            'name': log.name,
                             'type': 'txt',
                             'text': 'Error: log in process. Please do not modify or remove this file.'
                         });
 
+                        // TODO: the following texts should be in MOTHER's own terminal window
                         text = 'Intruder detected! Lockdown initiated.`300`\n' +
-                               'Logging report will be saved in ' + logDir + '/' + logName +
+                               'Logging report will be saved in ' + logDir + '/' + log.name +
                                '. This file must not be modified or removed until logging is complete.';
                         redAI(text).then(function() {
-                            unlockFile('/gov/forgot_password.txt');
-                            System.progress.value++;
+                            File.unlockFile('/gov/forgot_password.txt');
+                            advanceProgress();
                         });
                         break;
 
                     case 2:
-                        if (cmd !== 'sudo' || System.directory.name !== 'gov') break;
-
-                        // TODO: Allow access to logs if sudo chmod
-                        unlockFile('/gov/logs');
-                        System.progress.value++;
+                        if (cmd !== 'cd' || System.directory.name !== 'gov') break;
+                        text = 'Intruder identified as user ' + System.user.name + '. Querying database for ' + System.user.name + '...';
+                        redAI(text).then(advanceProgress);
                         break;
 
                     case 3:
-                        if (System.directory.name === 'logs') break;
+                        if (cmd !== 'cat' || System.directory.name !== 'gov') break;
+                        text = 'Records for ' + System.user.name + ' located. Extracting biodata...';
+                        redAI(text).then(advanceProgress);
+                        break;
+
+                    case 4:
+                        if (cmd !== 'cat' || System.directory.name !== 'archive') break;
+                        text = 'Biodata extraction complete. Writing to file...';
+                        redAI(text).then(advanceProgress);
+
+                    case 5:
+                        if (cmd !== 'chmod' || System.directory.name !== 'gov') break;
+
+                        if (!System.dirTree['/gov/logs'].locked) {
+                            prettyPrint('Password accepted. Access to logs granted.');
+                            text = 'Intruder has gained access to logs file.';
+                            redAI(text).then(advanceProgress);
+                        }
+                        break;
+
+                    case 6:
+                        if (System.directory.name !== 'logs') break;
+                        text = 'Initiating ejection procedure. I know you are there intruder. Stop this conduct at once.';
+                        redAI(text).then(advanceProgress);
+                        break;
+
+                    case 7:
+                        if (System.directory.name !== log.month) break;
+                        text = 'You will face stiff penalties for continuing.';
+                        redAI(text).then(advanceProgress);
+                        break;
+
+                    case 8:
+                        if (System.directory.name !== log.day) break;
+                        prettyPrint('omg');
+                        // TODO: start typing into your terminal
                         break;
                 }
                 break;

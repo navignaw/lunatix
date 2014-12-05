@@ -101,8 +101,24 @@ var Terminal = (function() {
                 }
             },
 
-            chmod: function(cmd, term) {
-                // TODO: change mode/permissions
+            chmod: function(cmd, term, sudo) {
+                if (!sudo) {
+                    throw new TermError(TermError.Type.PERMISSION_DENIED, 'chmod: Permission denied');
+                }
+                var chmod_match = (/^[u,g,o,a]+[\+,\=][w,r,x]+ (\w+)/).exec(cmd.rest);
+                console.log(chmod_match);
+                if (!chmod_match) {
+                    throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'chmod: invalid arguments');
+                }
+
+                var file = chmod_match[1];
+                if (file) file = Util.parseDirectory(file);
+                if (file) {
+                    console.log('unlocking file', file);
+                    File.unlockFile(file);
+                } else {
+                    throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'chmod: No such file or directory');
+                }
             },
 
             cp: function(cmd, term) {
@@ -140,8 +156,14 @@ var Terminal = (function() {
             },
 
             help: function(cmd, term) {
-                var text = System.progress.help ? 'Task: ' + System.progress.help : '';
-                prettyPrint(term, text, null, {color: Util.Color.AI_GREEN});
+                if (System.progress.help) {
+                    if (System.progress.arc !== 'gov') {
+                        prettyPrint(term, 'Task: ' + System.progress.help, null, {color: Util.Color.AI_GREEN});
+                    } else {
+                        // TODO: Mother needs to say something clever
+                        //prettyPrint(term, '', null, {color: Util.Color.AI_RED});
+                    }
+                }
                 text = 'For a list of available commands, input `[[i;#fff;]man]`. To learn about an individual command, type `[[i;#fff;]man <cmd>]`.';
                 return text;
             },
@@ -302,9 +324,35 @@ var Terminal = (function() {
             },
 
             sudo: function(cmd, term) {
+                var SUDO_PASSWORD = '3249';
                 self.input(term, 'Password: ', function(input) {
-                    // TODO: sudo
-                    prettyPrint(term, 'Incorrect. sudo not yet implemented');
+                    if (input !== SUDO_PASSWORD) {
+                        prettyPrint(term, 'Password rejected. This access will be logged.', null, {color: Util.Color.AI_YELLOW});
+                        return;
+                    } else if (!_.contains(System.user.commands, _.first(cmd.args))) {
+                        prettyPrint(term, _.first(cmd.args) + ': command not found.', null, {color: Util.Color.AI_YELLOW});
+                        return;
+                    }
+
+                    // Run all permissible commands
+                    var newcmd = {
+                        name: _.first(cmd.args),
+                        args: _.rest(cmd.args),
+                        options: cmd.options,
+                        rest: _.rest(cmd.args).join(' ')
+                    };
+                    try {
+                        var result = self.commands[newcmd.name](newcmd, term, true);
+                        if (result && _.isString(result)) {
+                            prettyPrint(term, result);
+                        }
+                        Story.checkStory(term, newcmd.name, null);
+                    } catch (error) {
+                        if (error.type === TermError.Type.PERMISSION_DENIED) {
+                            error.text = 'sudo: permission denied. This command is restricted to the highest administrator privileges only.';
+                        }
+                        Story.checkStory(term, newcmd.name, error);
+                    }
                 }, true);
             },
 
