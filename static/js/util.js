@@ -3,6 +3,11 @@ var Util = (function() {
 
     var HOME_DIR = '/home';
     var self = {};
+    var profiles = {};
+
+    $.getJSON('/static/js/names.json', function(data) {
+        profiles = data;
+    })
 
     self.Color = Object.freeze({
         'AI_GREEN': '#78C778',
@@ -451,24 +456,25 @@ var Util = (function() {
 
     // Generate profiles
     self.generateProfile = function(uid, user) {
-        var name, age, gender, occupation, ip, threat;
+        var name, dob, gender, occupation, ip, threat;
         if (user) {
-            name = user.name;
-            age = user.age;
-            gender = user.gender;
-            occupation = user.answers.occupation;
-            ip = user.ip;
+            name = System.user.name;
+            dob = System.user.dob;
+            gender = System.user.gender;
+            occupation = System.user.answers.occupation;
+            ip = System.user.ip;
             threat = 'Low';
         } else {
+            var profile = _.sample(profiles);
             // TODO: randomly generate this
-            name = 'John Smith';
-            age = _.random(17, 36).toString();
-            gender = _.sample(['M', 'F']);
-            occupation = _.sample(['Giver']);
-            ip = '127.0.0.1';
-            threat = _.sample(['Low', 'Low', 'Low', 'Low', 'Suspected involvement with Elpis', 'High']);
+            name = profile.first + ' ' + profile.last;
+            dob = profile.dob;
+            gender = profile.gender;
+            occupation = profile.occupation;
+            ip = profile.ip;
+            threat = profile.threat;
         }
-        return ['Name: ' + name, 'Age: ' + age, 'Gender: ' + gender, 'Occupation: ' + occupation,
+        return ['Name: ' + name, 'DOB: ' + dob, 'Gender: ' + gender, 'Occupation: ' + occupation,
                 'Federal ID: ' + uid, 'IP Address: ' + ip, 'Threat Level: ' + threat].join('\n');
     };
 
