@@ -760,32 +760,34 @@ var Story = (function() {
                             'text': 'Error: log in process. Please do not modify or remove this file.'
                         });
 
-                        // TODO: the following texts should be in MOTHER's own terminal window
+                        File.unlockFile('/gov/forgot_password.txt');
+
+                        // Create new textbox for MOTHER's text
+                        System.Mother = new Textbox($('.container'), 0, 0, {color: Util.Color.AI_RED});
                         text = 'Intruder detected! Lockdown initiated.`300`\n' +
                                'Logging report will be saved in ' + logDir + '/' + log.name +
                                '. This file must not be modified or removed until logging is complete.';
-                        redAI(text).then(function() {
-                            File.unlockFile('/gov/forgot_password.txt');
-                            advanceProgress();
-                        });
+                        _.delay(function() {
+                            System.Mother.animateText(text).then(advanceProgress);
+                        }, 500);
                         break;
 
                     case 2:
                         if (cmd !== 'cd' || System.directory.name !== 'gov') break;
                         text = 'Intruder identified as user ' + System.user.name + '. Querying database for ' + System.user.name + '...';
-                        redAI(text).then(advanceProgress);
+                        System.Mother.animateText(text).then(advanceProgress);
                         break;
 
                     case 3:
                         if (cmd !== 'cat' || System.directory.name !== 'gov') break;
                         text = 'Records for ' + System.user.name + ' located. Extracting biodata...';
-                        redAI(text).then(advanceProgress);
+                        System.Mother.animateText(text).then(advanceProgress);
                         break;
 
                     case 4:
                         if (cmd !== 'cat' || System.directory.name !== 'archive') break;
                         text = 'Biodata extraction complete. Writing to file...';
-                        redAI(text).then(advanceProgress);
+                        System.Mother.animateText(text).then(advanceProgress);
 
                     case 5:
                         if (cmd !== 'chmod' || System.directory.name !== 'gov') break;
@@ -793,20 +795,20 @@ var Story = (function() {
                         if (!System.dirTree['/gov/logs'].locked) {
                             prettyPrint('Password accepted. Access to logs granted.');
                             text = 'Intruder has gained access to logs file.';
-                            redAI(text).then(advanceProgress);
+                            System.Mother.animateText(text).then(advanceProgress);
                         }
                         break;
 
                     case 6:
                         if (System.directory.name !== 'logs') break;
                         text = 'Initiating ejection procedure. I know you are there intruder. Stop this conduct at once.';
-                        redAI(text).then(advanceProgress);
+                        System.Mother.animateText(text).then(advanceProgress);
                         break;
 
                     case 7:
                         if (System.directory.name !== log.month) break;
                         text = 'You will face stiff penalties for continuing.';
-                        redAI(text).then(advanceProgress);
+                        System.Mother.animateText(text).then(advanceProgress);
                         break;
 
                     case 8:

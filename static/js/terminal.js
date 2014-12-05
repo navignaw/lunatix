@@ -646,7 +646,8 @@ var Terminal = (function() {
 
         /* Additional settings */
         manuals: {},
-        terminal: null
+        terminal: null,
+        offset: 100 // height offset from window height
     };
     return self;
 

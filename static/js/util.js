@@ -317,20 +317,18 @@ var Util = (function() {
                 term.insert(character);
             } else if (c !== message.length) {
                 var nextCharacter = message[c++];
-                switch (nextCharacter) {
-                    case '`':
-                        term.insert('`');
-                        break;
-                    default:
-                        // Extract number of milliseconds to pause.
-                        var digits = message.substring(c-1).match(/^\d*/);
-                        var waitCount = 0;
-                        if (digits) {
-                            waitCount = parseInt(digits[0], 10);
-                            c += digits[0].length;
-                        }
-                        _.delay(readCharacter, waitCount + delay);
-                        return;
+                if (nextCharacter === '`') {
+                    term.insert('`');
+                } else {
+                    // Extract number of milliseconds to pause.
+                    var digits = message.substring(c-1).match(/^\d*/);
+                    var waitCount = 0;
+                    if (digits) {
+                        waitCount = parseInt(digits[0], 10);
+                        c += digits[0].length;
+                    }
+                    _.delay(readCharacter, waitCount + delay);
+                    return;
                 }
             }
             _.delay(readCharacter, delay);

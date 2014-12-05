@@ -168,8 +168,8 @@ var Executable = (function() {
                     var redactedCat = '\n    ------------------------------\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n   |       R E D A C T E D        |\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n    ------------------------------\n';
 
                     // Create div for countdown timer
-                    term.append('<div id="timer"></div>');
-                    var timerElem = $('#timer');
+                    var timerElem = $('<div id="timer"></div>');
+                    term.append(timerElem);
 
                     // On Ctrl-C, pause timer and print text
                     Util.hideCursor();

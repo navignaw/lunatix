@@ -3632,7 +3632,7 @@
                 },
                 // -----------------------------------------------------------------------
                 // :: Make the terminal in focus or blur depending on the first argument.
-                // :: If there is more then one terminal it will switch to next one, 
+                // :: If there is more then one terminal it will switch to next one,
                 // :: if the second argument is set to true the events will be not fired.
                 // :: Used on init
                 // -----------------------------------------------------------------------
