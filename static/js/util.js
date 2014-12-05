@@ -374,9 +374,9 @@ var Util = (function() {
         return deferred.promise();
     };
 
-    self.input = function(term, prompt) {
+    self.input = function(term, prompt, condition) {
         var deferred = $.Deferred();
-        Terminal.input(term, prompt, deferred.resolve);
+        Terminal.input(term, prompt, deferred.resolve, condition);
         return deferred.promise();
     };
 
@@ -461,7 +461,7 @@ var Util = (function() {
             name = System.user.name;
             dob = System.user.dob;
             gender = System.user.gender;
-            occupation = System.user.answers.occupation;
+            occupation = System.user.occupation;
             ip = System.user.ip;
             threat = 'Low';
         } else {

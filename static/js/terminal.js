@@ -20,8 +20,6 @@ var Terminal = (function() {
                     success: function(data) {
                         // TODO: If username already exists, prompt for password.
                         System.user = new User(username);
-                        Util.log('logged in as:', username);
-                        Util.log(System.user);
                         File.getDirectory('home.json', function(json) {
                             System.dirTree = json;
                             System.directory = json[System.path];
@@ -51,8 +49,7 @@ var Terminal = (function() {
         },
 
         /* Accepted commands.
-         * Return a string to allow piping or redirecting result,
-         * or an TermError object with a default message.
+         * Return a string to allow piping or redirection, or an TermError object with a default message.
          * End result will be printed in terminal.
          */
         commands: {
@@ -69,10 +66,17 @@ var Terminal = (function() {
                 var newFile = System.dirTree[newPath];
                 if (newFile.type === 'dir') {
                     throw new TermError(TermError.Type.INVALID_FILE_TYPE, 'cat: ' + cmd.rest + ' is a directory');
-                } else if (newFile.type === 'html') {
-                    prettyPrint(term, newFile.text, {raw: true}, {css: newFile.style || {}});
                 } else {
-                    return newFile.text;
+                    if (System.progress.arc === 'gov' && System.progress.value === 1 && (/gov\/data\/citizens/).test(newPath)) {
+                        // FIXME: Hackily hardcoded
+                        newFile.text = Util.generateProfile(dir, true);
+                        return newFile.text;
+                    }
+                    if (newFile.type === 'html') {
+                        prettyPrint(term, newFile.text, {raw: true}, {css: newFile.style || {}});
+                    } else {
+                        return newFile.text;
+                    }
                 }
             },
 
@@ -158,8 +162,7 @@ var Terminal = (function() {
                     if (System.progress.arc !== 'gov') {
                         prettyPrint(term, 'Task: ' + System.progress.help, null, {color: Util.Color.AI_GREEN});
                     } else {
-                        // TODO: Mother needs to say something clever
-                        //prettyPrint(term, '', null, {color: Util.Color.AI_RED});
+                        prettyPrint(term, System.progress.help, null, {color: Util.Color.AI_RED});
                     }
                 }
                 text = 'For a list of available commands, input `[[i;#fff;]man]`. To learn about an individual command, type `[[i;#fff;]man <cmd>]`.';
@@ -510,19 +513,20 @@ var Terminal = (function() {
                     term.pop();
                     callback(command);
                 } else {
-                    prettyPrint(term, "Please enter one of the options above.");
+                    prettyPrint(term, "Please enter one of the options above.", null, {color: Util.Color.AI_YELLOW});
                 }
             }, self.options.multichoice(options, prompt));
         },
 
         /* Input terminal: prints prompt and calls callback with input */
-        input: function(term, prompt, callback, password) {
-            if (password) {
-                // TODO: hide password
-            }
+        input: function(term, prompt, callback, condition) {
             term.push(function(command) {
+                command = $.trim(command);
+                if ((condition || _.noop)(command)) {
+                    return;
+                }
                 term.pop();
-                callback($.trim(command));
+                callback(command);
             }, self.options.input(prompt));
         },
 

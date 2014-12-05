@@ -49,5 +49,15 @@
         "name": "Who am I?",
         "examples": ["whoami"],
         "description": "whoami answers the philosophical question of your identity by printing your username."
+    },
+    "sudo": {
+        "name": "Execute as another user",
+        "examples": ["sudo chmod u+r restricted/"],
+        "description": "sudo allows a permitted user to execute a command as a superuser or administrator. Improper usage will be logged and severely persecuted."
+    },
+    "chmod": {
+        "name": "Change File Mode",
+        "examples": ["chmod u+r restricted/"],
+        "description": "chmod changes the file bits to allow read, write, or execute permission for a specific user. Only superusers, or authenticated government officials, may run this command."
     }
 }
