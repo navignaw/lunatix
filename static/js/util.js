@@ -5,9 +5,9 @@ var Util = (function() {
     var self = {};
     var profiles = {};
 
-    $.getJSON('/static/js/names.json', function(data) {
+    $.getJSON('/static/content/names.json', function(data) {
         profiles = data;
-    })
+    });
 
     self.Color = Object.freeze({
         'AI_GREEN': '#78C778',
@@ -466,15 +466,14 @@ var Util = (function() {
             threat = 'Low';
         } else {
             var profile = _.sample(profiles);
-            // TODO: randomly generate this
-            name = profile.first + ' ' + profile.last;
+            name = [profile.first, profile.last].join(' ');
             dob = profile.dob;
             gender = profile.gender;
             occupation = profile.occupation;
             ip = profile.ip;
             threat = profile.threat;
         }
-        return ['Name: ' + name, 'DOB: ' + dob, 'Gender: ' + gender, 'Occupation: ' + occupation,
+        return ['Name: ' + name, 'Date of Birth: ' + dob, 'Gender: ' + gender, 'Occupation: ' + occupation,
                 'Federal ID: ' + uid, 'IP Address: ' + ip, 'Threat Level: ' + threat].join('\n');
     };
 

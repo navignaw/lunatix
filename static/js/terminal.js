@@ -106,7 +106,6 @@ var Terminal = (function() {
                     throw new TermError(TermError.Type.PERMISSION_DENIED, 'chmod: Permission denied');
                 }
                 var chmod_match = (/^[u,g,o,a]+[\+,\=][w,r,x]+ (\w+)/).exec(cmd.rest);
-                console.log(chmod_match);
                 if (!chmod_match) {
                     throw new TermError(TermError.Type.INVALID_ARGUMENTS, 'chmod: invalid arguments');
                 }
@@ -114,7 +113,6 @@ var Terminal = (function() {
                 var file = chmod_match[1];
                 if (file) file = Util.parseDirectory(file);
                 if (file) {
-                    console.log('unlocking file', file);
                     File.unlockFile(file);
                 } else {
                     throw new TermError(TermError.Type.DIRECTORY_NOT_FOUND, 'chmod: No such file or directory');

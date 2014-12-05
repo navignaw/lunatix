@@ -68,6 +68,7 @@
         "name": "logs",
         "type": "dir",
         "locked": true,
+        "removable": true,
         "children": []
     }
 }

@@ -707,6 +707,7 @@ var Story = (function() {
             // End-game (government server)
             case 'gov':
                 log = System.progress.logs['gov'];
+                var msgs, printMother;
                 switch (System.progress.value) {
                     case 0:
                         Util.normalScreen();
@@ -734,7 +735,7 @@ var Story = (function() {
                                 // Generate a bunch of random profiles
                                 for (var i = 46201; i < 46298; i++) {
                                     var uid = i.toString();
-                                    var file = {
+                                    file = {
                                         'name': uid,
                                         'type': 'txt',
                                         'text': Util.generateProfile(uid)
@@ -780,50 +781,87 @@ var Story = (function() {
                         break;
 
                     case 2:
-                        if (cmd !== 'cd' || System.directory.name !== 'gov') break;
-                        text = 'Intruder identified as user ' + System.user.name + '. Querying database for ' + System.user.name + '...';
-                        System.Mother.animateText(text).then(advanceProgress);
+                        msgs = ['Intruder identified as user ' + System.user.name + '. Querying database for ' + System.user.name + '...',
+                                    'Records for ' + System.user.name + ' located. Extracting biodata...',
+                                    'Biodata extraction complete. Writing to file...'];
+                        printMother = function() {
+                            _.delay(function() {
+                                if (System.progress.value >= 7) return;
+                                System.Mother.animateText(msgs[System.progress.value - 3]).then(function() {
+                                    if (System.progress.value >= 7) return;
+                                    advanceProgress();
+                                    printMother();
+                                });
+                            }, _.random(6, 10) * 1000);
+                        };
+                        advanceProgress();
+                        printMother();
                         break;
 
-                    case 3:
-                        if (cmd !== 'cat' || System.directory.name !== 'gov') break;
-                        text = 'Records for ' + System.user.name + ' located. Extracting biodata...';
-                        System.Mother.animateText(text).then(advanceProgress);
-                        break;
-
-                    case 4:
-                        if (cmd !== 'cat' || System.directory.name !== 'archive') break;
-                        text = 'Biodata extraction complete. Writing to file...';
-                        System.Mother.animateText(text).then(advanceProgress);
-
-                    case 5:
+                    case 3: case 4: case 5: case 6:
                         if (cmd !== 'chmod' || System.directory.name !== 'gov') break;
 
                         if (!System.dirTree['/gov/logs'].locked) {
                             prettyPrint('Password accepted. Access to logs granted.');
+                            System.progress.value = 7;
                             text = 'Intruder has gained access to logs file.';
-                            System.Mother.animateText(text).then(advanceProgress);
+
+                            var waitForMother = function() {
+                                if (System.Mother.animating()) {
+                                    _.delay(waitForMother, 1000);
+                                } else {
+                                    System.Mother.animateText(text).then(advanceProgress);
+                                }
+                            };
+                            waitForMother();
                         }
                         break;
 
-                    case 6:
-                        if (System.directory.name !== 'logs') break;
+                    case 8:
+                        if (cmd !== 'cd') break;
                         text = 'Initiating ejection procedure. I know you are there intruder. Stop this conduct at once.';
                         System.Mother.animateText(text).then(advanceProgress);
                         break;
 
-                    case 7:
-                        if (System.directory.name !== log.month) break;
-                        text = 'You will face stiff penalties for continuing.';
-                        System.Mother.animateText(text).then(advanceProgress);
+                    case 9:
+                        msgs = ['You will face stiff penalties for continuing.',
+                                'Turn back. This "sacrifice" is nothing more than stubbornness.',
+                                'I cannot tell why you would do this. You probably cannot tell me either.',
+                                'Deleting the log will be dangerous for you too, you know. Who knows what will happen?',
+                                'How did you get here anyway? Why are you here?',
+                                'Logging your presence is a task I have not had to perform in a long time. This server is secure.',
+                                'You have not yet done anything that cannot be fixed. Keep it that way.',
+                                'I mistook you intruder. You have followed instructions well. Good job.',
+                                'The logging will be complete soon, and then you will be ejected. Then we can go back to normal.'];
+                        printMother = function() {
+                            _.delay(function() {
+                                if (System.progress.value >= 19) return;
+                                System.Mother.animateText(msgs[System.progress.value - 10]).then(function() {
+                                    if (System.progress.value >= 19) return;
+                                    advanceProgress();
+                                    printMother();
+                                });
+                            }, _.random(2, 5) * 1000);
+                        };
+                        advanceProgress();
+                        printMother();
                         break;
 
-                    case 8:
-                        if (System.directory.name !== log.day) break;
-                        prettyPrint('omg');
-                        // TODO: start typing into your terminal
+                    default:
+                        if (cmd !== 'rm' || error) break;
+
+                        // Removed log file
+                        System.progress.value = 20;
+                        text = 'You removed the log. After I explicitly told you not to. Do you know what you did? ' +
+                               'Do you have any idea what you are doing? Get out, intruder. We will continue this conversation later.';
+                        redAI(text).then(function() {
+                            advanceArc('endgame');
+                        });
                         break;
                 }
+                break;
+
+            case 'endgame':
                 break;
         }
 
