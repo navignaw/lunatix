@@ -2,7 +2,7 @@
 // TODO: save into local storage
 var System = {
     debug: $app.DEBUG,
-    version: '0.0.2',
+    version: '0.0.3',
     dirTree: {},
     directory: {},
     path: '/home',
@@ -32,7 +32,7 @@ var System = {
         $term.terminal({}, Terminal.options.base);
 
         var resizeTerminal = function() {
-            var newHeight = Math.round($(window).height()) - 100;
+            var newHeight = Math.round($(window).height()) - Terminal.offset;
             $term.height(_.max([100, newHeight]));
             $term.resize();
         };

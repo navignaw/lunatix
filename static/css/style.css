@@ -13,15 +13,15 @@ body {
     color: white;
 }
 
-.terminal {
-    margin-top: 40px;
+.terminal, .textbox {
+    margin-top: 30px;
     background-color: #080808;
     /*border: 2px solid #6496ff;*/
     /*border-radius: 15px;*/
     color: #ccc;
 }
 
-.terminal, .cmd {
+.terminal, .textbox, .cmd {
     font-family: "Ubuntu Mono", monospace;
 }
 

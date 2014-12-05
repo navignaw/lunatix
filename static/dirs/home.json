@@ -2,7 +2,25 @@
     "/home": {
         "name": "home",
         "type": "dir",
-        "children": ["test"]
+        "children": ["apps", "data", "documents", "test"]
+    },
+    "/home/documents": {
+        "name": "documents",
+        "type": "dir",
+        "locked": true,
+        "children": []
+    },
+    "/home/apps": {
+        "name": "apps",
+        "type": "dir",
+        "locked": true,
+        "children": []
+    },
+    "/home/data": {
+        "name": "data",
+        "type": "dir",
+        "locked": true,
+        "children": []
     },
     "/home/test": {
         "name": "test",
@@ -281,25 +299,19 @@
         "/home/test/05/box": {
             "name": "box",
             "type": "dir",
-            "children": ["war", "pestilence", "despair", "death", "famine", "hope"]
+            "children": ["war", "pestilence", "death", "famine", "hope"]
         },
             "/home/test/05/box/war": {
                 "name": "war",
                 "type": "txt",
                 "removable": true,
-                "text": "The Battle of the Pit\nThe Great Divide\nThe War of the Plastic Ship\nAlastor's Folly\nThe Final Alliance"
+                "text": "The Battle of the Pit\nThe Great Divide\nThe War of the Plastic Ship\nAlastor's Folly\nNetters' Insurgency"
             },
             "/home/test/05/box/pestilence": {
                 "name": "pestilence",
                 "type": "txt",
                 "removable": true,
                 "text": "The Black Death\nTuberculosis\nMalaria\nInfluenza\nCancer"
-            },
-            "/home/test/05/box/despair": {
-                "name": "despair",
-                "type": "txt",
-                "removable": true,
-                "text": "list of things that make you sad"
             },
             "/home/test/05/box/death": {
                 "name": "death",

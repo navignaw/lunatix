@@ -160,16 +160,16 @@ var Executable = (function() {
                         0: 'Wasn\'t that fun? In fact, let me restart this for you. I\'m sure the benefits will be even greater the second time.'
                     };
                     var ctrlCText = [
-                        'Oops, it appears that you have mistyped <Ctrl-C> in error. I will graciously ignore this command to extend your relaxation period.',
-                        'Pending command: <Ctrl-C>. That wasn’t you, wasn’t it? Let me disable that for you.',
+                        'You appear to have mistyped <Ctrl-C> in error. I will graciously ignore this command; thank me later.',
+                        'Pending command: <Ctrl-C>. That wasn\'t you, was it? Relaxation is important. Let us continue.',
                         'Have you checked to make sure that your <Ctrl-C> key is stuck on the keyboard?',
-                        'Unfortunately, there is a <Ctrl-C> command inbound. Regulations require me to terminate this relaxation period despite its various benefits.'
+                        'Unfortunately, there is a <Ctrl-C> command inbound. Regulations require me to terminate this relaxation period despite its benefits.'
                     ];
                     var redactedCat = '\n    ------------------------------\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n   |       R E D A C T E D        |\n   |                              |\n   |                              |\n   |                              |\n   |                              |\n    ------------------------------\n';
 
                     // Create div for countdown timer
-                    term.append('<div id="timer"></div>');
-                    var timerElem = $('#timer');
+                    var timerElem = $('<div id="timer"></div>');
+                    term.append(timerElem);
 
                     // On Ctrl-C, pause timer and print text
                     Util.hideCursor();

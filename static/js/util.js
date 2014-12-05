@@ -5,9 +5,9 @@ var Util = (function() {
     var self = {};
     var profiles = {};
 
-    $.getJSON('/static/js/names.json', function(data) {
+    $.getJSON('/static/content/names.json', function(data) {
         profiles = data;
-    })
+    });
 
     self.Color = Object.freeze({
         'AI_GREEN': '#78C778',
@@ -322,20 +322,18 @@ var Util = (function() {
                 term.insert(character);
             } else if (c !== message.length) {
                 var nextCharacter = message[c++];
-                switch (nextCharacter) {
-                    case '`':
-                        term.insert('`');
-                        break;
-                    default:
-                        // Extract number of milliseconds to pause.
-                        var digits = message.substring(c-1).match(/^\d*/);
-                        var waitCount = 0;
-                        if (digits) {
-                            waitCount = parseInt(digits[0], 10);
-                            c += digits[0].length;
-                        }
-                        _.delay(readCharacter, waitCount + delay);
-                        return;
+                if (nextCharacter === '`') {
+                    term.insert('`');
+                } else {
+                    // Extract number of milliseconds to pause.
+                    var digits = message.substring(c-1).match(/^\d*/);
+                    var waitCount = 0;
+                    if (digits) {
+                        waitCount = parseInt(digits[0], 10);
+                        c += digits[0].length;
+                    }
+                    _.delay(readCharacter, waitCount + delay);
+                    return;
                 }
             }
             _.delay(readCharacter, delay);
@@ -376,9 +374,9 @@ var Util = (function() {
         return deferred.promise();
     };
 
-    self.input = function(term, prompt) {
+    self.input = function(term, prompt, condition) {
         var deferred = $.Deferred();
-        Terminal.input(term, prompt, deferred.resolve);
+        Terminal.input(term, prompt, deferred.resolve, condition);
         return deferred.promise();
     };
 
@@ -463,20 +461,19 @@ var Util = (function() {
             name = System.user.name;
             dob = System.user.dob;
             gender = System.user.gender;
-            occupation = System.user.answers.occupation;
+            occupation = System.user.occupation;
             ip = System.user.ip;
             threat = 'Low';
         } else {
             var profile = _.sample(profiles);
-            // TODO: randomly generate this
-            name = profile.first + ' ' + profile.last;
+            name = [profile.first, profile.last].join(' ');
             dob = profile.dob;
             gender = profile.gender;
             occupation = profile.occupation;
             ip = profile.ip;
             threat = profile.threat;
         }
-        return ['Name: ' + name, 'DOB: ' + dob, 'Gender: ' + gender, 'Occupation: ' + occupation,
+        return ['Name: ' + name, 'Date of Birth: ' + dob, 'Gender: ' + gender, 'Occupation: ' + occupation,
                 'Federal ID: ' + uid, 'IP Address: ' + ip, 'Threat Level: ' + threat].join('\n');
     };
 
