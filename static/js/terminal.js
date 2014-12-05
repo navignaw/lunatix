@@ -354,7 +354,7 @@ var Terminal = (function() {
                         }
                         Story.checkStory(term, newcmd.name, error);
                     }
-                }, true);
+                });
             },
 
             test: function(cmd, term) {
