@@ -1,8 +1,7 @@
 /* Global system variables */
-// TODO: save into local storage
 var System = {
     debug: $app.DEBUG,
-    version: '1.0.0',
+    version: '1.0.1',
     dirTree: {},
     directory: {},
     path: '/home',

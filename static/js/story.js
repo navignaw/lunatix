@@ -7,6 +7,7 @@ var Story = (function() {
 
     function advanceProgress() {
         System.progress.value++;
+        Util.saveGame();
     }
 
     function advanceArc(newArc, newDir) {
@@ -17,6 +18,7 @@ var Story = (function() {
         if (newDir) {
             File.unlockFile(newDir);
         }
+        Util.saveGame();
     }
 
     function saveLog(test, name) {
@@ -30,6 +32,26 @@ var Story = (function() {
         File.createFile(LOG_DIR, name, logFile);
         return text;
     }
+
+    self.resumeGame = function(term) {
+        // TODO: eventually allow user to delete save file?
+        var prettyPrint = _.partial(Util.prettyPrint, term);
+        var animateText = _.partial(Util.animateText, term);
+        var text = 'Searching for user profile...`500`';
+        animateText(text).then(function() {
+            text = 'User ' + System.user.name + ' found! Resuming game...`900`';
+            return animateText(text);
+        }).then(function() {
+            term.clear();
+            if (System.progress.help) {
+                if (System.progress.arc !== 'gov') {
+                    prettyPrint('Current task: ' + System.progress.help, null, {color: Util.Color.AI_GREEN});
+                } else {
+                    prettyPrint(System.progress.help, null, {color: Util.Color.AI_RED});
+                }
+            }
+        });
+    };
 
     /* Check System variables after every command in order to advance the story. */
     self.checkStory = function(term, cmd, error) {

@@ -492,5 +492,25 @@ var Util = (function() {
                 'Federal ID: ' + uid, 'IP Address: ' + ip, 'Threat Level: ' + threat, ''].join('\n');
     };
 
+    // Save games are stored as stringified JSON in localStorage
+    // under the username key.
+    self.saveGame = function() {
+        var name = System.user.name;
+        window.localStorage.setItem(name, JSON.stringify(System));
+    };
+
+    self.loadGame = function(username) {
+        var system = window.localStorage.getItem(username);
+        if (system !== null) {
+            System = JSON.parse(system);
+            return true;
+        }
+        return false;
+    };
+
+    self.clearSaves = function() {
+        window.localStorage.clear();
+    };
+
     return self;
 })();

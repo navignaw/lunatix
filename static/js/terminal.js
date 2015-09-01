@@ -23,18 +23,25 @@ var Terminal = (function() {
                     url: $app.SCRIPT_ROOT + '/login',
                     data: {username: username},
                     success: function(data) {
-                        System.user = new User(username);
-                        File.getDirectory('home.json', function(json) {
-                            System.dirTree = json;
-                            System.directory = json[System.path];
+                        // Try to load saved game first
+                        if (Util.loadGame(username)) {
                             term.push(self.interpreter, self.options.main);
                             term.clear();
-                            term.greetings();
-                            if (username === 'dissident') {
-                                prettyPrint(term, 'As your username exceeds the character limit, we have truncated it accordingly.');
-                            }
-                            Story.checkStory(term, null);
-                        });
+                            Story.resumeGame(term);
+                        } else {
+                            System.user = new User(username);
+                            File.getDirectory('home.json', function(json) {
+                                System.dirTree = json;
+                                System.directory = json[System.path];
+                                term.push(self.interpreter, self.options.main);
+                                term.clear();
+                                term.greetings();
+                                if (username === 'dissident') {
+                                    prettyPrint(term, 'As your username exceeds the character limit, we have truncated it accordingly.');
+                                }
+                                Story.checkStory(term, null);
+                            });
+                        }
 
                         $.ajax({
                             type: 'GET',
