@@ -403,6 +403,10 @@ var Util = (function() {
 
     // Audio
     var audio = null;
+    var loopEventListener = function() {
+      this.currentTime = 0;
+      this.play();
+    };
     self.playMusic = function(music, loop) {
         audio = new Audio([$app.SCRIPT_ROOT, '/static/sound/', music].join(''));
 
@@ -411,19 +415,21 @@ var Util = (function() {
             if (_.isBoolean(audio.loop)) {
                 audio.loop = true;
             } else {
-                audio.addEventListener('ended', function() {
-                    this.currentTime = 0;
-                    this.play();
-                }, false);
+                audio.addEventListener('ended', loopEventListener, false);
             }
         }
         audio.play();
     };
 
     self.stopMusic = function() {
+        if (!audio) {
+            return;
+        }
         audio.pause();
         audio.currentTime = 0;
-        audio.removeEventListener('ended');
+        if (!_.isBoolean(audio.loop)) {
+            audio.removeEventListener('ended', loopEventListener, false);
+        }
     };
 
     // Parsing times and dates
